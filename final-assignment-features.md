@@ -3,6 +3,7 @@
 - [Thathu caro](#thathu-caro)
   - [Features](#features)
   - [Game constraints](#game-constraints)
+  - [UseCase](#usecase)
   - [Registry](#registry)
   - [Create game board](#create-game-board)
   - [Join game board](#join-game-board)
@@ -29,7 +30,7 @@
 
 ## UseCase
 
-![x](./image/usecase.png)
+![use-case](./image/usecase.png)
 
 ## Registry
 
