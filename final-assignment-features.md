@@ -27,6 +27,10 @@
 
 ## Game constraints
 
+## UseCase
+
+![x](../image/usecase.png)
+
 ## Registry
 
 - username is unique
