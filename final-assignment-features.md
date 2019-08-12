@@ -8,11 +8,12 @@
   - [Join game board](#join-game-board)
   - [Playing game](#playing-game)
   - [Leaderboard](#leaderboard)
+  - [Create betting golds](#create-betting-golds)
   - [Chat when playing](#chat-when-playing)
 
 ## Features
 
-- Registry
+- Register
 - Login
 - Logout
 - Forgot password
@@ -34,7 +35,7 @@
 
 ## Create game board
 
-- Standrad 15x15 grid
+- Standard 15x15 grid.
 - Current user must has logged in.
 - Golds of current user must greater or equal than the betting golds of game board.
 - An unique id will be auto created for current game board.
@@ -55,6 +56,10 @@
 ## Leaderboard
 
 - Top 100 users golds.
+
+## Create betting golds
+
+
 
 ## Chat when playing
 
