@@ -69,3 +69,6 @@
 ## Chat when playing
 
 - Chat with characters and emojis.
+
+
+// Test feature flow
