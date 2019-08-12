@@ -29,7 +29,7 @@
 
 ## UseCase
 
-![x](../image/usecase.png)
+![x](./image/usecase.png)
 
 ## Registry
 
