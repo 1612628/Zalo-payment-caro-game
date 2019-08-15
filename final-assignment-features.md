@@ -5,11 +5,10 @@
   - [Game constraints](#game-constraints)
   - [UseCase](#usecase)
   - [Registry](#registry)
-  - [Create game board](#create-game-board)
+  - [Create game board/ betting golds](#create-game-board-betting-golds)
   - [Join game board](#join-game-board)
   - [Playing game](#playing-game)
   - [Leaderboard](#leaderboard)
-  - [Create betting golds](#create-betting-golds)
   - [Chat when playing](#chat-when-playing)
 
 ## Features
@@ -38,7 +37,7 @@
 - email is unique
 - each new user has 20.000 golds.
 
-## Create game board
+## Create game board/ betting golds
 
 - Standard 15x15 grid.
 - Current user must has logged in.
@@ -62,14 +61,6 @@
 
 - Top 100 users golds.
 
-## Create betting golds
-
-
-
 ## Chat when playing
 
 - Chat with characters and emojis.
-
-// Test feature flow
-// test release flow
-// test hotfix flow
