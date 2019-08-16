@@ -54,8 +54,8 @@
 - Game board will random who be the first, host (X) or opponent (O).
 - Each time turn is limited with 20 seconds, if user do not play their turn, then that user lost.
 - Winning state of user:
-  - Not blocking in two heads
-  - Exactly 5 patterns in 
+  - Not blocking in two heads.
+  - Exactly 5 patterns in a direction.
 
 ## Leaderboard
 
