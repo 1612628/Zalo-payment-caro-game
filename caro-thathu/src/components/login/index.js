@@ -1,68 +1,107 @@
-import React,{Component} from 'react';
-import './index.css';
+import React, { Component } from 'react';
+import './login.css';
+import {LOGIN} from '../../store/actions'
+import { connect }  from "react-redux";
+import {LoginRequest} from '../../apis'
 import {
-    MDBContainer,
-    MDBRow,
-    MDBCol,
-    MDBCard,
-    MDBCardBody,
-    MDBModalFooter,
-    MDBIcon,
-    MDBCardHeader,
-    MDBBtn,
-    MDBInput
-  } from "mdbreact";
-class Login extends Component{
-    constructor(props){
-        super(props);
+  MDBContainer,
+  MDBRow,
+  MDBCol,
+  MDBCard,
+  MDBCardBody,
+  MDBCardHeader,
+  MDBBtn,
+  MDBInput
+} from "mdbreact";
 
-        this.username=React.createRef();
-        this.password=React.createRef();
-    }
-
-    render(){
-        return(
-            <MDBContainer>
-                <MDBRow className="d-flex justify-content-center align-items-center my-5">
-                  <MDBCol md="6">
-                    <MDBCard className="gray-text">
-                      <div className="header pt-3 my-4">
-                        <MDBRow className="d-flex justify-content-center">
-                            <MDBCardHeader className="form-header rounded ">
-                                <h3 className="font-weight-bold">
-                                    <strong>THATHU</strong>
-                                    <a href="#!" className="green-text font-weight-bold">
-                                        <strong> CARO</strong>
-                                    </a>
-                                </h3>
-                            </MDBCardHeader>                            
-                        </MDBRow>
-                      </div>
-                      <MDBCardBody className="mx-4 mt-4">
-                        <MDBInput label="Your username" group type="text" validate />
-                        <MDBInput label="Your password" group type="password" validate containerClass="mb-0"/>
-                        <p className="font-small d-flex justify-content-end">
-                          Forgot
-                          <a href="#!" className="green-text ml-1 font-weight-bold">Password?</a>
-                        </p>
-                        <MDBRow className="d-flex justify-content-center align-items-center mb-4 mt-5">
-                            <div className="btn-bound text-center">
-                              <MDBBtn color="success" type="button" color="deep-orange" className="btn-block z-depth-1a">Log in</MDBBtn>
-                            </div>
-                        </MDBRow>
-                        <MDBRow className="d-flex justify-content-end align-items-center mb-4 mt-5">
-                            <p className="font-small mt-3">
-                              Don't have an account?
-                              <a href="#!" className="green-text ml-1 font-weight-bold">Sign up</a>
-                            </p>                          
-                        </MDBRow>
-                      </MDBCardBody>
-                    </MDBCard>
-                  </MDBCol>
-                </MDBRow>
-            </MDBContainer>
-        );
-    }
+function mapDispatchToProps(dispatch) {
+  return {
+    login: userInfo => dispatch(LOGIN(userInfo))
+  };
 }
 
+class UserLogin extends Component {
+  constructor(props) {
+    super(props)
+    this.handleLogin = this.handleLogin.bind(this);
+    this.state = {
+      usernameInput: "",
+      passwordInput: ""
+    }
+  }
+
+  handleUsername = (event) => {
+    this.setState({
+      usernameInput: event.target.value
+    })
+  }
+
+  handlePassword = (event) => {
+    this.setState({
+      passwordInput: event.target.value
+    })
+  }
+  handleLogin() {
+    console.log(this.state.usernameInput);
+    console.log(this.state.passwordInput);
+    let res = LoginRequest(this.state.usernameInput,this.state.passwordInput);
+    //reponse respone here
+    let data = {
+      idUser: 1,
+      username : 1,
+      golds: 1,
+      socket: 1
+    }
+
+    //change state of redux
+    this.props.login(data)
+  }
+
+  render() {
+    return (
+      <MDBContainer>
+        <MDBRow className="d-flex justify-content-center align-items-center my-5">
+          <MDBCol md="6">
+            <MDBCard className="gray-text">
+              <div className="header pt-3 my-4">
+                <MDBRow className="d-flex justify-content-center">
+                  <MDBCardHeader className="form-header rounded ">
+                    <h3 className="font-weight-bold">
+                      <strong>THATHU</strong>
+                      <a href="#!" className="green-text font-weight-bold">
+                        <strong> CARO</strong>
+                      </a>
+                    </h3>
+                  </MDBCardHeader>
+                </MDBRow>
+              </div>
+              <MDBCardBody className="mx-4 mt-4">
+                <MDBInput onInput={this.handleUsername} id="username" icon="user" label="Your username" group type="text"  required/>
+                <MDBInput onInput={this.handlePassword} id="password" icon="lock" label="Your password" group type="password"  containerClass="mb-0" required/>
+
+                <p className="font-small d-flex justify-content-end">
+                  <a href="#!" className="green-text ml-1 font-weight-bold">Forgot Password?</a>
+                </p>
+                <MDBRow className="d-flex justify-content-end align-items-center mb-4">
+                  <p className="font-small">
+                    Don't have an account?
+                              <a href="#!" className="green-text ml-1 font-weight-bold">Sign up</a>
+                  </p>
+                </MDBRow>
+                <MDBRow className="d-flex justify-content-center align-items-center mb-4 mt-2">
+                  <div className="btn-bound text-center">
+                    <MDBBtn type="button" color="deep-orange" className="btn-block z-depth-1a" onClick={this.handleLogin}>Log in</MDBBtn>
+                  </div>
+                </MDBRow>
+
+              </MDBCardBody>
+            </MDBCard>
+          </MDBCol>
+        </MDBRow>
+      </MDBContainer>
+    );
+  }
+}
+
+const Login = connect(null, mapDispatchToProps)(UserLogin);
 export default Login;
