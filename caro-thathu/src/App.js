@@ -11,7 +11,7 @@ import 'mdbreact/dist/css/mdb.css';
 
 function App() {
   return (
-    <Login></Login>
+    <MainScreenGame></MainScreenGame>
   );
 }
 

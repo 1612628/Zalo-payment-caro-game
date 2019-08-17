@@ -1,5 +1,6 @@
 import React,{Component} from 'react';
 import './register.css';
+import {RegisterRequest} from '../../apis'
 import {
     MDBContainer,
     MDBRow,
@@ -13,12 +14,58 @@ import {
 class Register extends Component{
     constructor(props){
         super(props);
-        this.username=React.createRef();
-        this.password=React.createRef();
-        this.repeatPassword =React.createRef();
-        this.email=React.createRef();
+
+        this.state = {
+          usernameInput: "",
+          passwordInput: "",
+          passwordRepeatInput: "",
+          emailInput: ""
+        }
+        this.handleRegister = this.handleRegister.bind(this);
+
     }
 
+    handleUsername = (event) => {
+      this.setState({
+        usernameInput: event.target.value
+      })
+    }
+    handleEmail = (event) => {
+      this.setState({
+        emailInput: event.target.value
+      })
+    }
+    handleRepeatPassword = (event) => {
+      this.setState({
+        passwordRepeatInput: event.target.value
+      })
+    }
+    handlePassword = (event) => {
+      this.setState({
+        passwordInput: event.target.value
+      })
+    }
+    
+    handleRegister()
+    {
+      if(this.state.passwordInput != this.state.passwordRepeatInput)
+      {
+        alert("Mật khẩu không trùng khớp");
+      }
+      console.log(this.state.usernameInput);
+      console.log(this.state.passwordInput);
+      console.log(this.state.passwordRepeatInput);
+      console.log(this.state.emailInput);
+      let res = RegisterRequest(this.state.usernameInput,
+        this.state.passwordInput,
+        this.state.emailInput);
+      let data = {
+        idUser: 1,
+        username: 1,
+        golds: 1,
+        socket: 1
+      }
+    }
     render(){
         return(
             <MDBContainer>
@@ -38,11 +85,11 @@ class Register extends Component{
                         </MDBRow>
                       </div>
                       <MDBCardBody className="mx-4 mt-4">
-                        <MDBInput id="email" icon="envelope" label="Your email" group type="password" validate containerClass="mb-0"/>
-                        <MDBInput id="username" icon= "user" label="Your username" group type="text" validate />
-                        <MDBInput id="password" icon="lock" label="Your password" group type="password" validate containerClass="mb-0"/>
-                        <MDBInput id="repeat-password" icon="lock" label="Repeat password" group type="password" 
-                        validate containerClass="mb-0"/>
+                        <MDBInput onInput={this.handleEmail} id="email" icon="envelope" label="Your email" group type="password" require containerClass="mb-0"/>
+                        <MDBInput onInput={this.handleUsername} id="username" icon= "user" label="Your username" group type="text" require />
+                        <MDBInput onInput={this.handlePassword} id="password" icon="lock" label="Your password" group type="password" require containerClass="mb-0"/>
+                        <MDBInput onInput={this.handleRepeatPassword} id="repeat-password" icon="lock" label="Repeat password" group type="password" 
+                        require containerClass="mb-0"/>
 
                         <p className="font-small d-flex justify-content-end">
                           <a href="#!" className="green-text ml-1 font-weight-bold">Forgot Password?</a>
@@ -55,10 +102,9 @@ class Register extends Component{
                         </MDBRow>
                         <MDBRow className="d-flex justify-content-center align-items-center mb-4 mt-2">
                             <div className="btn-bound text-center">
-                              <MDBBtn  type="button" color="deep-orange" className="btn-block z-depth-1a">Register</MDBBtn>
+                              <MDBBtn  type="button" color="deep-orange" className="btn-block z-depth-1a"  onClick={this.handleRegister}>Register</MDBBtn>
                             </div>
                         </MDBRow>
-
                       </MDBCardBody>
                     </MDBCard>
                   </MDBCol>

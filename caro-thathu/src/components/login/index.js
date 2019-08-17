@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import './login.css';
-import {LOGIN} from '../../store/actions'
-import { connect }  from "react-redux";
-import {LoginRequest} from '../../apis'
+import { LOGIN } from '../../store/actions'
+import { connect } from "react-redux";
+import { LoginRequest } from '../../apis'
 import {
   MDBContainer,
   MDBRow,
+
   MDBCol,
   MDBCard,
   MDBCardBody,
@@ -44,15 +45,14 @@ class UserLogin extends Component {
   handleLogin() {
     console.log(this.state.usernameInput);
     console.log(this.state.passwordInput);
-    let res = LoginRequest(this.state.usernameInput,this.state.passwordInput);
+    let res = LoginRequest(this.state.usernameInput, this.state.passwordInput);
     //reponse respone here
     let data = {
       idUser: 1,
-      username : 1,
+      username: 1,
       golds: 1,
       socket: 1
     }
-
     //change state of redux
     this.props.login(data)
   }
@@ -76,28 +76,31 @@ class UserLogin extends Component {
                 </MDBRow>
               </div>
               <MDBCardBody className="mx-4 mt-4">
-                <MDBInput onInput={this.handleUsername} id="username" icon="user" label="Your username" group type="text"  required/>
-                <MDBInput onInput={this.handlePassword} id="password" icon="lock" label="Your password" group type="password"  containerClass="mb-0" required/>
+                <form>
+                  <MDBInput onInput={this.handleUsername} id="username" icon="user" label="Your username" type="text" name="username" required />
 
-                <p className="font-small d-flex justify-content-end">
-                  <a href="#!" className="green-text ml-1 font-weight-bold">Forgot Password?</a>
-                </p>
-                <MDBRow className="d-flex justify-content-end align-items-center mb-4">
-                  <p className="font-small">
-                    Don't have an account?
-                              <a href="#!" className="green-text ml-1 font-weight-bold">Sign up</a>
+                  <MDBInput onInput={this.handlePassword} id="password" icon="lock" label="Your password" type="password" name="password"  required />
+                  <p className="font-small d-flex justify-content-end">
+                    <a href="#!" className="green-text ml-1 font-weight-bold">Forgot Password?</a>
                   </p>
-                </MDBRow>
-                <MDBRow className="d-flex justify-content-center align-items-center mb-4 mt-2">
-                  <div className="btn-bound text-center">
-                    <MDBBtn type="button" color="deep-orange" className="btn-block z-depth-1a" onClick={this.handleLogin}>Log in</MDBBtn>
-                  </div>
-                </MDBRow>
+                </form>
 
+                  <MDBRow className="d-flex justify-content-end align-items-center mb-4">
+                    <p className="font-small">
+                      Don't have an account?
+                              <a href="#!" className="green-text ml-1 font-weight-bold">Sign up</a>
+                    </p>
+                  </MDBRow>
+                  <MDBRow className="d-flex justify-content-center align-items-center mb-4 mt-2">
+                    <div className="btn-bound text-center">
+                      <MDBBtn type="button" color="deep-orange" className="btn-block z-depth-1a" onClick={this.handleLogin}>Log in</MDBBtn>
+                    </div>
+                  </MDBRow>
               </MDBCardBody>
             </MDBCard>
           </MDBCol>
         </MDBRow>
+
       </MDBContainer>
     );
   }
