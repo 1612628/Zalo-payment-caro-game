@@ -2,9 +2,11 @@ const initialRoomGameState={
     gameList:[]
 }
 
-export default function GameListReducer(state=initialRoomGameState,action){
+const GameListReducer=(state=initialRoomGameState,action)=>{
     switch(action.type){
         default:
             return state;
     }
 }
+
+export default GameListReducer;

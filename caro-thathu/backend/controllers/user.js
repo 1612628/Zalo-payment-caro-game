@@ -6,13 +6,15 @@ const mongoUserModel = require('../databases/mongoDatabase/models/user');
 const bcrypt = require('bcrypt');
 
 
-export const createUser=function(userInfo){
-    bcrypt.hash(userInfo.password,10,function(err,hash){
+async function createUser(userInfo){
+    console.log("createUser",userInfo);
+    await bcrypt.hash(userInfo.password,10, async function(err,hash){
         if (err){
-            res.status(500);
+            console.log("Bcrypt error: ",err);
+            return null;
             
         }else{
-            let user = new mongoUserModel({
+            let user = await new mongoUserModel({
                 username:userInfo.username,
                 password:hash,
                 email:userInfo.email,
@@ -21,19 +23,19 @@ export const createUser=function(userInfo){
                 draw_game:0,
                 total_played_game:0
             })
-            user.save(function(err,createdUser){
+            await user.save(function(err,createdUser){
                 if(err){
                     console.log('createUser Error: '+err);
                     return null;
                 }
+                console.log("createUser successful");
                 return createdUser;
-                
             })
         }
     });
 }
 
-export const isUserExisted = function(userInfo){
+function isUserExisted(userInfo){
     mongoUserModel.find(
         {username:userInfo.username}
         )
@@ -48,4 +50,9 @@ export const isUserExisted = function(userInfo){
             console.log("isUserExisted user not existed.");
             return null;
         });
+}
+
+module.exports={
+    createUser:createUser,
+    isUserExisted:isUserExisted
 }

@@ -1,14 +1,13 @@
 const express=require('express');
 const http=require('http');
 const socketIo=require('socket.io');
-const axios=require('axios');
+const bodyParser = require('body-parser');
 
 const port=process.env.PORT || 4001;
 
 const routes=require('./routes/index');
 
 const app=express();
-app.use(routes);
 
 const server = http.createServer(app);
 
@@ -21,10 +20,11 @@ app.use(cors({
     methods:"*"
 }))
 
+app.use(bodyParser.json());
+app.use(routes);
+
 io.on("connection",function(socket){
-    console.log("New client connected", socket);
-
-
+    console.log("New client connected");
 
     socket.on("disconnect",()=>console.log("Client disconnected"));
 });
