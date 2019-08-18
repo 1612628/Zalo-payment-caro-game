@@ -5,7 +5,6 @@ const mongoRoomGameModel = require('../databases/mongoDatabase/models/roomGame')
 const mongoUserModel = require('../databases/mongoDatabase/models/user');
 const bcrypt = require('bcrypt');
 
-
 async function createUser(userInfo){
     console.log("createUser",userInfo);
     await bcrypt.hash(userInfo.password,10, async function(err,hash){
@@ -36,21 +35,35 @@ async function createUser(userInfo){
 }
 
 function isUserExisted(userInfo){
-    mongoUserModel.find(
-        {username:userInfo.username}
+    return mongoUserModel.findOne(
+            {username:userInfo.username}
         )
-        .exec(function(err,user){
-            if(err){
-                console.log("isUserExisted Error: "+err);
-                return null;
-            }
+        .exec()
+        .then((user)=>{
+            console.log("find user",user);
             if(user){
-                return user;
-            }
-            console.log("isUserExisted user not existed.");
-            return null;
-        });
+                return bcrypt.compare(userInfo.password,user.password)
+                .then((success)=>{
+                    if(success){
+                        console.log("isUserExisted correct password.");
+                        return user;
+                    }else{
+                        console.log("isUserExisted wrong password.");
+                        return null;
+                    }
+                })
+            }else{
+                console.log("isUserExisted user not existed.");
+                return null;
+            }            
+        })
+        .catch(err=>{
+            console.log("isUserExisted Error: "+err);
+            return null
+        })
+  
 }
+
 
 module.exports={
     createUser:createUser,

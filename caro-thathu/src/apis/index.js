@@ -1,8 +1,8 @@
 
 const LoginRequest = async function Login(username,password) {
+    console.log("API: LoginRequest");
     let res = await fetch("http://127.0.0.1:4001/login", {
         method: "POST",
-        mode: 'cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             username: username,
@@ -11,12 +11,13 @@ const LoginRequest = async function Login(username,password) {
     }).then(res => res.json())
     .catch(error => {
         console.log(error)
+        return null;
     })
-    return res
+    return res;
 }
-const RegisterRequest = function Register(username,password,email) {
-    console.log(username,password,email);
-    let res = fetch("http://127.0.0.1:4001/register", {
+const RegisterRequest = async function Register(username,password,email) {
+    console.log('API: RegisterRequest');
+    let res = await fetch("http://127.0.0.1:4001/register", {
         method: "POST",
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
@@ -27,18 +28,9 @@ const RegisterRequest = function Register(username,password,email) {
     })
     .then(res => res)
     .catch(error => {
-        console.log(error)
+        console.log(error);
     })
     return res;
-    // axios.post(`http://127.0.0.1:4001/register`,{
-    //         username: username,
-    //         password: password,
-    //         email: email
-    // })
-    // .then(res=>{
-    //     console.log(res);
-    //     console.log(res.data);
-    // })
 }
 module.exports = {
     LoginRequest: LoginRequest,

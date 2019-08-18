@@ -2,11 +2,11 @@ const jwt = require('jsonwebtoken');
 const config = require('../../config.js');
 
 var jwtOptions={
-    expiresIn:"12h"
+    expiresIn:  '12h'
 }
 
 function createToken(payload){
-    return jwt.sign(payload,config.secret,jwtOptions);
+    return jwt.sign(payload,config.secret,{});
 }
 
 function checkToken(token){
