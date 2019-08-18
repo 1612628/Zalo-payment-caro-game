@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import './register.css';
-import {RegisterRequest} from '../../apis'
+import {RegisterRequest} from '../../apis';
 import {
     MDBContainer,
     MDBRow,
@@ -11,6 +11,7 @@ import {
     MDBBtn,
     MDBInput
   } from "mdbreact";
+
 class Register extends Component{
     constructor(props){
         super(props);
@@ -21,6 +22,7 @@ class Register extends Component{
           passwordRepeatInput: "",
           emailInput: ""
         }
+
         this.handleRegister = this.handleRegister.bind(this);
 
     }
@@ -46,25 +48,28 @@ class Register extends Component{
       })
     }
     
-    handleRegister()
+    handleRegister(event)
     {
-      if(this.state.passwordInput != this.state.passwordRepeatInput)
+      event.preventDefault();
+      if(this.state.passwordInput !== this.state.passwordRepeatInput)
       {
         alert("Mật khẩu không trùng khớp");
-      }
-      console.log(this.state.usernameInput);
-      console.log(this.state.passwordInput);
-      console.log(this.state.passwordRepeatInput);
-      console.log(this.state.emailInput);
-      let res = RegisterRequest(this.state.usernameInput,
-        this.state.passwordInput,
-        this.state.emailInput);
-      let data = {
-        idUser: 1,
-        username: 1,
-        golds: 1,
-        socket: 1
-      }
+      }else{
+        console.log(this.state.usernameInput);
+        console.log(this.state.passwordInput);
+        console.log(this.state.passwordRepeatInput);
+        console.log(this.state.emailInput);
+        let res = RegisterRequest(this.state.usernameInput,
+          this.state.passwordInput,
+          this.state.emailInput);
+        console.log(res);
+        let data = {
+          idUser: 1,
+          username: 1,
+          golds: 1,
+          socket: 1
+        }
+      }      
     }
     render(){
         return(
@@ -85,11 +90,11 @@ class Register extends Component{
                         </MDBRow>
                       </div>
                       <MDBCardBody className="mx-4 mt-4">
-                        <MDBInput onInput={this.handleEmail} id="email" icon="envelope" label="Your email" group type="password" require containerClass="mb-0"/>
-                        <MDBInput onInput={this.handleUsername} id="username" icon= "user" label="Your username" group type="text" require />
-                        <MDBInput onInput={this.handlePassword} id="password" icon="lock" label="Your password" group type="password" require containerClass="mb-0"/>
+                        <MDBInput onInput={this.handleUsername} id="username" icon= "user" label="Your username" group type="text" required />
+                        <MDBInput onInput={this.handleEmail} id="email" icon="envelope" label="Your email" group type="text" required containerClass="mb-0"/>
+                        <MDBInput onInput={this.handlePassword} id="password" icon="lock" label="Your password" group type="password" required containerClass="mb-0"/>
                         <MDBInput onInput={this.handleRepeatPassword} id="repeat-password" icon="lock" label="Repeat password" group type="password" 
-                        require containerClass="mb-0"/>
+                        required containerClass="mb-0"/>
 
                         <p className="font-small d-flex justify-content-end">
                           <a href="#!" className="green-text ml-1 font-weight-bold">Forgot Password?</a>
@@ -113,5 +118,6 @@ class Register extends Component{
         );
     }
 }
+
 
 export default Register;
