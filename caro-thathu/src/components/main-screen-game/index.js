@@ -10,8 +10,8 @@ import {
 
 import {bindActionCreators} from 'redux';
 import socketIOClient from "socket.io-client";
-import {updateUserSocket} from './store/actions/user';
-import { connect } from 'net';
+import {updateUser} from '../../store/actions/user';
+import { connect } from 'react-redux';
 
 class MainScreenGame extends Component {
   constructor(props) {
@@ -20,8 +20,12 @@ class MainScreenGame extends Component {
   }
   componentDidMount(){
     const socket = socketIOClient(this.props.ServerReducer.server.endpoint);
-    this.props.updateUserSocket(socket);
-    socket.on("FromServer",data=>this.setState({response:data}));
+    this.props.updateUser(this.props.UserReducer.user.id,
+      this.props.UserReducer.user.username,
+      this.props.UserReducer.user.golds,
+      this.props.UserReducer.user.token,
+      this.props.UserReducer.user.totalPlayedGame,socket);
+    
   }
 
   render() {
@@ -70,19 +74,16 @@ class MainScreenGame extends Component {
     );
   }
 }
-MDBContainer.propTypes = {
-  fluid: PropTypes.bool
-  // applies .container-fluid class
-}
 
 const mapStateToProps=(state)=>{
   return{
+    UserReducer:state.UserReducer,
     ServerReducer:state.ServerReducer
   }
 }
 
 const mapDispatchToProps=(dispatch)=>{
-  return bindActionCreators({updateUserSocket},dispatch);
+  return bindActionCreators({updateUser},dispatch);
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(MainScreenGame);
