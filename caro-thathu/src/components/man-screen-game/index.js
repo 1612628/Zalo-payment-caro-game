@@ -26,7 +26,7 @@ class MainScreenGame extends Component {
           
         <MDBRow className="scrollbar scrollbar-primary  " size="8" style={scrollContainerStyle}>
              <MDBCol size="6" className="  item">
-              <div className="d-flex justify-content-around" width='90%;' style={{backgroundColor: "yellow"}}>
+              <div className="d-flex justify-content-around" width='90%;' style={{backgroundColor: "#EAEAEA"}}>
               <div className="font-light">
                 <MDBIcon far icon="user" /> ahihi
                 </div>
@@ -39,7 +39,7 @@ class MainScreenGame extends Component {
               </div>
             </MDBCol>
             <MDBCol size="6" className="  item">
-              <div className="d-flex justify-content-around" width='90%;' style={{backgroundColor: "yellow"}}>
+              <div className="d-flex justify-content-around" width='90%;' style={{backgroundColor: "#EAEAEA"}}>
               <div className="font-light">
                 <MDBIcon far icon="user" /> ahihi
                 </div>

@@ -4,7 +4,7 @@ body{
     background-position: center center;
     background-attachment: fixed;
     background-size: cover; */
-    background-color: white !important;
+    background-color: #EAEAEA !important;
 }
 .btn{
     border-radius: 25px !important;
