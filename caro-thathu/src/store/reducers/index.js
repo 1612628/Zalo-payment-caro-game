@@ -8,14 +8,14 @@ import RoomGameReducer from './roomGame';
 import ServerReducer from './server';
 
 
-export default combineReducers({
-    UserReducer,
-    RoomGameReducer,
-    CellListReducer,
-    GameListReducer,
-    LeaderboardReducer,
-    MessagesReducer,
-    ServerReducer
+const allReducers = combineReducers({
+    UserReducer:UserReducer,
+    RoomGameReducer:RoomGameReducer,
+    CellListReducer:CellListReducer,
+    GameListReducer:GameListReducer,
+    LeaderboardReducer:LeaderboardReducer,
+    MessagesReducer:MessagesReducer,
+    ServerReducer:ServerReducer
 });
 // =======
 // import registerReducer from './register';
@@ -27,5 +27,5 @@ export default combineReducers({
 //     isRegisterSucces: registerReducer
 // })
 
-// export default allReducers;
+export default allReducers;
 // >>>>>>> feature/mainscreen

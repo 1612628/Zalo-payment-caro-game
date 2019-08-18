@@ -8,11 +8,21 @@ import {
   MDBIcon
 } from "mdbreact";
 
+import {bindActionCreators} from 'redux';
+import socketIOClient from "socket.io-client";
+import {updateUserSocket} from './store/actions/user';
+import { connect } from 'net';
+
 class MainScreenGame extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   // this.username=React.createRef();
-  // }
+  constructor(props) {
+    super(props);
+    // this.username=React.createRef();
+  }
+  componentDidMount(){
+    const socket = socketIOClient(this.props.ServerReducer.server.endpoint);
+    this.props.updateUserSocket(socket);
+    socket.on("FromServer",data=>this.setState({response:data}));
+  }
 
   render() {
     const scrollContainerStyle = { width: "800px", maxHeight: "400px" };
@@ -64,4 +74,15 @@ MDBContainer.propTypes = {
   fluid: PropTypes.bool
   // applies .container-fluid class
 }
-export default MainScreenGame;
+
+const mapStateToProps=(state)=>{
+  return{
+    ServerReducer:state.ServerReducer
+  }
+}
+
+const mapDispatchToProps=(dispatch)=>{
+  return bindActionCreators({updateUserSocket},dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(MainScreenGame);
