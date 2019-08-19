@@ -10,7 +10,7 @@ import {ConnectedRouter} from 'connected-react-router';
 import configureStore,{history} from './store/configurationStore';
 
 import Register from './components/register';
-import MainScreenGame from './components//main-screen-game/'
+import MainScreenGame from './components/main-screen-game/'
 
 import PrivateRoute from './privateRoute';
 
