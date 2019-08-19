@@ -19,14 +19,14 @@ const RegisterRequest = async function Register(username,password,email) {
     console.log('API: RegisterRequest');
     let res = await fetch("http://127.0.0.1:4001/register", {
         method: "POST",
-        headers: {'Content-Type':'application/json'},
+        mode: 'cors',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            "username": username,
-            "password": password,
-            "email": email
+            username: username,
+            password: password,
+            email: email
         })
-    })
-    .then(res => res)
+    }).then(res => res.json())
     .catch(error => {
         console.log(error);
     })
