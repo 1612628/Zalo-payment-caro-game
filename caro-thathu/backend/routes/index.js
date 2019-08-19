@@ -65,7 +65,7 @@ router.get('/leaderboard',jwtUtil.checkRequestToken,async (req,res)=>{
     res.status(200).json({"leaderboard":users})
 })
 
-router.get('/games',jwtUtil.checkRequestToken,async (req,res)=>{
+router.get('/waitinggames',jwtUtil.checkRequestToken,async (req,res)=>{
     var waitingRoomGames=[];
     await RedisClient.keys('room_game:*',async (err,roomGames)=>{
         if(err){
