@@ -13,7 +13,6 @@ router.post('/register', (req,res)=>{
         let email = req.body.email;
         if(username && password && email){
             var createdUser = UserController.createUser({username:username,password:password,email:email});
-            console.log('aaaaaaaaaa');
             if(createdUser==null){
                 res.status(500);
                 res.send();

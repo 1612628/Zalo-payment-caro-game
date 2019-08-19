@@ -18,7 +18,3 @@ body{
 .fa-lock{
     color: darkgrey;
 }
-#root > div > div > div > div{
-    box-shadow: 0 15px 15px -15px #333;
-
-}
