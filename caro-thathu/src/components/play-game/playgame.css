@@ -1,0 +1,47 @@
+body{
+    /* background-image: url("/images/background-login-form.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: cover; */
+    font-family: 'Open Sans', sans-serif;
+    background-color: #ffffff   !important;
+}
+.btn{
+    width: 100%;
+    border-radius: 25px !important;
+}
+
+
+#create-game{
+  background-color: #ee6c4d !important;
+}
+.room-item{
+    /* background-color: rgb(218, 209, 209); */
+    align-items: center;
+    cursor: pointer;
+}
+.hover-item{
+  box-shadow: 0 10px 10px -10px #333;
+  border-radius: 20px;
+}
+#logo{
+    display: flex;
+    justify-content: start;
+    float: left;
+}
+.square {
+  background-color: #d4b9b9;
+  border: 1px solid #fff;
+  line-height: 45px;
+  height: 45px;
+  text-align: center;
+  width: 45px;
+  cursor: pointer;
+  border-radius: 5px;
+  color: #fff;
+  font-weight: 600;
+}
+.text-room{
+  color:white;
+}

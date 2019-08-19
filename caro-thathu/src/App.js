@@ -5,6 +5,7 @@ import 'bootstrap-css-only/css/bootstrap.min.css';
 import 'mdbreact/dist/css/mdb.css';
 import Login from './components//login';
 import MainScreenGame from './components/main-screen-game';
+import PlayGame from './components/play-game';
 
 
 class App extends React.Component{
@@ -14,11 +15,7 @@ class App extends React.Component{
 
   render(){
     return (
-<<<<<<< HEAD
-      <Login history={this.props.history}></Login>
-=======
-      <MainScreenGame></MainScreenGame>
->>>>>>> feature/mainscreen
+      <MainScreenGame history={this.props.history}></MainScreenGame>
       );  
   }
 }
