@@ -21,7 +21,7 @@ function createToken(payload){
 // }
 
 function checkRequestToken(req,res,next){
-    let token = req.headers['Authorization'];
+    let token = req.headers['authorization'];
     if (token.startsWith('Bearer ')) {
         // Remove Bearer from string
         token = token.slice(7, token.length);

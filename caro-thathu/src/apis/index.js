@@ -35,7 +35,7 @@ const RegisterRequest = async function Register(username,password,email) {
 
 const LeaderboardRequest = async (token)=>{
     console.log('API: LeaderboardRequest');
-    let res = await fetch("http://127.0.0.1:4001/register",{
+    let res = await fetch("http://127.0.0.1:4001/leaderboard",{
         method:'GET',
         headers:{'Authorization':token}
     })

@@ -20,6 +20,10 @@ import { connect } from 'react-redux';
 
 import Auth from '../../auth';
 
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+const mySwal = withReactContent(Swal);
+
 class UserLogin extends Component {
   constructor(props) {
     super(props)
@@ -61,8 +65,20 @@ class UserLogin extends Component {
         
         Auth.authenticate();
         this.props.history.push("/mainscreengame");
+      }else{
+        mySwal.fire({
+          title: 'Oops...',
+          text: 'Đăng nhập không thành công',
+          timer:2000
+        });
       }
-    }   
+    }else{
+      mySwal.fire({
+        title: 'Vui lòng điền đầy đủ thông tin.',
+        
+        timer:2000
+      });
+    }
     
   }
   handleRedirectToRegister=()=>{
