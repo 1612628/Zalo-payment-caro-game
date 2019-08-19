@@ -8,17 +8,25 @@ import {
 } from "mdbreact";
 
 import {bindActionCreators} from 'redux';
-
-import {updateUser} from '../../store/actions/user';
 import { connect } from 'react-redux';
+import {updateUser} from '../../store/actions/user';
+import {updateLeaderboard} from '../../store/actions/leaderboard';
+import {updateWaitingGame} from '../../store/actions/waitingGames';
+
+import {LeaderboardRequest,WaitingRoomGamesRequest} from '../../apis'
 
 class MainScreenGame extends Component {
   constructor(props) {
     super(props);
-    // this.username=React.createRef();
   }
-  componentWillMount(){
-    
+  async componentWillMount(){
+    let users = await LeaderboardRequest(this.props.UserReducer.user.token);
+
+    this.props.updateLeaderboard(users);
+
+    let waitingRoomGames=await WaitingRoomGamesRequest(this.props.UserReducer.user.token);
+
+    this.props.updateWaitingGame(waitingRoomGames);
   }
 
   render() {
@@ -71,12 +79,13 @@ class MainScreenGame extends Component {
 const mapStateToProps=(state)=>{
   return{
     UserReducer:state.UserReducer,
-    ServerReducer:state.ServerReducer
+    ServerReducer:state.ServerReducer,
+    LeaderboardReducer:state.LeaderboardReducer
   }
 }
 
 const mapDispatchToProps=(dispatch)=>{
-  return bindActionCreators({updateUser},dispatch);
+  return bindActionCreators({updateUser,updateLeaderboard,updateWaitingGame},dispatch);
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(MainScreenGame);

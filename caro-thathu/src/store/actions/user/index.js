@@ -4,9 +4,9 @@ export const updateUser=(id,username,golds,token,totalPlayedGame,socket)=>{
         payload:{
             user:{
                 id:id,
-                username,username,
+                username:username,
                 golds:golds,
-                token,token,
+                token:token,
                 totalPlayedGame:totalPlayedGame,
                 socket:socket
             }

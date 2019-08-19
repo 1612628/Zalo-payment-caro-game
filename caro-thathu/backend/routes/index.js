@@ -1,6 +1,7 @@
 const express=require('express');
 const router = express.Router();
 
+const RedisClient = require('../databases/redisDatabase');
 const UserController = require('../controllers/user.js');
 
 const jwtUtil = require('../controllers/jwtUtils/jwtUtils');
@@ -46,11 +47,9 @@ router.post('/login',async (req,res)=>{
                     token:token
                 });
             }else{
-                res.status(500);
+                res.status(403);
                 res.send(); 
-            }
-            
-            
+            }            
         }else{
             res.status(400);
             res.send();    
@@ -61,9 +60,47 @@ router.post('/login',async (req,res)=>{
     }
 });
 
-router.get('/leaderboard',async (req,res)=>{
+router.get('/leaderboard',jwtUtil.checkRequestToken,async (req,res)=>{
     let users = await UserController.getLeaderBoard();
     res.status(200).json({"leaderboard":users})
+})
+
+router.get('/games',jwtUtil.checkRequestToken,async (req,res)=>{
+    var waitingRoomGames=[];
+    await RedisClient.keys('room_game:*',async (err,roomGames)=>{
+        if(err){
+            console.log('/games Error redis keys:',err);
+            res.status(500).send();
+        }else{
+            console.log('roomGames',roomGames);
+            var keys = Object.keys(roomGames);
+                await roomGames.forEach(async (roomGame,index)=>{
+                    await RedisClient.hget(roomGame,'status',async (err,status)=>{
+                        if(err){
+                            console.log('/games Error redis hget:',err);
+                            res.status(500).send();
+                        }else if(status==='waiting'){
+                            console.log('status',status)
+                            await RedisClient.hgetall(roomGame,(err,roomGameDetailInfo)=>{
+                                if(err){
+                                    console.log('/games Error redis hgetall:',err);;
+                                    res.status(500).send();
+                                }else{
+                                    console.log(roomGameDetailInfo);
+                                    waitingRoomGames.push(roomGameDetailInfo);
+                                    
+                                }
+                                if(index===keys.length-1){
+                                    console.log('aaaaa',waitingRoomGames);
+                                    res.status(200).json(waitingRoomGames)
+                                }
+                            })
+                            
+                        }
+                    }) 
+                })
+        }
+    })
 })
 
 module.exports=router;
