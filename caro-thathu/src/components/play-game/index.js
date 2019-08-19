@@ -10,7 +10,7 @@ import {
 } from "mdbreact";
 
 import { bindActionCreators } from 'redux';
-import { updateUserSocket } from '../../store/actions/user';
+import { updateUser } from '../../store/actions/user';
 import { connect } from "react-redux";
 import { BrowserRouter } from 'react-router-dom';
 
@@ -78,7 +78,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ updateUserSocket }, dispatch);
+  return bindActionCreators({ updateUser }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlayGame);

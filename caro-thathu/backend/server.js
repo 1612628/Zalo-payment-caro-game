@@ -24,9 +24,11 @@ app.use(bodyParser.json());
 app.use(routes);
 
 io.on("connection",function(socket){
-    console.log("New client connected");
+    console.log("New client socket connected");
 
     socket.on("disconnect",()=>console.log("Client disconnected"));
+
+    
 });
 
 server.listen(port,()=>{

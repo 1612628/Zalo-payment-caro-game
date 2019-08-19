@@ -1,8 +1,8 @@
 
 const LoginRequest = async function Login(username,password) {
+    console.log("API: LoginRequest");
     let res = await fetch("http://127.0.0.1:4001/login", {
         method: "POST",
-        mode: 'cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             username: username,
@@ -11,13 +11,12 @@ const LoginRequest = async function Login(username,password) {
     }).then(res => res.json())
     .catch(error => {
         console.log(error)
+        return null;
     })
-    return res
+    return res;
 }
-
-
-
 const RegisterRequest = async function Register(username,password,email) {
+    console.log('API: RegisterRequest');
     let res = await fetch("http://127.0.0.1:4001/register", {
         method: "POST",
         mode: 'cors',
@@ -29,11 +28,42 @@ const RegisterRequest = async function Register(username,password,email) {
         })
     }).then(res => res.json())
     .catch(error => {
-        console.log(error)
+        console.log(error);
     })
-    return res
+    return res;
+}
+
+const LeaderboardRequest = async (token)=>{
+    console.log('API: LeaderboardRequest');
+    let res = await fetch("http://127.0.0.1:4001/register",{
+        method:'GET',
+        headers:{'Authorization':token}
+    })
+    .then((users)=>{
+        return users.json();
+    })
+    .catch(err=>{
+        console.log(err);
+    })
+    return res;
+}
+const WaitingRoomGamesRequest = async (token)=>{
+    console.log('API: WaitingRoomGamesRequest');
+    let res = await fetch("http://127.0.0.1:4001/waitinggames",{
+        method:'GET',
+        headers:{'Authorization':token}
+    })
+    .then((roomGames)=>{
+        return roomGames.json();
+    })
+    .catch(err=>{
+        console.log(err);
+    })
+    return res;
 }
 module.exports = {
     LoginRequest: LoginRequest,
-    RegisterRequest: RegisterRequest
+    RegisterRequest: RegisterRequest,
+    LeaderboardRequest:LeaderboardRequest,
+    WaitingRoomGamesRequest:WaitingRoomGamesRequest
 }

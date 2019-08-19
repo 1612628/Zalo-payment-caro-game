@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './mainscreen.css';
-import PropTypes from 'prop-types';
 import {
   MDBContainer,
   MDBRow,
@@ -10,19 +9,27 @@ import {
 
 } from "mdbreact";
 
-import { bindActionCreators } from 'redux';
-import socketIOClient from "socket.io-client";
-import { updateUserSocket } from '../../store/actions/user';
-import { connect } from "react-redux";
-import { BrowserRouter } from 'react-router-dom';
+import {bindActionCreators} from 'redux';
+import { connect } from 'react-redux';
+import {updateUser} from '../../store/actions/user';
+import {updateLeaderboard} from '../../store/actions/leaderboard';
+import {updateWaitingGame} from '../../store/actions/waitingGames';
+import {LeaderboardRequest,WaitingRoomGamesRequest} from '../../apis'
+
+import {BrowserRouter} from 'react-router-dom';
 
 class MainScreenGame extends Component {
   constructor(props) {
     super(props);
   }
-  componentDidMount() {
-    const socket = socketIOClient(this.props.ServerReducer.server.endpoint);
-    this.props.updateUserSocket(socket);
+  async componentWillMount(){
+    let users = await LeaderboardRequest(this.props.UserReducer.user.token);
+
+    this.props.updateLeaderboard(users);
+
+    let waitingRoomGames=await WaitingRoomGamesRequest(this.props.UserReducer.user.token);
+
+    this.props.updateWaitingGame(waitingRoomGames);
   }
 
   render() {
@@ -178,14 +185,16 @@ class MainScreenGame extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    ServerReducer: state.ServerReducer
+const mapStateToProps=(state)=>{
+  return{
+    UserReducer:state.UserReducer,
+    ServerReducer:state.ServerReducer,
+    LeaderboardReducer:state.LeaderboardReducer
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ updateUserSocket }, dispatch);
+const mapDispatchToProps=(dispatch)=>{
+  return bindActionCreators({updateUser,updateLeaderboard,updateWaitingGame},dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreenGame);

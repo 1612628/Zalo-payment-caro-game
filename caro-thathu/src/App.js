@@ -11,12 +11,11 @@ import PlayGame from './components/play-game';
 class App extends React.Component{
   constructor(props){
     super(props);
-    
   }
 
   render(){
     return (
-      <PlayGame></PlayGame>
+      <MainScreenGame></MainScreenGame>
       );  
   }
 }

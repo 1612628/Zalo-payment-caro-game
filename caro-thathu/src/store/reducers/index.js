@@ -1,18 +1,20 @@
 import {combineReducers} from 'redux';
 import UserReducer from './user';
 import CellListReducer from './cellList';
-import GameListReducer from './gameList';
+import WaitingGamesReducer from './waitingGames';
 import LeaderboardReducer from './leaderboard';
 import MessagesReducer from './messages';
 import RoomGameReducer from './roomGame';
 import ServerReducer from './server';
+import { connectRouter } from 'connected-react-router'
 
 
-const allReducers = combineReducers({
+const allReducers =(history)=> combineReducers({
+    router:connectRouter(history),
     UserReducer:UserReducer,
     RoomGameReducer:RoomGameReducer,
     CellListReducer:CellListReducer,
-    GameListReducer:GameListReducer,
+    WaitingGamesReducer:WaitingGamesReducer,
     LeaderboardReducer:LeaderboardReducer,
     MessagesReducer:MessagesReducer,
     ServerReducer:ServerReducer
