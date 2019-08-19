@@ -5,6 +5,7 @@ import 'bootstrap-css-only/css/bootstrap.min.css';
 import 'mdbreact/dist/css/mdb.css';
 import Login from './components//login';
 import MainScreenGame from './components/main-screen-game';
+import PlayGame from './components/play-game';
 
 
 class App extends React.Component{
