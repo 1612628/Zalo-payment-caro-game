@@ -14,11 +14,7 @@ class App extends React.Component{
 
   render(){
     return (
-<<<<<<< HEAD
-      <Login history={this.props.history}></Login>
-=======
-      <MainScreenGame></MainScreenGame>
->>>>>>> feature/mainscreen
+      <MainScreenGame history={this.props.history}></MainScreenGame>
       );  
   }
 }

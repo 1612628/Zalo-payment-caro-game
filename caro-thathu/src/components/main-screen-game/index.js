@@ -17,17 +17,16 @@ import {updateWaitingGame} from '../../store/actions/waitingGames';
 
 import {LeaderboardRequest,WaitingRoomGamesRequest} from '../../apis'
 
+import {BrowserRouter} from 'react-router-dom';
+
 class MainScreenGame extends Component {
   constructor(props) {
     super(props);
   }
   async componentWillMount(){
     let users = await LeaderboardRequest(this.props.UserReducer.user.token);
-
     this.props.updateLeaderboard(users);
-
     let waitingRoomGames=await WaitingRoomGamesRequest(this.props.UserReducer.user.token);
-
     this.props.updateWaitingGame(waitingRoomGames);
   }
 
