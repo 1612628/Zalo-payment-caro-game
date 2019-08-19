@@ -32,7 +32,38 @@ const RegisterRequest = async function Register(username,password,email) {
     })
     return res;
 }
+
+const LeaderboardRequest = async (token)=>{
+    console.log('API: LeaderboardRequest');
+    let res = await fetch("http://127.0.0.1:4001/register",{
+        method:'GET',
+        headers:{'Authorization':token}
+    })
+    .then((users)=>{
+        return users.json();
+    })
+    .catch(err=>{
+        console.log(err);
+    })
+    return res;
+}
+const WaitingRoomGamesRequest = async (token)=>{
+    console.log('API: WaitingRoomGamesRequest');
+    let res = await fetch("http://127.0.0.1:4001/waitinggames",{
+        method:'GET',
+        headers:{'Authorization':token}
+    })
+    .then((roomGames)=>{
+        return roomGames.json();
+    })
+    .catch(err=>{
+        console.log(err);
+    })
+    return res;
+}
 module.exports = {
     LoginRequest: LoginRequest,
-    RegisterRequest: RegisterRequest
+    RegisterRequest: RegisterRequest,
+    LeaderboardRequest:LeaderboardRequest,
+    WaitingRoomGamesRequest:WaitingRoomGamesRequest
 }

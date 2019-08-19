@@ -9,7 +9,6 @@ import Login from './components//login';
 class App extends React.Component{
   constructor(props){
     super(props);
-    
   }
 
   render(){

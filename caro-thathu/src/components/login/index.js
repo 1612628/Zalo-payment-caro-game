@@ -34,7 +34,6 @@ class UserLogin extends Component {
         valid:false
       }
     }
-
   }
 
   handleUsername = (event) => {
@@ -53,15 +52,12 @@ class UserLogin extends Component {
     if(this.state.usernameInput.value && this.state.passwordInput.value){
       let res = await LoginRequest(this.state.usernameInput.value, this.state.passwordInput.value);
       if(res!=null){
-        this.props.updateUser(res.user._id,res.user.username,res.user.golds,res.token,
-          res.user.total_played_game,null);
-
         const socket = socketIOClient(this.props.ServerReducer.server.endpoint);
-        this.props.updateUser(this.props.UserReducer.user.id,
-        this.props.UserReducer.user.username,
-        this.props.UserReducer.user.golds,
-        this.props.UserReducer.user.token,
-        this.props.UserReducer.user.totalPlayedGame,socket);
+        this.props.updateUser(res.user._id,
+        res.user.username,
+        res.user.golds,
+        res.token,
+        res.user.total_played_game,socket);
         
         Auth.authenticate();
         this.props.history.push("/mainscreengame");
@@ -131,7 +127,6 @@ class UserLogin extends Component {
               </MDBCard>
             </MDBCol>
           </MDBRow>
-
         </MDBContainer>
     );
   }

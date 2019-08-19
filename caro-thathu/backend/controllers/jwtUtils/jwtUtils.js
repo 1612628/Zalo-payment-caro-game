@@ -29,13 +29,16 @@ function checkRequestToken(req,res,next){
     if(token){
         jwt.verify(token,config.secret,function(err,decoded){
             if (err) {
+                console.log('checkRequestToken unauthorized!')
                 return res.status(401).send();
               } else {
+                console.log('checkRequestToken authorized!')
                 req.decoded = decoded;
                 next();
               }
         });
     }else {
+        console.log('checkRequestToken token miss!')
         return res.status(401).send();
     }
     
