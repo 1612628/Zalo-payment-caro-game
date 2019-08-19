@@ -30,35 +30,15 @@ body{
     justify-content: start;
     float: left;
 }
-
-#board {
-  margin-top: 5px;
-border: 1px solid #ccc;
-}
-
-.row {
-clear: both;
-overflow: hidden;
-}
-
-.box {
-width: 35px;
-height: 33px;
-float: left;
-padding-top: 2px;
-text-align: center;
-font-size: 30px;
-}
-
-.win-box {
-  background: #ff0;
-}
-
-/*Add border to each box*/
-.border-bottom {
-  border-bottom: 1px solid #ccc;
-}
-
-.border-right {
-  border-right: 1px solid #ccc;
+.square {
+  background-color: #d4b9b9;
+  border: 1px solid #fff;
+  line-height: 45px;
+  height: 45px;
+  text-align: center;
+  width: 45px;
+  cursor: pointer;
+  border-radius: 5px;
+  color: #fff;
+  font-weight: 600;
 }

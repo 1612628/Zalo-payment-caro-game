@@ -30,13 +30,13 @@ class MainScreenGame extends Component {
     return (
       <MDBContainer fluid="true">
         <BrowserRouter>
-          <MDBNav style={{ backgroundColor: "#ee6c4d" }}>
-            <MDBNavLink className="nav-logo  mr-auto p-2 " to="#"><img src="/images/info.svg" height="32px" width="32px"></img></MDBNavLink>
-            <MDBNavLink className="nav-end " to="#"><img src="/images/info.svg" height="32px" width="32px"></img></MDBNavLink>
-            <MDBNavLink className="nav-end" to="#"><img src="/images/exit.svg" height="32px" width="32px"></img></MDBNavLink>
+          <MDBNav  style={{ backgroundColor: "#ee6c4d" }}>
+            <MDBNavLink className="nav-logo  mr-auto p-2 " to="#"><img src="/images/avarta.png" height="64px" ></img></MDBNavLink>
+            <MDBNavLink className="nav-end mt-3" to="#"><img src="/images/info.svg" height="32px" width="32px"></img></MDBNavLink>
+            <MDBNavLink style={{backgroundColor:"while"}} className="nav-end mt-3" to="#"><img src="/images/exit.svg" height="32px" width="32px"></img></MDBNavLink>
           </MDBNav>
         </BrowserRouter>
-        <MDBContainer fluid="true" className="mt-4">
+        <MDBContainer fluid="true" className="mt-2">
           <MDBRow>
 
             {/* list room game */}
@@ -79,8 +79,6 @@ class MainScreenGame extends Component {
                 </MDBCol>
               </MDBRow>
             </MDBCol>
-
-
             <MDBCol size="4" className="pl-4" >
               {/* user info */}
               <MDBRow className="  d-flex justify-content-end hover-item" style={{ backgroundColor: "#5B5B5B" }} >
