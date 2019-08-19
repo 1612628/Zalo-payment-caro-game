@@ -9,38 +9,38 @@ import {
 
 } from "mdbreact";
 
-import {bindActionCreators} from 'redux';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {updateUser} from '../../store/actions/user';
-import {updateLeaderboard} from '../../store/actions/leaderboard';
-import {updateWaitingGame} from '../../store/actions/waitingGames';
-import {LeaderboardRequest,WaitingRoomGamesRequest} from '../../apis'
+import { updateUser } from '../../store/actions/user';
+import { updateLeaderboard } from '../../store/actions/leaderboard';
+import { updateWaitingGame } from '../../store/actions/waitingGames';
+import { LeaderboardRequest, WaitingRoomGamesRequest } from '../../apis'
 
-import {BrowserRouter} from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 
 class MainScreenGame extends Component {
   constructor(props) {
     super(props);
   }
-  async componentWillMount(){
+  async componentWillMount() {
     let users = await LeaderboardRequest(this.props.UserReducer.user.token);
 
     this.props.updateLeaderboard(users);
 
-    let waitingRoomGames=await WaitingRoomGamesRequest(this.props.UserReducer.user.token);
+    let waitingRoomGames = await WaitingRoomGamesRequest(this.props.UserReducer.user.token);
 
     this.props.updateWaitingGame(waitingRoomGames);
   }
 
   render() {
-    const scrollContainerStyle = { width: "800px", maxHeight: "400px" };
+    const scrollContainerStyle = { width: "100%", maxHeight: "680px" };
     return (
       <MDBContainer fluid="true">
         <BrowserRouter>
-          <MDBNav  style={{ backgroundColor: "#ee6c4d" }}>
+          <MDBNav style={{ backgroundColor: "#ee6c4d" }}>
             <MDBNavLink className="nav-logo  mr-auto p-2 " to="#"><img src="/images/avarta.png" height="64px" ></img></MDBNavLink>
             <MDBNavLink className="nav-end mt-3" to="#"><img src="/images/info.svg" height="32px" width="32px"></img></MDBNavLink>
-            <MDBNavLink style={{backgroundColor:"while"}} className="nav-end mt-3" to="#"><img src="/images/exit.svg" height="32px" width="32px"></img></MDBNavLink>
+            <MDBNavLink style={{ backgroundColor: "while" }} className="nav-end mt-3" to="#"><img src="/images/exit.svg" height="32px" width="32px"></img></MDBNavLink>
           </MDBNav>
         </BrowserRouter>
         <MDBContainer fluid="true" className="mt-2">
@@ -48,11 +48,11 @@ class MainScreenGame extends Component {
 
             {/* list room game */}
 
-            <MDBCol size="8" className="border-top border-left border-bot " style={{ backgroundColor: "#5B5B5B" }} >
-              <MDBRow className="scrollbar  d-flex justify-content-end" style={{ scrollContainerStyle, backgroundColor: "#5B5B5B" }}>
+            <MDBCol size="8" style={{ backgroundColor: "#ffffff" }} >
+              <MDBRow className="scrollbar scrollbar-primary d-flex flex-wrap" style={scrollContainerStyle} >
                 <MDBCol size="6" className=" mt-2">
                   <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
-                   style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
+                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
                     <div className="font-light align-items-center">
                       <MDBIcon className="text-room mr-1" icon="home" />
                       <span className="text-room">1234</span>
@@ -69,7 +69,262 @@ class MainScreenGame extends Component {
                 </MDBCol>
                 <MDBCol size="6" className=" mt-2">
                   <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
-                   style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
+                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="home" />
+                      <span className="text-room">1234</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="ring" />
+                      <span className="text-room">Gold</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="user-alt" />
+                      <span className="text-room">username </span>
+                    </div>
+                  </div>
+                </MDBCol>
+                <MDBCol size="6" className=" mt-2">
+                  <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
+                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="home" />
+                      <span className="text-room">1234</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="ring" />
+                      <span className="text-room">Gold</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="user-alt" />
+                      <span className="text-room">username </span>
+                    </div>
+                  </div>
+                </MDBCol>
+                <MDBCol size="6" className=" mt-2">
+                  <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
+                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="home" />
+                      <span className="text-room">1234</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="ring" />
+                      <span className="text-room">Gold</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="user-alt" />
+                      <span className="text-room">username </span>
+                    </div>
+                  </div>
+                </MDBCol>
+                <MDBCol size="6" className=" mt-2">
+                  <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
+                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="home" />
+                      <span className="text-room">1234</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="ring" />
+                      <span className="text-room">Gold</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="user-alt" />
+                      <span className="text-room">username </span>
+                    </div>
+                  </div>
+                </MDBCol>
+                <MDBCol size="6" className=" mt-2">
+                  <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
+                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="home" />
+                      <span className="text-room">1234</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="ring" />
+                      <span className="text-room">Gold</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="user-alt" />
+                      <span className="text-room">username </span>
+                    </div>
+                  </div>
+                </MDBCol>
+                <MDBCol size="6" className=" mt-2">
+                  <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
+                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="home" />
+                      <span className="text-room">1234</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="ring" />
+                      <span className="text-room">Gold</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="user-alt" />
+                      <span className="text-room">username </span>
+                    </div>
+                  </div>
+                </MDBCol>
+                <MDBCol size="6" className=" mt-2">
+                  <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
+                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="home" />
+                      <span className="text-room">1234</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="ring" />
+                      <span className="text-room">Gold</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="user-alt" />
+                      <span className="text-room">username </span>
+                    </div>
+                  </div>
+                </MDBCol>
+                <MDBCol size="6" className=" mt-2">
+                  <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
+                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="home" />
+                      <span className="text-room">1234</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="ring" />
+                      <span className="text-room">Gold</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="user-alt" />
+                      <span className="text-room">username </span>
+                    </div>
+                  </div>
+                </MDBCol>
+                <MDBCol size="6" className=" mt-2">
+                  <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
+                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="home" />
+                      <span className="text-room">1234</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="ring" />
+                      <span className="text-room">Gold</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="user-alt" />
+                      <span className="text-room">username </span>
+                    </div>
+                  </div>
+                </MDBCol>
+                <MDBCol size="6" className=" mt-2">
+                  <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
+                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="home" />
+                      <span className="text-room">1234</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="ring" />
+                      <span className="text-room">Gold</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="user-alt" />
+                      <span className="text-room">username </span>
+                    </div>
+                  </div>
+                </MDBCol>
+                <MDBCol size="6" className=" mt-2">
+                  <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
+                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="home" />
+                      <span className="text-room">1234</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="ring" />
+                      <span className="text-room">Gold</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="user-alt" />
+                      <span className="text-room">username </span>
+                    </div>
+                  </div>
+                </MDBCol>
+                <MDBCol size="6" className=" mt-2">
+                  <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
+                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="home" />
+                      <span className="text-room">1234</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="ring" />
+                      <span className="text-room">Gold</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="user-alt" />
+                      <span className="text-room">username </span>
+                    </div>
+                  </div>
+                </MDBCol>
+                <MDBCol size="6" className=" mt-2">
+                  <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
+                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="home" />
+                      <span className="text-room">1234</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="ring" />
+                      <span className="text-room">Gold</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="user-alt" />
+                      <span className="text-room">username </span>
+                    </div>
+                  </div>
+                </MDBCol>
+                <MDBCol size="6" className=" mt-2">
+                  <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
+                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="home" />
+                      <span className="text-room">1234</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="ring" />
+                      <span className="text-room">Gold</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="user-alt" />
+                      <span className="text-room">username </span>
+                    </div>
+                  </div>
+                </MDBCol>
+                <MDBCol size="6" className=" mt-2">
+                  <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
+                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="home" />
+                      <span className="text-room">1234</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="ring" />
+                      <span className="text-room">Gold</span>
+                    </div>
+                    <div className="font-light align-items-center">
+                      <MDBIcon className="text-room mr-1" icon="user-alt" />
+                      <span className="text-room">username </span>
+                    </div>
+                  </div>
+                </MDBCol>
+                <MDBCol size="6" className=" mt-2">
+                  <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
+                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
                     <div className="font-light align-items-center">
                       <MDBIcon className="text-room mr-1" icon="home" />
                       <span className="text-room">1234</span>
@@ -124,7 +379,7 @@ class MainScreenGame extends Component {
                       <span className="p-2 text-white" >Nguyễn Chí Thức</span>
                     </div>
                     <div >
-                      <span className="p-2 text-white" >1000 <img src="/images/top-rated.svg" height="32px" width="32px"></img></span>
+                      <span className="p-2 text-white" >1000 <img src="/images/coin.svg" height="32px" width="32px"></img></span>
                     </div>
                   </div>
                   <div className="d-flex justify-content-around pt-2 pb-2" >
@@ -185,16 +440,16 @@ class MainScreenGame extends Component {
   }
 }
 
-const mapStateToProps=(state)=>{
-  return{
-    UserReducer:state.UserReducer,
-    ServerReducer:state.ServerReducer,
-    LeaderboardReducer:state.LeaderboardReducer
+const mapStateToProps = (state) => {
+  return {
+    UserReducer: state.UserReducer,
+    ServerReducer: state.ServerReducer,
+    LeaderboardReducer: state.LeaderboardReducer
   }
 }
 
-const mapDispatchToProps=(dispatch)=>{
-  return bindActionCreators({updateUser,updateLeaderboard,updateWaitingGame},dispatch);
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({ updateUser, updateLeaderboard, updateWaitingGame }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreenGame);
