@@ -18,11 +18,10 @@ class PlayGame extends Component {
   constructor(props) {
     super(props);
   }
-  renderSquare()
-  {
+  renderSquare() {
     return (
-    <div className="square">
-    </div>
+      <div className="square hoverable">
+      </div>
     );
   }
   render() {
@@ -37,9 +36,7 @@ class PlayGame extends Component {
         </BrowserRouter>
         <MDBContainer fluid="true" className="mt-2">
           <MDBRow>
-    
             {/* list room game */}
-
             <MDBCol size="8" className="border-top border-left border-bot " style={{ backgroundColor: "#ffff" }} >
               {
                 this.renderSquare()
@@ -47,22 +44,29 @@ class PlayGame extends Component {
             </MDBCol>
             <MDBCol size="4" className="pl-4" >
               {/* user info */}
-              <MDBRow className="d-flex justify-content-center hover-item" style={{ backgroundColor: "#5B5B5B" }} >
-                <MDBCol size="6" >
+              <MDBRow style={{ backgroundColor: "#5B5B5B" }} >
+                <MDBCol className="d-flex align-items-center justify-content-center" size="6" >
                   <img src="/images/boy.svg" height="64px" width="64px"></img>
+                  <div>
+                    <div className="d-flex align-middle">
+                      <img src="/images/name.svg" height="32px" width="32px"></img>
+                      <span className="text-while">Thuc</span>
+                    </div>
+                  </div>
                 </MDBCol>
-                <MDBCol size="6">
+                <MDBCol className="d-flex align-items-center justify-content-center" size="6" >
                   <img src="/images/boy.svg" height="64px" width="64px"></img>
+                  <div>
+                    <div className="d-flex align-middle">
+                      <img src="/images/name.svg" height="32px" width="32px"></img>
+                      <span className="text-while">Thuc</span>
+                    </div>
+                  </div>
                 </MDBCol>
               </MDBRow >
-
-              {/* leader board */}
               <MDBRow id="leader-board" style={{ backgroundColor: "#3D496B" }} className="mt-4 hover-item">
+              </MDBRow>
 
-              </MDBRow>
-              <MDBRow className="pl-3 mt-2">
-                <MDBBtn type="button" id="create-game" className="btn-block pt-4  pb-4 rounded-0" onClick={this.handleLogin}>Create Game</MDBBtn>
-              </MDBRow>
             </MDBCol>
           </MDBRow>
         </MDBContainer>

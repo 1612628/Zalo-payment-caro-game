@@ -15,7 +15,7 @@ class App extends React.Component{
 
   render(){
     return (
-      <MainScreenGame></MainScreenGame>
+      <PlayGame></PlayGame>
       );  
   }
 }

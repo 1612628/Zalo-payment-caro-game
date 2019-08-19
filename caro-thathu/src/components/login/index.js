@@ -58,7 +58,6 @@ class UserLogin extends Component {
         res.user.golds,
         res.token,
         res.user.total_played_game,socket);
-        
         Auth.authenticate();
         this.props.history.push("/mainscreengame");
       }
