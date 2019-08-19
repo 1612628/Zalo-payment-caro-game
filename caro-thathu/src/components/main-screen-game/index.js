@@ -20,6 +20,10 @@ import { BrowserRouter } from 'react-router-dom';
 
 import Auth from '../../auth';
 
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+const mySwal = withReactContent(Swal);
+
 class MainScreenGame extends Component {
   constructor(props) {
     super(props);
@@ -37,6 +41,28 @@ class MainScreenGame extends Component {
     Auth.authenticate();
     this.props.history.push('/');
   }
+  handleTeamInfo=()=>{
+    mySwal.fire({
+      title: '<strong>ThaThu Caro</u></strong>',
+      type: 'info',
+      html:
+        'ThaThu Caro is a project that we were trained in Spring Zalopay Fresher Course!!' +
+        '<br/> <br/>' +
+        'To contact us:'+
+        '<br/>'+
+        '<a target="blank" href="https://github.com/1612628">thanhnguyenduy2304@gmail</a> <br/>'+
+        '<a target="blank" href="https://github.com/sv1612677">thuckhpro@gmail.com</a>',
+      showCloseButton: true,
+      showCancelButton: true,
+      focusConfirm: false,
+      confirmButtonText:
+        '<i class="fa fa-thumbs-up"></i> Great!',
+      confirmButtonAriaLabel: 'Thumbs up, great!',
+      cancelButtonText:
+        '<i class="fa fa-thumbs-down"></i>',
+      cancelButtonAriaLabel: 'Thumbs down'
+    });
+  }
 
   render() {
     const scrollContainerStyle = { width: "100%", height: "90vh" };
@@ -44,8 +70,8 @@ class MainScreenGame extends Component {
       <MDBContainer fluid="true">
         <BrowserRouter>
           <MDBNav style={{ backgroundColor: "#ee6c4d" }}>
-            <MDBNavLink className="nav-logo  mr-auto p-2 " to="#"><img src="/images/avarta.png" height="64px" ></img></MDBNavLink>
-            <MDBNavLink className="nav-end mt-3" to="#"><img src="/images/info.svg" height="32px" width="32px"></img></MDBNavLink>
+            <MDBNavLink className="nav-logo  mr-auto p-2 " to="#"><img src="/images/avarta.png" height="64px"></img></MDBNavLink>
+            <MDBNavLink className="nav-end mt-3" to="#"><img src="/images/info.svg" height="32px" width="32px" onClick={this.handleTeamInfo}></img></MDBNavLink>
             <MDBNavLink style={{ backgroundColor: "while" }} className="nav-end mt-3" to="#" onClick={this.handleBack}><img src="/images/exit.svg" height="32px" width="32px"></img></MDBNavLink>
           </MDBNav>
         </BrowserRouter>
