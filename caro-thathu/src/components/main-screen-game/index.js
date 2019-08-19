@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './mainscreen.css';
-import PropTypes from 'prop-types';
 import {
   MDBContainer,
   MDBRow,
@@ -9,7 +8,7 @@ import {
 } from "mdbreact";
 
 import {bindActionCreators} from 'redux';
-import socketIOClient from "socket.io-client";
+
 import {updateUser} from '../../store/actions/user';
 import { connect } from 'react-redux';
 
@@ -18,13 +17,7 @@ class MainScreenGame extends Component {
     super(props);
     // this.username=React.createRef();
   }
-  componentDidMount(){
-    const socket = socketIOClient(this.props.ServerReducer.server.endpoint);
-    this.props.updateUser(this.props.UserReducer.user.id,
-      this.props.UserReducer.user.username,
-      this.props.UserReducer.user.golds,
-      this.props.UserReducer.user.token,
-      this.props.UserReducer.user.totalPlayedGame,socket);
+  componentWillMount(){
     
   }
 

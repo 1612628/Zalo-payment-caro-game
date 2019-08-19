@@ -38,10 +38,8 @@ router.post('/login',async (req,res)=>{
         let password = req.body.password;
         if(username && password){
             let user = await UserController.isUserExisted({username:username,password:password})
-            console.log("user nef:",user)
             if(user !=null){
-                let token = jwtUtil.createToken(String(user._id));
-                console.log(token)
+                let token = jwtUtil.createToken(user._id);
                 res.status(200);
                 res.json({
                     user:user,
@@ -61,6 +59,11 @@ router.post('/login',async (req,res)=>{
         res.status(400);
         res.send();
     }
+});
+
+router.get('/leaderboard',async (req,res)=>{
+    let users = await UserController.getLeaderBoard();
+    res.status(200).json({"leaderboard":users})
 })
 
 module.exports=router;

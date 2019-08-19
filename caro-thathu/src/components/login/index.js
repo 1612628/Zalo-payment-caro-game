@@ -12,10 +12,13 @@ import {
   MDBInput
 } from "mdbreact";
 
+import socketIOClient from "socket.io-client";
 
 import {bindActionCreators} from 'redux';
 import {updateUser} from '../../store/actions/user';
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'; 
+
+import Auth from '../../auth';
 
 class UserLogin extends Component {
   constructor(props) {
@@ -52,7 +55,16 @@ class UserLogin extends Component {
       if(res!=null){
         this.props.updateUser(res.user._id,res.user.username,res.user.golds,res.token,
           res.user.total_played_game,null);
-        this.props.history.push("/mainScreenGame");
+
+        const socket = socketIOClient(this.props.ServerReducer.server.endpoint);
+        this.props.updateUser(this.props.UserReducer.user.id,
+        this.props.UserReducer.user.username,
+        this.props.UserReducer.user.golds,
+        this.props.UserReducer.user.token,
+        this.props.UserReducer.user.totalPlayedGame,socket);
+        
+        Auth.authenticate();
+        this.props.history.push("/mainscreengame");
       }
     }   
     
@@ -63,7 +75,6 @@ class UserLogin extends Component {
 
   render() {
     return (
-      
         <MDBContainer>
           <MDBRow className="d-flex justify-content-center align-items-center my-5">
             <MDBCol md="6">
@@ -126,8 +137,15 @@ class UserLogin extends Component {
   }
 }
 
-const mapDispatchToProps=(dispatch)=>{
-  return bindActionCreators({updateUser},dispatch)
+const mapStateToProps=(state)=>{
+  return{
+    UserReducer:state.UserReducer,
+    ServerReducer:state.ServerReducer
+  }
 }
 
-export default connect(null, mapDispatchToProps)(UserLogin);
+const mapDispatchToProps=(dispatch)=>{
+  return bindActionCreators({updateUser},dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserLogin);
