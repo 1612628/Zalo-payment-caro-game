@@ -25,8 +25,10 @@ app.use(routes);
 
 io.on("connection",function(socket){
     console.log("New client socket connected");
-    socket.emit('fromserver',"yeaa");
+
     socket.on("disconnect",()=>console.log("Client disconnected"));
+
+    
 });
 
 server.listen(port,()=>{

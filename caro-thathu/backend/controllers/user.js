@@ -40,7 +40,6 @@ function isUserExisted(userInfo){
         )
         .exec()
         .then((user)=>{
-            console.log("find user",user);
             if(user){
                 return bcrypt.compare(userInfo.password,user.password)
                 .then((success)=>{
@@ -59,13 +58,30 @@ function isUserExisted(userInfo){
         })
         .catch(err=>{
             console.log("isUserExisted Error: "+err);
-            return null
-        })
+            return null;
+        });
   
 }
 
+function getLeaderBoard(){
+    return mongoUserModel
+    .find({})
+    .sort({golds:'desc'})
+    .limit(100)
+    .select('username golds total_played_game')
+    .exec()
+    .then((users)=>{
+        return users;
+    })
+    .catch(err=>{
+        console.log('getLeaderBoard Error:',err);
+        return null;
+    });
+    
+}
 
 module.exports={
     createUser:createUser,
-    isUserExisted:isUserExisted
+    isUserExisted:isUserExisted,
+    getLeaderBoard:getLeaderBoard
 }
