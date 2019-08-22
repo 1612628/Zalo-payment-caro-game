@@ -6,6 +6,7 @@ import LeaderboardReducer from './leaderboard';
 import MessagesReducer from './messages';
 import RoomGameReducer from './roomGame';
 import ServerReducer from './server';
+import CellReducer from './cell'
 import { connectRouter } from 'connected-react-router'
 
 
@@ -17,7 +18,8 @@ const allReducers =(history)=> combineReducers({
     WaitingGamesReducer:WaitingGamesReducer,
     LeaderboardReducer:LeaderboardReducer,
     MessagesReducer:MessagesReducer,
-    ServerReducer:ServerReducer
+    ServerReducer:ServerReducer,
+    CellReducer: CellReducer
 });
 // =======
 // import registerReducer from './register';

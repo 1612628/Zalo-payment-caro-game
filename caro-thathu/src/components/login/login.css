@@ -6,12 +6,12 @@ body{
     background-attachment: fixed;
     background-size: cover; 
 }
-.btn{
+/* .btn{
     border-radius: 25px !important;
 }
 .btn-bound{
     width: 60%;
-}
+} */
 .fa-user{
     color: darkgrey;
 }

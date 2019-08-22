@@ -3,32 +3,48 @@ import './playgame.css';
 import {
   MDBContainer,
   MDBRow,
-  MDBCol,
+  MDBInput,
   MDBIcon,
-  MDBNav, MDBNavLink, MDBBtn
-
+  MDBCol,
+  MDBNav, MDBNavLink
 } from "mdbreact";
 
 import { bindActionCreators } from 'redux';
-import { updateUser } from '../../store/actions/user';
+import { updateCell } from '../../store/actions/cell';
 import { connect } from "react-redux";
 import { BrowserRouter } from 'react-router-dom';
+import Board from '../Board';
+import Message from '../MessageInPlayScreen';
+import CellReducer from '../../store/reducers/cell';
 
 class PlayGame extends Component {
   constructor(props) {
     super(props);
+    this.handleSendMessage = this.handleSendMessage.bind(this);
+    this.state = {
+      message: null
+    }
   }
-  renderSquare() {
-    return (
-      <div className="square">
-      </div>
-    );
+  handleMessage = (event) => {
+      this.state.message = event.target.value
+    }
+
+    handleInput = (event) => {
+        this.setState({
+            [event.target.id]: event.target.value
+        })
+    }
+
+  handleSendMessage() {
+    console.log("ahihi")
+    console.log(this.state.message)
   }
   render() {
+    const scrollContainerStyle = { width: "100%", maxHeight: "360px" };
     return (
       <MDBContainer fluid="true">
         <BrowserRouter>
-          <MDBNav style={{ backgroundColor: "#ee6c4d" }}>
+          <MDBNav style={{ backgroundColor: "#dddddd" }}>
             <MDBNavLink className="nav-logo  mr-auto p-2 " to="#"><img src="/images/avarta.png" height="64px" ></img></MDBNavLink>
             <MDBNavLink className="nav-end mt-3" to="#"><img src="/images/info.svg" height="32px" width="32px"></img></MDBNavLink>
             <MDBNavLink style={{ backgroundColor: "while" }} className="nav-end mt-3" to="#"><img src="/images/exit.svg" height="32px" width="32px"></img></MDBNavLink>
@@ -36,32 +52,72 @@ class PlayGame extends Component {
         </BrowserRouter>
         <MDBContainer fluid="true" className="mt-2">
           <MDBRow>
-            {/* list room game */}
-            <MDBCol size="8" className="border-top border-left border-bot " style={{ backgroundColor: "#ffff" }} >
-              {
-                this.renderSquare()
-              }
+            {/* render board game */}
+            <MDBCol className="board-game d-flex align-items-center justify-content-center" size="8" style={{ backgroundColor: "#dddddd" }} >
+              <Board width={15} height={15} onClick={this.onClick} ></Board>
             </MDBCol>
             <MDBCol size="4" className="pl-4" >
               {/* user info */}
-              <MDBRow className="d-flex justify-content-center hover-item" style={{ backgroundColor: "#5B5B5B" }} >
-                <MDBCol size="6" >
-                  <img src="/images/boy.svg" height="64px" width="64px"></img>
+              <MDBRow style={{ backgroundColor: "#747d8c" }} className="user-info" >
+                <MDBCol className="d-flex align-items-center justify-content-center " size="6" >
+                  <img src="/images/boy.svg" height="64px" width="64px" className="mr-3"></img>
+                  <div className="py-2">
+                    <div className="d-flex align-middle">
+                      <img className="mr-1" src="/images/name.svg" height="32px" width="32px"></img>
+                      <span className="text-while mt-1">Chí Thức</span>
+                    </div>
+                    <div className="d-flex align-middle">
+                      <img src="/images/coin.svg" height="32px" width="32px" className="mr-2"></img>
+                      <span className="text-room">10000</span>
+                    </div>
+                    <div className="d-flex align-middle">
+                      <img src="/images/gamepad.svg" height="32px" width="32px" className="mr-2"></img>
+                      <span className="text-room mt-2">100</span>
+                    </div>
+                  </div>
                 </MDBCol>
-                <MDBCol size="6">
-                  <img src="/images/boy.svg" height="64px" width="64px"></img>
+                <MDBCol className="d-flex align-items-center justify-content-center" size="6" >
+                  <img src="/images/boy.svg" height="64px" width="64px" className="mr-3"></img>
+                  <div className="py-2">
+                    <div className="d-flex align-middle">
+                      <img className="mr-1" src="/images/name.svg" height="32px" width="32px"></img>
+                      <span className="text-while mt-1">Chí Thức</span>
+                    </div>
+                    <div className="d-flex align-middle">
+                      <img src="/images/coin.svg" height="32px" width="32px" className="mr-2"></img>
+                      <span className="text-room">10000</span>
+                    </div>
+                    <div className="d-flex align-middle">
+                      <img src="/images/gamepad.svg" height="32px" width="32px" className="mr-2"></img>
+                      <span className="text-room mt-2">100</span>
+                    </div>
+                  </div>
                 </MDBCol>
               </MDBRow >
-
-              {/* leader board */}
-              <MDBRow id="leader-board" style={{ backgroundColor: "#3D496B" }} className="mt-4 hover-item">
-
+              {/* chat info */}
+              <MDBRow>
+                <MDBRow style={scrollContainerStyle} className="mt-4 scrollbar scrollbar-primary chat-body d-flex flex-column" >
+                  <MDBContainer className="chat-context">
+                    <Message type={1} message={"ahidsadsadasdsadsadsaddddddddddddddddddddddhi"}></Message>
+                    <Message type={0} message={"ahidsadsadasdsadsadsaddddddddddddddddddddddhiahidsadsadasdahidsadsadasdsadsadsaddddddddddddddddddddddhiahidsadsadasdsadsadsaddddddddddddddddddddddhiahidsadsadasdsadsadsaddddddddddddddddddddddhisadsadsaddddddddddddddddddddddhiahidsadsadasdsadsadsaddddddddddddddddddddddhi"}></Message>
+                  </MDBContainer>
+                </MDBRow>
               </MDBRow>
-              <MDBRow className="pl-3 mt-2">
-                <MDBBtn type="button" id="create-game" className="btn-block pt-4  pb-4 rounded-0" onClick={this.handleLogin}>Create Game</MDBBtn>
+              <MDBRow style={{ backgroundColor: "#DDDDDD" }} className="pr-4">
+                <MDBCol size="1" className="d-flex align-items-center">
+                  <MDBIcon far icon="comment" className="fa-2x " />
+                </MDBCol>
+                <MDBCol size="9" >
+                  <MDBInput onInput={this.handleMessage}
+                    className="text-while input-message-play-game" style={{ backgroundColor: "#9C9C9C" }} />
+                </MDBCol>
+                <MDBCol size="2" className="d-flex align-items-center">
+                  <button className="send-message-play-game mr-3" onClick={this.handleSendMessage}>alo</button>
+                </MDBCol>
               </MDBRow>
             </MDBCol>
           </MDBRow>
+
         </MDBContainer>
       </MDBContainer>
     );
@@ -70,12 +126,13 @@ class PlayGame extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    ServerReducer: state.ServerReducer
+    ServerReducer: state.ServerReducer,
+    CellReducer: state.CellReducer
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ updateUser }, dispatch);
+  return bindActionCreators({ updateCell }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlayGame);

@@ -1,0 +1,10 @@
+.message-in-play-screen{
+  background-color: #9C9C9C;
+  color:white;
+  word-wrap: break-word;
+  width: 200px;
+  justify-content: end;
+}
+.message-other{
+  margin-left:250px;
+}
