@@ -1,4 +1,7 @@
-
+// x:-1,
+// y:-1,
+// isClicked:false,
+// typePattern: 'x'
 const initialCellListState={
     cellList:null
 }

@@ -42,7 +42,12 @@ class MainScreenGame extends Component {
     if(waitingRoomGames){
       this.props.updateWaitingGame(waitingRoomGames);
     }
-    
+    window.onpopstate=(event)=>{
+      event.preventDefault();
+      LogoutRequest(this.props.UserReducer.user.token,this.props.UserReducer.user.id)
+      Auth.authenticate();
+      this.props.history.push('/');
+    }
   }
 
 

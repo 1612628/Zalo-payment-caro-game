@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
 import {Route,Redirect} from 'react-router-dom';
 import Auth from '../auth';
+import { connect } from 'react-redux'; 
 
 const PrivateRoute=({component:Component, ...rest})=>{
     return(
@@ -8,7 +9,7 @@ const PrivateRoute=({component:Component, ...rest})=>{
             {...rest} 
             render={
                 props=>
-                    Auth.getAuth()?
+                    props.AuthReducer.auth?
                     (<Component {...props}/>):
                     (<Redirect to={{pathname:"/"}}/>)
             }
@@ -16,4 +17,11 @@ const PrivateRoute=({component:Component, ...rest})=>{
     )
 }
 
-export default PrivateRoute;
+const mapStateToProps=(state)=>{
+    return{
+        AuthReducer:state.AuthReducer
+    }
+}
+
+
+export default connect(mapStateToProps,null)(PrivateRoute);

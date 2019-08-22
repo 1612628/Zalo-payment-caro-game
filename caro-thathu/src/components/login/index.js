@@ -17,7 +17,7 @@ import socketIOClient from "socket.io-client";
 import {bindActionCreators} from 'redux';
 import {updateUser} from '../../store/actions/user';
 import { connect } from 'react-redux'; 
-
+import {changeAuth} from '../../store/actions/auth'
 import Auth from '../../auth';
 
 import Swal from 'sweetalert2';
@@ -56,13 +56,17 @@ class UserLogin extends Component {
     if(this.state.usernameInput.value && this.state.passwordInput.value){
       let res = await LoginRequest(this.state.usernameInput.value, this.state.passwordInput.value);
       if(res!=null){
+        
         const socket = socketIOClient(this.props.ServerReducer.server.endpoint);
+        socket.emit('user_id',res.user._id);
+
         this.props.updateUser(res.user._id,
         res.user.username,
         res.user.golds,
         res.token,
         res.user.total_played_game,socket);
-        Auth.authenticate();
+        // Auth.authenticate();
+        this.props.changeAuth(!this.props.AuthReducer.auth);
         this.props.history.push("/mainscreengame");
       }else{
         mySwal.fire({
@@ -150,12 +154,13 @@ class UserLogin extends Component {
 const mapStateToProps=(state)=>{
   return{
     UserReducer:state.UserReducer,
-    ServerReducer:state.ServerReducer
+    ServerReducer:state.ServerReducer,
+    AuthReducer:state.AuthReducer
   }
 }
 
 const mapDispatchToProps=(dispatch)=>{
-  return bindActionCreators({updateUser},dispatch);
+  return bindActionCreators({updateUser,changeAuth},dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserLogin);

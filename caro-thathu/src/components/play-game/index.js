@@ -15,7 +15,6 @@ import { connect } from "react-redux";
 import { BrowserRouter } from 'react-router-dom';
 import Board from '../Board';
 import Message from '../MessageInPlayScreen';
-import CellReducer from '../../store/reducers/cell';
 
 class PlayGame extends Component {
   constructor(props) {
