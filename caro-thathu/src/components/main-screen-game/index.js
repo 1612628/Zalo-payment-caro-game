@@ -15,7 +15,7 @@ import { updateUser } from '../../store/actions/user';
 import { updateLeaderboard } from '../../store/actions/leaderboard';
 import { updateWaitingGame } from '../../store/actions/waitingGames';
 import {createRoomGame} from '../../store/actions/roomGame';
-import { LeaderboardRequest, WaitingRoomGamesRequest,CreateRoomGameRequest } from '../../apis'
+import {LogoutRequest, LeaderboardRequest, WaitingRoomGamesRequest,CreateRoomGameRequest } from '../../apis'
 
 import { BrowserRouter } from 'react-router-dom';
 
@@ -83,6 +83,7 @@ class MainScreenGame extends Component {
   }
 
   handleBack = () => {
+    LogoutRequest(this.props.UserReducer.user.token,this.props.UserReducer.user.id)
     Auth.authenticate();
     this.props.history.push('/');
   }
@@ -272,7 +273,7 @@ class MainScreenGame extends Component {
                 </MDBRow >
 
                 {/* leader board */}
-                <MDBRow id="leader-board" style={{ backgroundColor: "#1A237E",height:"100%"}} className="mt-4 hover-item d-flex flex-column">
+                <MDBRow id="leader-board" style={{ backgroundColor: "#3D496B",height:"100%"}} className="mt-4 hover-item d-flex flex-column">
                   <MDBContainer className="d-flex justify-content-center align-items-center">
                     <h3 className="text-light">Leaderboard</h3>
                   </MDBContainer>

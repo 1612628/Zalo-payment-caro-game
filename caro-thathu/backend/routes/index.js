@@ -70,6 +70,25 @@ router.post('/login',async (req,res)=>{
     }
 });
 
+router.post('/logout',async (req,res)=>{
+    console.log('/logout',req.body);
+    if(req.body){
+        let userId = req.body.user_id;
+        if(userId){
+            await RedisClient.del("user:"+userId);
+            await RedisClient.hset("user:"+userId,'is_online','false');
+            res.status(200);
+            res.send();
+        }else{
+            res.status(400);
+            res.send();
+        }
+    }else{
+        res.status(400);
+        res.send();
+    }
+});
+
 router.get('/leaderboard',async (req,res)=>{
     console.log('/leaderboard');
     let users = await UserController.getLeaderBoard();

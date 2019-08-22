@@ -12,7 +12,9 @@ const initialUserState={
 export default function UserReducer(state=initialUserState,action){
     switch(action.type){
         case 'UPDATE_USER':
-            return action.payload;
+            return {...state,
+                user:action.payload
+            }
         default:
             return state;
     }

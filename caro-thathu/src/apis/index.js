@@ -56,7 +56,6 @@ export const LeaderboardRequest = async (token)=>{
         return null;
     })
     return res;
-
 }
 export const WaitingRoomGamesRequest = async (token)=>{
     console.log('API: WaitingRoomGamesRequest');
@@ -95,4 +94,21 @@ export const CreateRoomGameRequest = async(token,hostId,hostName,bettingGolds)=>
     return res;
     
 }
-
+export const LogoutRequest = async(token,userId)=>{
+    console.log("API: LogoutRequest");
+    let data={
+        user_id:userId
+    }
+    let config={
+        headers:{
+            'Authorization':token
+        }
+    }
+    let res = await axios.post("http://127.0.0.1:4001/logout",data,config)
+    .then(res => res)
+    .catch(error => {
+        console.log(error);
+        return null;
+    })
+    return res;
+}

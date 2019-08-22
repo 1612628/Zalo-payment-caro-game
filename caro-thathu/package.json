@@ -28,6 +28,7 @@
     "reactide-config": "^1.0.2",
     "redis": "^2.8.0",
     "redux": "^4.0.4",
+    "redux-persist": "^5.10.0",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",
     "sweetalert2": "^8.16.1",
