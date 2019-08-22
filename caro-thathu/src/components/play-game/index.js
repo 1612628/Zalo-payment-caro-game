@@ -124,7 +124,7 @@ class PlayGame extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    MessageReducers: state.MessageReducers
+    MessageReducer: state.MessageReducer
  }
 }
 

@@ -5,11 +5,11 @@ import { connect } from 'react-redux';
 import { appendMessage } from '../../store/actions/messages';
 class Message extends React.Component {
     render() {
-        if(this.props.MessagesReducers == "undefined")
+        if(this.props.MessageReducer == "undefined")
         {
             return;
         }
-        return this.props.MessagesReducers.messages.map((messageItem, index) => {
+        return this.props.MessageReducer.messages.map((messageItem, index) => {
             let classNameOfMessage = "rounded p-2  message-in-play-screen";
             //if message of other
             if (this.props.userid === this.state.myiduser) {
@@ -27,7 +27,7 @@ class Message extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        MessagesReducers: state.MessagesReducers
+        MessageReducer: state.MessageReducer
     }
 }
 

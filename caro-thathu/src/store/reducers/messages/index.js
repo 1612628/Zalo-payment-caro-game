@@ -2,7 +2,7 @@ const initialMessageState={
     messages:[]
 }
 
-const MessageReducers=(state=initialMessageState,action)=>{
+const MessageReducer=(state=initialMessageState,action)=>{
     switch(action.type){
         case 'APPEND_MESSAGE':
             return { 
@@ -15,4 +15,4 @@ const MessageReducers=(state=initialMessageState,action)=>{
     }
 }
 
-export default MessageReducers;
+export default MessageReducer;

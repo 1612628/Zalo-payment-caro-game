@@ -3,7 +3,7 @@ import UserReducer from './user';
 import CellListReducer from './cellList';
 import WaitingGamesReducer from './waitingGames';
 import LeaderboardReducer from './leaderboard';
-import MessageReducers from './messages';
+import MessageReducer from './messages';
 import RoomGameReducer from './roomGame';
 import ServerReducer from './server';
 import AuthReducer from './auth';
@@ -17,7 +17,7 @@ const allReducers =(history)=> combineReducers({
     CellListReducer:CellListReducer,
     WaitingGamesReducer:WaitingGamesReducer,
     LeaderboardReducer:LeaderboardReducer,
-    MessagesReducer:MessagesReducer,
+    MessageReducer:MessageReducer,
     ServerReducer:ServerReducer,
     AuthReducer:AuthReducer
 });

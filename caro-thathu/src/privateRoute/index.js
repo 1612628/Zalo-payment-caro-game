@@ -9,7 +9,7 @@ const PrivateRoute=({component:Component, ...rest})=>{
             {...rest} 
             render={
                 props=>
-                    props.AuthReducer.auth?
+                    Auth.getAuth()?
                     (<Component {...props}/>):
                     (<Redirect to={{pathname:"/"}}/>)
             }
