@@ -29,6 +29,9 @@ io.on("connection",function(socket){
 
     socket.on("disconnect",()=>console.log("Client disconnected"));
 
+    socket.on('updateOnline',()=>{
+        
+    })
     
 });
 

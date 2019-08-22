@@ -23,7 +23,7 @@ ReactDOM.render(
                 <Switch>
                     <Route exact path="/" component={App}></Route>
                     <Route exact path="/register" component={Register}></Route>
-                    {/* <PrivateRoute path="/mainscreengame" component={MainScreenGame}></PrivateRoute> */}
+                    <PrivateRoute path="/mainscreengame" component={MainScreenGame}></PrivateRoute>
                 </Switch>
             </>            
         </ConnectedRouter>

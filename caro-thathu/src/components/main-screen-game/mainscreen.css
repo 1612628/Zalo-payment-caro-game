@@ -9,7 +9,7 @@ body{
 }
 .btn{
     width: 100%;
-    border-radius: 25px !important;
+    border-radius: 10px !important;
 }
 
 
@@ -21,6 +21,9 @@ body{
     cursor: pointer;
 }
 .hover-item{
+  box-shadow: 0 10px 10px -10px #333;
+}
+.user-box{
   box-shadow: 0 10px 10px -10px #333;
   border-radius: 20px;
 }
@@ -34,6 +37,7 @@ body{
 }
 #leader-board{
     background-color: #E0E0E0;
+    border-radius: 20px;
 }
 
 .scrollbar {
