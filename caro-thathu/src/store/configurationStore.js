@@ -15,8 +15,8 @@ export const JSOGTransform = createTransform(
 
 const persistConfig = {
   key: 'root',
-  storage,
-  backlist:['ui','router','RoomGameReducer','CellListReducer','WaitingGamesReducer','LeaderboardReducer','MessagesReducer','ServerReducer'],
+  storage:storage,
+  whitelist:['UserReducer'],
   transforms: [JSOGTransform]
 }
 export const history = createBrowserHistory()

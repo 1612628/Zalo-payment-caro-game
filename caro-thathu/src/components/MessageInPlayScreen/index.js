@@ -12,9 +12,7 @@ class Message extends React.Component {
         return this.props.MessageReducer.messages.map((messageItem, index) => {
             let classNameOfMessage = "rounded p-2  message-in-play-screen";
             //if message of other
-            if (this.props.userid === this.state.myiduser) {
-                classNameOfMessage += " message-other"
-            }
+       
             return (
                 <p key={index} className={classNameOfMessage}   >
                     {messageItem.message}
