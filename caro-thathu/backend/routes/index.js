@@ -75,7 +75,8 @@ router.post('/logout',async (req,res)=>{
     if(req.body){
         let userId = req.body.user_id;
         if(userId){
-            await RedisClient.del("user:"+userId);
+    
+            await RedisClient.del('socket:'+userId);
             await RedisClient.hset("user:"+userId,'is_online','false');
             res.status(200);
             res.send();
@@ -121,6 +122,7 @@ router.get('/games',async (req,res)=>{
 })
 
 router.post('/games',async (req,res)=>{
+    console.log('/games create game');
     if(req.body){
         let hostId = req.body.host_id;
         let hostName = req.body.host_name;

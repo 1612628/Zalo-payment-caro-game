@@ -9,12 +9,12 @@ import {Route,Switch} from 'react-router-dom';
 import {ConnectedRouter} from 'connected-react-router';
 
 import configureStore,{history} from './store/configurationStore';
-import { PersistGate } from 'redux-persist/integration/react'
 
 import Register from './components/register';
 import MainScreenGame from './components/main-screen-game/'
 
 import PrivateRoute from './privateRoute';
+import { PersistGate } from 'redux-persist/integration/react';
 
 const {store,persistor} = configureStore();
 
@@ -26,11 +26,13 @@ ReactDOM.render(
                     <Switch>
                         <Route exact path="/" component={App}></Route>
                         <Route exact path="/register" component={Register}></Route>
+                        {/* <Route exact path="/mainscreengame" component={MainScreenGame}></Route> */}
                         <PrivateRoute path="/mainscreengame" component={MainScreenGame}></PrivateRoute>
                     </Switch>
                 </>            
             </ConnectedRouter>
         </PersistGate>
+           
     </Provider>
 , document.getElementById('root'));
 

@@ -5,20 +5,26 @@ import allReducers from './reducers'
 
 import {persistStore,persistReducer} from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import { createTransform } from 'redux-persist';
+import JSOG from 'jsog'
 
-const persistConfig={
-  key:'root',
-  storage:storage
+export const JSOGTransform = createTransform(
+    (inboundState, key) => JSOG.encode(inboundState),
+    (outboundState, key) => JSOG.decode(outboundState),
+)
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  backlist:['ui','router','RoomGameReducer','CellListReducer','WaitingGamesReducer','LeaderboardReducer','MessagesReducer','ServerReducer'],
+  transforms: [JSOGTransform]
 }
-
-
 export const history = createBrowserHistory()
+
+const persistedReducer = persistReducer(persistConfig, allReducers(history));
 
 
 export default function configureStore() {
-
-  const persistedReducer = persistReducer(persistConfig,allReducers(history))
-  
   const store = createStore(
     persistedReducer,
     compose(
@@ -27,7 +33,8 @@ export default function configureStore() {
       ),
       window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
     )
+    
   )
-  const persistor=persistStore(store)
+  const persistor = persistStore(store);
   return {store,persistor}
 }

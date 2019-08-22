@@ -24,10 +24,22 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(routes);
 
+const RedisClient = require('./databases/redisDatabase');
+
+
+
 io.on("connection",function(socket){
     console.log("New client socket connected");
 
-    socket.on("disconnect",()=>console.log("Client disconnected"));
+    socket.on("user_id",(id)=>{
+         RedisClient.set('socket:'+socket.id,id);
+    })
+    socket.on("disconnect",async ()=>{
+        console.log("Client disconnected")
+        let id = await RedisClient.get('socket:'+socket.id);
+        await RedisClient.hset("user:"+id,'is_online','false');
+        await RedisClient.del('socket:'+socket.id);
+    });
 
     socket.on('updateOnline',()=>{
         
