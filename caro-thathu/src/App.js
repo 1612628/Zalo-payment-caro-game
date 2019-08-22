@@ -15,7 +15,7 @@ class App extends React.Component{
 
   render(){
     return (
-        <MainScreenGame history={this.props.history}></MainScreenGame>
+        <Login history={this.props.history}></Login>
       );  
   }
 }

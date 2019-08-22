@@ -1,6 +1,4 @@
 
-const redisClient = require('../databases/redisDatabase/index');
-const mongoDb = require('../databases/mongoDatabase/index');
 const mongoRoomGameModel = require('../databases/mongoDatabase/models/roomGame');
 const mongoUserModel = require('../databases/mongoDatabase/models/user');
 const bcrypt = require('bcrypt');
@@ -66,7 +64,6 @@ function getLeaderBoard(){
     return mongoUserModel
     .find({})
     .sort({golds:'desc'})
-    .limit(100)
     .select('username golds total_played_game')
     .exec()
     .then((users)=>{

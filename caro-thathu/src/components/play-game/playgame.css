@@ -23,7 +23,7 @@ body{
 }
 .hover-item{
   box-shadow: 0 10px 10px -10px #333;
-  border-radius: 20px;
+  border-radius: 5px;
 }
 #logo{
     display: flex;

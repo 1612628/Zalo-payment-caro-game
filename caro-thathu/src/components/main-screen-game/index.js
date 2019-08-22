@@ -15,7 +15,7 @@ import { updateUser } from '../../store/actions/user';
 import { updateLeaderboard } from '../../store/actions/leaderboard';
 import { updateWaitingGame } from '../../store/actions/waitingGames';
 import {createRoomGame} from '../../store/actions/roomGame';
-import { LeaderboardRequest, WaitingRoomGamesRequest,CreateRoomGameRequest } from '../../apis'
+import {LogoutRequest, LeaderboardRequest, WaitingRoomGamesRequest,CreateRoomGameRequest } from '../../apis'
 
 import { BrowserRouter } from 'react-router-dom';
 
@@ -30,9 +30,6 @@ class MainScreenGame extends Component {
   constructor(props) {
     super(props);
 
-    this.state={
-      reload:false
-    }
   }
   async componentDidMount() {
     let users = await LeaderboardRequest(this.props.UserReducer.user.token);
@@ -48,18 +45,6 @@ class MainScreenGame extends Component {
     
   }
 
-  async componentDidUpdate(nextProps,nextState){
-    let users = await LeaderboardRequest(this.props.UserReducer.user.token);
-    if(users){
-      this.props.updateLeaderboard(users);
-    }
-    
-
-    let waitingRoomGames = await WaitingRoomGamesRequest(this.props.UserReducer.user.token);
-    if(waitingRoomGames){
-      this.props.updateWaitingGame(waitingRoomGames);
-    }
-  }
 
   getRenderWaitingGames(waitingGames){
     if(waitingGames){
@@ -84,13 +69,21 @@ class MainScreenGame extends Component {
     }
   }
 
-  handleReload=()=>{
-    this.setState({
-      reload:!this.state.reload
-    })
+  handleReload=async ()=>{
+    let users = await LeaderboardRequest(this.props.UserReducer.user.token);
+    if(users){
+      this.props.updateLeaderboard(users);
+    }
+    
+
+    let waitingRoomGames = await WaitingRoomGamesRequest(this.props.UserReducer.user.token);
+    if(waitingRoomGames){
+      this.props.updateWaitingGame(waitingRoomGames);
+    }
   }
 
   handleBack = () => {
+    LogoutRequest(this.props.UserReducer.user.token,this.props.UserReducer.user.id)
     Auth.authenticate();
     this.props.history.push('/');
   }
@@ -257,7 +250,7 @@ class MainScreenGame extends Component {
               
               <div className="d-flex flex-column" style={{height:"100%"}}>
                 {/* user info */}
-                <MDBRow className="  d-flex justify-content-end hover-item" style={{ backgroundColor: "#5B5B5B" }} >
+                <MDBRow className="  d-flex justify-content-end user-box" style={{ backgroundColor: "#5B5B5B" }} >
                   <MDBCol size="4" className=" pt-3 pb-3 d-flex justify-content-center align-items-center">
                     <img alt="" src="/images/boy.svg" height="64px" width="64px"></img>
                   </MDBCol>
@@ -280,7 +273,7 @@ class MainScreenGame extends Component {
                 </MDBRow >
 
                 {/* leader board */}
-                <MDBRow id="leader-board" style={{ backgroundColor: "#5B5B5B",height:"100%"}} className="mt-4 hover-item d-flex flex-column">
+                <MDBRow id="leader-board" style={{ backgroundColor: "#3D496B",height:"100%"}} className="mt-4 hover-item d-flex flex-column">
                   <MDBContainer className="d-flex justify-content-center align-items-center">
                     <h3 className="text-light">Leaderboard</h3>
                   </MDBContainer>
