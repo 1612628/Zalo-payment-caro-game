@@ -90,20 +90,20 @@ class MainScreenGame extends Component {
     })
   }
 
-  handleBack=()=>{
+  handleBack = () => {
     Auth.authenticate();
     this.props.history.push('/');
   }
-  handleTeamInfo=()=>{
+  handleTeamInfo = () => {
     mySwal.fire({
       title: '<strong>ThaThu Caro</u></strong>',
       type: 'info',
       html:
         'ThaThu Caro is a project that we were trained in Spring Zalopay Fresher Course!!' +
         '<br/> <br/>' +
-        'To contact us:'+
-        '<br/>'+
-        '<a target="blank" href="https://github.com/1612628">thanhnguyenduy2304@gmail</a> <br/>'+
+        'To contact us:' +
+        '<br/>' +
+        '<a target="blank" href="https://github.com/1612628">thanhnguyenduy2304@gmail</a> <br/>' +
         '<a target="blank" href="https://github.com/sv1612677">thuckhpro@gmail.com</a>',
       showCloseButton: true,
       showCancelButton: true,
@@ -153,6 +153,44 @@ class MainScreenGame extends Component {
     };
   
 
+  renderWaitingRoom = () => {
+    return this.props.waitingRoomGames.map((dataitem, index) => (
+        <WaitingRoomItem  key={index}  idGame={dataitem.idGame} bettingGold ={dataitem.bettingGold} username={dataitem.username} >
+        </WaitingRoomItem>
+    ));
+  }
+  renderLearBoard= ()=>{
+    return this.props.LeaderboardReducer.map((dataitem, index) => (
+      <LeaderboardItem  key={index}  rank={dataitem.rank} username ={dataitem.username} gold={dataitem.gold} >
+      </LeaderboardItem>
+  ));
+  }
+
+  renderUserInfo = () => {
+    return (
+      <MDBRow className="  d-flex justify-content-end hover-item" style={{ backgroundColor: "#5B5B5B" }} >
+        <MDBCol size="4" className=" pt-3 pb-3 d-flex justify-content-center align-items-center">
+          <img src="/images/boy.svg" height="64px" width="64px"></img>
+        </MDBCol>
+        <MDBCol size="7" className="">
+          <div className="d-flex flex-column pt-3 pb-3">
+            <div className="pt-1 pb-1">
+              <img src="/images/name.svg" height="32px" width="32px" className="mr-2"></img>
+              <span className="text-room">{this.props.UserReducer.user.username}</span>
+            </div>
+            <div className="pt-1 pb-1">
+              <img src="/images/coin.svg" height="32px" width="32px" className="mr-2"></img>
+              <span className="text-room">{this.props.UserReducer.user.golds}</span>
+            </div>
+            <div className="pt-1">
+              <img src="/images/gamepad.svg" height="32px" width="32px" className="mr-2"></img>
+              <span className="text-room mt-2">{this.props.UserReducer.user.totalPlayedGame}</span>
+            </div>
+          </div>
+        </MDBCol>
+      </MDBRow >
+    );
+  }
   render() {
     const scrollContainerStyle = { width: "100%", height: "90vh" };
     return (
@@ -260,7 +298,7 @@ class MainScreenGame extends Component {
                   <MDBBtn type="button" id="create-game" className="btn-block pt-4  pb-4 rounded-0" onClick={this.handleCreateGame}>Create Game</MDBBtn>
                 </MDBRow>
               </div>
-              
+
             </MDBCol>
           </MDBRow>
         </MDBContainer>
@@ -268,6 +306,51 @@ class MainScreenGame extends Component {
     );
   }
 }
+
+
+
+class WaitingRoomItem extends Component {
+  render() {
+    return (
+      <MDBCol size="6" className=" mt-2">
+        <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
+          style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
+          <div className="font-light align-items-center">
+            <MDBIcon className="text-room mr-1" icon="home" />
+            <span className="text-room">{this.props.idGame}</span>
+          </div>
+          <div className="font-light align-items-center">
+            <MDBIcon className="text-room mr-1" icon="ring" />
+            <span className="text-room">{this.props.bettingGold}</span>
+          </div>
+          <div className="font-light align-items-center">
+            <MDBIcon className="text-room mr-1" icon="user-alt" />
+            <span className="text-room">{this.props.username} </span>
+          </div>
+        </div>
+      </MDBCol>
+    );
+  }
+}
+class LeaderboardItem extends Component {
+  render() {
+    return (
+      <div className="d-flex justify-content-around pt-2 pb-2" >
+        <div className="rounded" style={{ backgroundColor: "#9C9C9C" }} >
+          <span className="p-2 text-white" height="20px" width="20px">{this.props.rank}</span>
+        </div>
+        <div>
+          <span className="p-2 text-white" >{this.props.username}</span>
+        </div>
+        <div >
+          <span className="p-2 text-white" >{this.props.gold} <img src="/images/coin.svg" height="32px" width="32px"></img></span>
+        </div>
+      </div>
+    );
+  }
+}
+
+
 
 const mapStateToProps = (state) => {
   return {
@@ -281,5 +364,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({ updateUser, updateLeaderboard, updateWaitingGame,createRoomGame }, dispatch);
 }
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainScreenGame);
