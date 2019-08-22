@@ -10,12 +10,11 @@ import {
 } from "mdbreact";
 
 import { bindActionCreators } from 'redux';
-import { updateCell } from '../../store/actions/cell';
 import { connect } from "react-redux";
 import { BrowserRouter } from 'react-router-dom';
 import Board from '../Board';
 import Message from '../MessageInPlayScreen';
-import CellReducer from '../../store/reducers/cell';
+import { appendMessage } from '../../store/actions/messages';
 
 class PlayGame extends Component {
   constructor(props) {
@@ -29,15 +28,14 @@ class PlayGame extends Component {
       this.state.message = event.target.value
     }
 
-    handleInput = (event) => {
-        this.setState({
-            [event.target.id]: event.target.value
-        })
-    }
+  handleInput = (event) => {
+      this.setState({
+          [event.target.id]: event.target.value
+      })
+  }
 
   handleSendMessage() {
-    console.log("ahihi")
-    console.log(this.state.message)
+    this.props.appendMessage(this.state.message,true);
   }
   render() {
     const scrollContainerStyle = { width: "100%", maxHeight: "360px" };
@@ -98,8 +96,7 @@ class PlayGame extends Component {
               <MDBRow>
                 <MDBRow style={scrollContainerStyle} className="mt-4 scrollbar scrollbar-primary chat-body d-flex flex-column" >
                   <MDBContainer className="chat-context">
-                    <Message type={1} message={"ahidsadsadasdsadsadsaddddddddddddddddddddddhi"}></Message>
-                    <Message type={0} message={"ahidsadsadasdsadsadsaddddddddddddddddddddddhiahidsadsadasdahidsadsadasdsadsadsaddddddddddddddddddddddhiahidsadsadasdsadsadsaddddddddddddddddddddddhiahidsadsadasdsadsadsaddddddddddddddddddddddhisadsadsaddddddddddddddddddddddhiahidsadsadasdsadsadsaddddddddddddddddddddddhi"}></Message>
+                    <Message></Message>
                   </MDBContainer>
                 </MDBRow>
               </MDBRow>
@@ -124,15 +121,15 @@ class PlayGame extends Component {
   }
 }
 
+
 const mapStateToProps = (state) => {
   return {
-    ServerReducer: state.ServerReducer,
-    CellReducer: state.CellReducer
-  }
+    MessageReducers: state.MessageReducers
+ }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ updateCell }, dispatch);
+  return bindActionCreators({ appendMessage }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlayGame);

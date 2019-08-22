@@ -6,3 +6,16 @@ export const InitBoard = (board)=>{
         }
     }
 }
+
+export const CellClick = (xcord, ycord, isChecked, typePattern) => {
+    return{
+        type:"CELL_CLICK",
+        payload:{
+            xcord,
+            ycord,
+            isChecked,
+            typePattern
+        }
+    }
+
+}

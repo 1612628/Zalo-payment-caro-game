@@ -18,11 +18,12 @@ class Board extends React.Component {
   }
 
   renderBoard() {
-    return this.createBoardData(this.props.height, this.props.width).map((datarow, i) => (
+    console.log(this.props.CellListReducer.cellList)
+    return this.props.CellListReducer.cellList.map((datarow, i) => (
       <div key={i} className="game-row">
         {
           datarow.map((dataItem, j) => (
-            <Cell key={i * datarow.length + j} type={dataItem} ></Cell>
+            <Cell key={i * datarow.length + j} data={dataItem} ></Cell>
           ))
         }
       </div>
@@ -40,25 +41,21 @@ class Board extends React.Component {
     for (let i = 0; i < width; i++) {
       data.push([]);
       for (let j = 0; j < height; j++) {
-        data[i][j] = 0;
+        data[i][j]= {
+          x:j,
+          y:i,
+          isChecked:false,
+          typePattern: ""
+        }
       }
     }
     return data;
   }
 
 }
-Board.propTypes = {
-  height: PropTypes.number,
-  width: PropTypes.number,
-  mines: PropTypes.number,
-}
-Board.defaultProps = {
-  mine: -1
-};
-
 const mapStateToProps = (state) => {
   return {
-    CellReducer: state.CellReducer
+    CellListReducer: state.CellListReducer
  }
 }
 

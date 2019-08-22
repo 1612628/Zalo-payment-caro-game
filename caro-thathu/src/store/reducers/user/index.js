@@ -5,8 +5,9 @@ const initialUserState={
         golds:-1,
         token:null,
         socket:null,
+        typePattern: "X",
         totalPlayedGame:0
-    }    
+    }       
 }
 
 export default function UserReducer(state=initialUserState,action){

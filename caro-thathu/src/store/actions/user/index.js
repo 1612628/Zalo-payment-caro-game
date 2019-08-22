@@ -1,4 +1,4 @@
-export const updateUser=(id,username,golds,token,totalPlayedGame,socket)=>{
+export const updateUser=(id,username,golds,token,totalPlayedGame,socket,typePattern)=>{
     return{
         type:'UPDATE_USER',
         payload:{    
@@ -7,7 +7,8 @@ export const updateUser=(id,username,golds,token,totalPlayedGame,socket)=>{
             golds:golds,
             token:token,
             totalPlayedGame:totalPlayedGame,
-            socket:socket            
+            socket:socket,
+            typePattern:typePattern            
         }
     }
 }
