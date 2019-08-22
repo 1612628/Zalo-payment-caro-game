@@ -5,7 +5,8 @@ const initialWaitingGameState={
 const WaitingGamesReducer=(state=initialWaitingGameState,action)=>{
     switch(action.type){
         case 'UPDATE_WAITING_GAMES':
-            return action.payload;
+            return {...state,
+                waitingGames:action.payload.reconstructWaitingGame};
         default:
             return state;
     }

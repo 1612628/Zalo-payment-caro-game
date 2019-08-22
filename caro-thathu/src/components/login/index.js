@@ -68,13 +68,13 @@ class UserLogin extends Component {
       }else{
         mySwal.fire({
           title: 'Oops...',
-          text: 'Đăng nhập không thành công',
+          text: 'Failed to login',
           timer:2000
         });
       }
     }else{
       mySwal.fire({
-        title: 'Vui lòng điền đầy đủ thông tin.',
+        title: 'Please fill all information in the form.',
         
         timer:2000
       });
@@ -87,7 +87,7 @@ class UserLogin extends Component {
 
   render() {
     return (
-        <MDBContainer>
+        <MDBContainer className="login-container">
           <MDBRow className="d-flex justify-content-center align-items-center my-5">
             <MDBCol md="6">
               <MDBCard className="gray-text">

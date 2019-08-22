@@ -60,7 +60,6 @@ function isUserExisted(userInfo){
             console.log("isUserExisted Error: "+err);
             return null;
         });
-  
 }
 
 function getLeaderBoard(){

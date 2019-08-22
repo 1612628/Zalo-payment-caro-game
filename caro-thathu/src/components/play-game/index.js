@@ -18,11 +18,10 @@ class PlayGame extends Component {
   constructor(props) {
     super(props);
   }
-  renderSquare()
-  {
+  renderSquare() {
     return (
-    <div className="square">
-    </div>
+      <div className="square">
+      </div>
     );
   }
   render() {
@@ -37,9 +36,7 @@ class PlayGame extends Component {
         </BrowserRouter>
         <MDBContainer fluid="true" className="mt-2">
           <MDBRow>
-    
             {/* list room game */}
-
             <MDBCol size="8" className="border-top border-left border-bot " style={{ backgroundColor: "#ffff" }} >
               {
                 this.renderSquare()
