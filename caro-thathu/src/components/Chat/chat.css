@@ -1,0 +1,9 @@
+.square {
+    border: 1px solid rgb(121, 117, 117);
+    line-height: 2vmin;
+    height: 5vmin;
+    text-align: center;
+    width: 5vmin;
+    cursor: pointer;
+    color: #fff;
+  }
