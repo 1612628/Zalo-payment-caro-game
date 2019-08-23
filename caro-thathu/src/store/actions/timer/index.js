@@ -11,7 +11,7 @@ export const pauseTime=()=>{
     return{
         type:'PAUSE_TIMER',
         payload:{
-            isMyTurn: false
+            isMyTurn:false
         }
     }
 }
@@ -19,7 +19,7 @@ export const restartTime = () =>{
     return {
         type:'RESTART_TIMER',
         payload:{
-            isMyTurn:true
+            isMyTurn:false
         }
     }
 }

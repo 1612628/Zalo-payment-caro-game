@@ -1,9 +1,7 @@
 const initialCellListState={
     cellList:null
 }
-const CellListReducer=(state=initialCellListState,action)=>{
-    console.log(action.payload);
-    
+const CellListReducer=(state=initialCellListState,action)=>{    
     switch(action.type){
         case "INIT_BOARD":
             return{
