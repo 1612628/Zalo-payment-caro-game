@@ -1,5 +1,5 @@
 import React from "react";
-import { MDBProgress } from 'mdbreact';
+import { MDBProgress, MDBIcon } from 'mdbreact';
 import { bindActionCreators } from 'redux';
 import { startDecrementTime } from '../../store/actions/timer';
 import { connect } from 'react-redux';
@@ -15,10 +15,11 @@ class ProgressBar extends React.Component{
     }
     render()
     {
-
-
         return (
+            <div className="d-flex">
+            <MDBIcon icon="user"></MDBIcon>
             <MDBProgress value={this.converTimeToProcessBar()} className="my-2" />
+            </div>
         );
     }
 }   

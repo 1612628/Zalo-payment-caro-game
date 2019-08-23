@@ -1,6 +1,6 @@
 const intInitTime = {
     time: 15,
-    isMyturn: true
+    isMyTurn: true
 }
 const TimeReducer = (state = intInitTime, action) => {
     switch (action.type) {
@@ -8,17 +8,17 @@ const TimeReducer = (state = intInitTime, action) => {
             return {
                 ...state,
                 time: state.time - 1,
-                isMyturn: action.payload
+                isMyTurn: action.payload.isMyTurn
             };
         case "PAUSE_TIMER":
             return {
                 ...state,
-                isMyturn: action.payload
+                isMyTurn: action.payload.isMyTurn
             };
         case "RESTART_TIMER":
             return{
                 ...state,
-                isMyturn:false,
+                isMyTurn:action.payload.isMyTurn,
                 time:15
             }
         default:

@@ -2,6 +2,8 @@ import React from 'react';
 import './cell.css';
 import { bindActionCreators } from 'redux';
 import { CellClick } from '../../store/actions/celllist';
+import { restartTime } from '../../store/actions/timer';
+
 import { connect } from 'react-redux';
 
 class Cell extends React.Component {
@@ -24,6 +26,7 @@ class Cell extends React.Component {
         let typePattern = this.props.UserReducer.typePattern;
         this.state.isChecked = true;
         this.props.CellClick(this.state.x, this.state.y,  this.state.isChecked, "X");
+        this.props.restartTime();
         console.log("is click")
     }
     render() {
@@ -48,12 +51,13 @@ class Cell extends React.Component {
 const mapStateToProps = (state) => {
     return {
         CellListReducer: state.CellListReducer,
-        UserReducer:state.UserReducer
+        UserReducer:state.UserReducer,
+        TimeReducer:state.TimeReducer
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ CellClick }, dispatch);
+    return bindActionCreators({ CellClick,restartTime }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Cell);

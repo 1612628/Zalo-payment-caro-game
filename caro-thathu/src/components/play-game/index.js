@@ -33,8 +33,9 @@ class PlayGame extends Component {
   componentWillMount()
   {
     setInterval(() => {
+      console.log(this.props.TimeReducer.isMyTurn);
+      console.log(this.props.TimeReducer.time);
       if(this.props.TimeReducer.isMyTurn===true){
-        console.log(this.props.TimeReducer.time);
         this.props.startDecrementTime();
       }
     },1000);
@@ -135,9 +136,11 @@ class PlayGame extends Component {
                     </div>
                   </MDBCol>
                 </MDBRow >
+                <MDBContainer className="">
                 <ProcessBar  />
+                </MDBContainer>
                 {/* chat info */}
-                <MDBRow style={{ width: "100%", height: "56vh" }} className="mt-4 scrollbar scrollbar-primary chat-body d-flex flex-column" >
+                <MDBRow style={{ width: "100%", height: "56vh" }} className="mt-2 scrollbar scrollbar-primary chat-body d-flex flex-column" >
                   <MDBContainer className="chat-context">
                       <Message ></Message>
                   </MDBContainer>
