@@ -17,6 +17,9 @@ import Message from '../message';
 import ProcessBar from '../process-bar';
 import { appendMessage } from '../../store/actions/messages';
 import { startDecrementTime} from '../../store/actions/timer';
+import { pauseTime} from '../../store/actions/timer';
+import { restartTime} from '../../store/actions/timer';
+
 
 class PlayGame extends Component {
   constructor(props) {
@@ -24,15 +27,20 @@ class PlayGame extends Component {
     this.handleSendMessage = this.handleSendMessage.bind(this);
     this.state = {
       message: null,
-      time: null
+      timeCount : null
     }
   }
   componentWillMount()
   {
     setInterval(() => {
-      console.log(this.props.TimeReducer.time);
-      this.props.startDecrementTime();
+      if(this.props.TimeReducer.isMyTurn===true){
+        console.log(this.props.TimeReducer.time);
+        this.props.startDecrementTime();
+      }
     },1000);
+  }
+  componentDidMount(){
+    clearInterval(this.state.timeCount);
   }
   handleMessage = (event) => {
     console.log(event.target.value)
@@ -152,7 +160,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ appendMessage,startDecrementTime }, dispatch);
+  return bindActionCreators({ appendMessage,startDecrementTime,pauseTime,restartTime }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlayGame);
