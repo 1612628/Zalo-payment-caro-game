@@ -23,3 +23,11 @@ export const restartTime = () =>{
         }
     }
 }
+export const restartTurn =()=>{
+    return{
+        type:'RESTART_NEW_TURN',
+        payload:{
+            isMyTurn:true
+        }
+    }
+}

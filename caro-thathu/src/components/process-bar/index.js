@@ -1,32 +1,35 @@
 import React from "react";
-import { MDBProgress, MDBIcon } from 'mdbreact';
+import { MDBProgress, MDBIcon, MDBRow, MDBCol } from 'mdbreact';
 import { bindActionCreators } from 'redux';
 import { startDecrementTime } from '../../store/actions/timer';
 import { connect } from 'react-redux';
 
-class ProgressBar extends React.Component{
-    constructor(props)
-    {
+class ProgressBar extends React.Component {
+    constructor(props) {
         super(props);
     }
-    converTimeToProcessBar()
-    {
-        return Math.floor( this.props.TimeReducer.time * 100 / 15);
+    converTimeToProcessBar() {
+        return Math.floor(this.props.TimeReducer.time * 100 / 15);
     }
-    render()
-    {
+    render() {
         return (
-            <div className="d-flex">
-            <MDBIcon icon="user"></MDBIcon>
-            <MDBProgress value={this.converTimeToProcessBar()} className="my-2" />
-            </div>
+            <MDBRow className="py-2" >
+                <MDBCol size="10">
+                    <MDBProgress  value={this.converTimeToProcessBar()} className="my-2" />
+                </MDBCol>
+                <MDBCol size="2" className="d-flex justify-content-around">
+                    <MDBIcon far icon="clock" size="2x" className="text-while" />
+                    <p className="align-self-center text-while pt-1">{this.props.TimeReducer.time}</p>
+                </MDBCol>
+
+            </MDBRow>
         );
     }
-}   
+}
 
 const mapStateToProps = (state) => {
     return {
-        TimeReducer:state.TimeReducer
+        TimeReducer: state.TimeReducer
     }
 }
 
