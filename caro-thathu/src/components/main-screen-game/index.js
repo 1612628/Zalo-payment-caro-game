@@ -139,17 +139,18 @@ class MainScreenGame extends Component {
           this.props.UserReducer.user.socket.emit('create_game',res.roomGameId);
 
           this.props.createRoomGame(res.roomGameId,'waiting',result.value);
-          mySwal.fire({
+          await mySwal.fire({
             type: 'success',
             html: 'You create a room with betting golds: ' + result.value
           });
+          this.props.history.push('/playgame');
         }else{
-          mySwal.fire({
+          await mySwal.fire({
             type: 'warning',
             html: 'Failed to create a room with betting golds: ' + result.value
           });
         }
-        this.props.history.push('/playgame');
+        
 
       }})
     };

@@ -42,6 +42,20 @@ class PlayGame extends Component {
   componentDidMount(){
     clearInterval(this.state.timeCount);
   }
+
+  handlePlayingPlayerTurn=()=>{
+    let playing = setInterval(() => {
+      if(this.props.TimeReducer.isMyTurn===true){
+        console.log(this.props.TimeReducer.time);
+        this.props.startDecrementTime();
+        if(this.props.TimeReducer.time<0){
+          clearInterval(playing);
+        }
+      }
+      
+    },1000);
+  }
+
   handleMessage = (event) => {
     console.log(event.target.value)
     this.state.message = event.target.value
