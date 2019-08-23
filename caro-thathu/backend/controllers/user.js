@@ -1,54 +1,66 @@
 
 const mongoRoomGameModel = require('../databases/mongoDatabase/models/roomGame');
 const mongoUserModel = require('../databases/mongoDatabase/models/user');
-const bcrypt = require('bcrypt');
+
 
 async function createUser(userInfo){
     console.log("createUser",userInfo);
-    await bcrypt.hash(userInfo.password,10, async function(err,hash){
-        if (err){
-            console.log("Bcrypt error: ",err);
+    let user = await new mongoUserModel({
+        username:userInfo.username,
+        password:userInfo.password,
+        email:userInfo.email,
+        golds: 10000,
+        won_game: 0,
+        draw_game:0,
+        total_played_game:0
+    })
+    await user.save(function(err,createdUser){
+        if(err){
+            console.log('createUser Error: '+err);
             return null;
-            
-        }else{
-            let user = await new mongoUserModel({
-                username:userInfo.username,
-                password:hash,
-                email:userInfo.email,
-                golds: 10000,
-                won_game: 0,
-                draw_game:0,
-                total_played_game:0
-            })
-            await user.save(function(err,createdUser){
-                if(err){
-                    console.log('createUser Error: '+err);
-                    return null;
-                }
-                console.log("createUser successful");
-                return createdUser;
-            })
         }
-    });
+        console.log("createUser successful");
+        return createdUser;
+    })
 }
 
-function isUserExisted(userInfo){
+function isCorrectUser(userInfo){
+    console.log('isCorrectUser',userInfo);
     return mongoUserModel.findOne(
             {username:userInfo.username}
         )
         .exec()
         .then((user)=>{
             if(user){
-                return bcrypt.compare(userInfo.password,user.password)
-                .then((success)=>{
-                    if(success){
-                        console.log("isUserExisted correct password.");
-                        return user;
-                    }else{
-                        console.log("isUserExisted wrong password.");
-                        return null;
-                    }
+                return user.comparePassword(userInfo.password)
+                .then(isMatch=>{
+                    console.log("isCorrectUser correct password.");
+                    return user;
                 })
+                .catch(err=>{
+                    console.log("isCorrectUser wrong password.");
+                    return null;
+                })
+            }else{
+                console.log("isCorrectUser user not existed.");
+                return null;
+            }            
+        })
+        .catch(err=>{
+            console.log("isCorrectUser Error: "+err);
+            return null;
+        });
+}
+function isExistedUser(username){
+    console.log('isExistedUser',username);
+    return mongoUserModel.findOne(
+            {username:username}
+        )
+        .exec()
+        .then((user)=>{
+            if(user){
+                console.log("isUserExisted user existed.");
+                return user;
             }else{
                 console.log("isUserExisted user not existed.");
                 return null;
@@ -76,8 +88,15 @@ function getLeaderBoard(){
     
 }
 
+function updateUserPassword(userId,password){
+    console.log('updateUserPassword',userId,password);    
+    return mongoUserModel.findOneAndUpdate({_id:userId},{password:password})
+}
+
 module.exports={
     createUser:createUser,
-    isUserExisted:isUserExisted,
-    getLeaderBoard:getLeaderBoard
+    isCorrectUser:isCorrectUser,
+    isExistedUser:isExistedUser,
+    getLeaderBoard:getLeaderBoard,
+    updateUserPassword:updateUserPassword
 }

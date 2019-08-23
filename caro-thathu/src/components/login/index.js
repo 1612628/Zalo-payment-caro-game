@@ -18,7 +18,6 @@ import {bindActionCreators} from 'redux';
 import {updateUser} from '../../store/actions/user';
 import { connect } from 'react-redux'; 
 import {changeAuth} from '../../store/actions/auth'
-import Auth from '../../auth';
 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -57,7 +56,9 @@ class UserLogin extends Component {
       let res = await LoginRequest(this.state.usernameInput.value, this.state.passwordInput.value);
       if(res!=null){
         
-        const socket = socketIOClient(this.props.ServerReducer.server.endpoint);
+        const socket = socketIOClient(this.props.ServerReducer.server.endpoint,{
+          query:{token:this.props.UserReducer.user.token}
+        });
         socket.emit('user_id',res.user._id);
 
         this.props.updateUser(res.user._id,
@@ -65,8 +66,9 @@ class UserLogin extends Component {
         res.user.golds,
         res.token,
         res.user.total_played_game,socket);
-        // Auth.authenticate();
-        this.props.changeAuth(!this.props.AuthReducer.auth);
+        console.log(this.props.AuthReducer.isAuthenticate);
+        this.props.changeAuth(true);
+        console.log(this.props.AuthReducer.isAuthenticate);
         this.props.history.push("/mainscreengame");
       }else{
         mySwal.fire({
@@ -78,7 +80,6 @@ class UserLogin extends Component {
     }else{
       mySwal.fire({
         title: 'Please fill all information in the form.',
-        
         timer:2000
       });
     }
@@ -86,6 +87,9 @@ class UserLogin extends Component {
   }
   handleRedirectToRegister=()=>{
     this.props.history.push("/register");
+  }
+  handleRedirectToForgotPassword=()=>{
+    this.props.history.push('/forgotpassword');
   }
 
   render() {
@@ -126,7 +130,7 @@ class UserLogin extends Component {
                     name="password"  
                     required/>
                     <p className="font-small d-flex justify-content-end">
-                      <a href="#!" className="green-text ml-1 font-weight-bold">Forgot Password?</a>
+                      <a href="#!" className="green-text ml-1 font-weight-bold" onClick={this.handleRedirectToForgotPassword}>Forgot Password?</a>
                     </p>
                   
 

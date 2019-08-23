@@ -33,7 +33,10 @@ export const RegisterRequest = async function Register(username,password,email) 
         }
     }
     let res = await axios.post("http://127.0.0.1:4001/register",data,config)
-    .then(res => res.data)
+    .then(res => {
+        console.log(res);
+        return res;
+    })
     .catch(error => {
         console.log(error);
         return null;
@@ -105,6 +108,22 @@ export const LogoutRequest = async(token,userId)=>{
         }
     }
     let res = await axios.post("http://127.0.0.1:4001/logout",data,config)
+    .then(res => res)
+    .catch(error => {
+        console.log(error);
+        return null;
+    })
+    return res;
+}
+
+export const ForgotPasswordRequest = async(username,email)=>{
+    console.log("API: LogoutRequest");
+    let data={
+        username:username,
+        email:email
+    }
+
+    let res = await axios.post("http://127.0.0.1:4001/forgotpassword",data)
     .then(res => res)
     .catch(error => {
         console.log(error);

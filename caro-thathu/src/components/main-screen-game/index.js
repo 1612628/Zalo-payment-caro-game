@@ -8,23 +8,24 @@ import {
   MDBNav, MDBNavLink, MDBBtn
 
 } from "mdbreact";
-
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { updateUser } from '../../store/actions/user';
 import { updateLeaderboard } from '../../store/actions/leaderboard';
 import { updateWaitingGame } from '../../store/actions/waitingGames';
 import {createRoomGame} from '../../store/actions/roomGame';
+import {changeAuth} from '../../store/actions/auth';
+
 import {LogoutRequest, LeaderboardRequest, WaitingRoomGamesRequest,CreateRoomGameRequest } from '../../apis'
 
 import { BrowserRouter } from 'react-router-dom';
 
 import WaitingGameBox from '../waiting-game-box';
 import Leaderboard from '../leaderboard';
-import Auth from '../../auth';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 const mySwal = withReactContent(Swal);
+
 
 class MainScreenGame extends Component {
   constructor(props) {
@@ -45,9 +46,10 @@ class MainScreenGame extends Component {
     window.onpopstate=(event)=>{
       event.preventDefault();
       LogoutRequest(this.props.UserReducer.user.token,this.props.UserReducer.user.id)
-      Auth.authenticate();
+      this.props.changeAuth(!this.props.AuthReducer.isAuthenticate);
       this.props.history.push('/');
-    }
+    }    
+   
   }
 
 
@@ -89,7 +91,7 @@ class MainScreenGame extends Component {
 
   handleBack = () => {
     LogoutRequest(this.props.UserReducer.user.token,this.props.UserReducer.user.id)
-    Auth.authenticate();
+    this.props.changeAuth(!this.props.AuthReducer.isAuthenticate);
     this.props.history.push('/');
   }
   handleTeamInfo = () => {
@@ -134,6 +136,8 @@ class MainScreenGame extends Component {
           this.props.UserReducer.user.id,this.props.UserReducer.user.username,
           result.value);
         if(res){
+          this.props.UserReducer.user.socket.emit('create_game',res.roomGameId);
+
           this.props.createRoomGame(res.roomGameId,'waiting',result.value);
           mySwal.fire({
             type: 'success',
@@ -145,7 +149,7 @@ class MainScreenGame extends Component {
             html: 'Failed to create a room with betting golds: ' + result.value
           });
         }
-        
+        this.props.history.push('/playgame');
 
       }})
     };
@@ -246,9 +250,6 @@ class MainScreenGame extends Component {
                 </MDBCol>    
                   </MDBRow>  
                 </MDBContainer>
-              
-                
-                
               </MDBRow>
             </MDBCol>
             <MDBCol size="4" className="pl-4 d-fle justify-content-center" >
@@ -287,7 +288,6 @@ class MainScreenGame extends Component {
                       <MDBContainer style={{ backgroundColor: "#5B5B5B" }} >
                         {this.getRenderLeaderboard(this.props.LeaderboardReducer.leaderboard)}
                       </MDBContainer>
-                      
                     </MDBRow>
                   </MDBContainer>
                 </MDBRow>
@@ -355,12 +355,13 @@ const mapStateToProps = (state) => {
     UserReducer: state.UserReducer,
     ServerReducer: state.ServerReducer,
     LeaderboardReducer: state.LeaderboardReducer,
-    WaitingGamesReducer:state.WaitingGamesReducer
+    WaitingGamesReducer:state.WaitingGamesReducer,
+    AuthReducer:state.AuthReducer
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ updateUser, updateLeaderboard, updateWaitingGame,createRoomGame }, dispatch);
+  return bindActionCreators({ updateUser, updateLeaderboard, updateWaitingGame,createRoomGame,changeAuth }, dispatch);
 }
 
 

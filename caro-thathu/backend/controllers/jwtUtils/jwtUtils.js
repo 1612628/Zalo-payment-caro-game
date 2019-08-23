@@ -9,16 +9,16 @@ function createToken(payload){
     return jwt.sign({data:String(payload)},config.secret,jwtOptions);
 }
 
-// function checkToken(token){
-//     jwt.verify(token,config.secret,(err,decoded)=>{
-//         if(err){
-//             console.log("checkToken Error: "+err);
-//             return null;
-//         }else{
-//             return decoded;
-//         }
-//     });
-// }
+function checkToken(token){
+    jwt.verify(token,config.secret,(err,decoded)=>{
+        if(err){
+            console.log("checkToken Error: "+err);
+            return null;
+        }else{
+            return decoded;
+        }
+    });
+}
 
 function checkRequestToken(req,res,next){
     let token = req.headers['authorization'];
@@ -47,5 +47,6 @@ function checkRequestToken(req,res,next){
 
 module.exports={
     createToken:createToken,
+    checkToken:checkToken,
     checkRequestToken:checkRequestToken
 }

@@ -16,7 +16,7 @@ export const JSOGTransform = createTransform(
 const persistConfig = {
   key: 'root',
   storage:storage,
-  whitelist:['UserReducer'],
+  whitelist:['UserReducer','AuthReducer'],
   transforms: [JSOGTransform]
 }
 export const history = createBrowserHistory()
