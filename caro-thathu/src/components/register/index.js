@@ -9,7 +9,7 @@ import {
     MDBCardBody,
     MDBCardHeader,
     MDBBtn,
-    MDBInput
+    MDBInput,
   } from "mdbreact";
 
 import Swal from 'sweetalert2';

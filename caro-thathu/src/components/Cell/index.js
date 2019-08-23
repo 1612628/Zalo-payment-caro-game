@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import './cell.css';
 import { bindActionCreators } from 'redux';
 import { CellClick } from '../../store/actions/celllist';
@@ -10,15 +9,21 @@ class Cell extends React.Component {
         super(props);
         this.state = {
             x: this.props.data.x,
-            y: this.props.data.y
+            y: this.props.data.y,
+            isChecked: this.props.data.isChecked
         }
         this.handleClick = this.handleClick.bind(this);
     }
 
     handleClick() {
+        if(this.state.isChecked===true)
+        {
+            console.log("khong check dc nua");
+            return;
+        }
         let typePattern = this.props.UserReducer.typePattern;
-        let isChecked = true;
-        this.props.CellClick(this.state.x, this.state.y, isChecked, "X");
+        this.state.isChecked = true;
+        this.props.CellClick(this.state.x, this.state.y,  this.state.isChecked, "X");
         console.log("is click")
     }
     render() {

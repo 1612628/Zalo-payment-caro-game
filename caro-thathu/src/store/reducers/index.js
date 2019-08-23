@@ -7,6 +7,7 @@ import MessageReducer from './messages';
 import RoomGameReducer from './roomGame';
 import ServerReducer from './server';
 import AuthReducer from './auth';
+import TimeReducer from './timer';
 import { connectRouter } from 'connected-react-router'
 
 
@@ -19,7 +20,9 @@ const allReducers =(history)=> combineReducers({
     LeaderboardReducer:LeaderboardReducer,
     MessageReducer:MessageReducer,
     ServerReducer:ServerReducer,
-    AuthReducer:AuthReducer
+    AuthReducer:AuthReducer,
+    TimeReducer:TimeReducer
+    
 });
 
 export default allReducers;
