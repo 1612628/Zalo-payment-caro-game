@@ -41,3 +41,12 @@ export const opponentJoinGame=(opponentId,opponentUsername,opponentGolds)=>{
         }
     }
 }
+
+export const updateOpponentTypePattern=(typePattern)=>{
+    return{
+        type:'UPDATE_OPPONENT_TYPE_PATTERN',
+        payload:{
+            typePattern:typePattern
+        }
+    }
+}

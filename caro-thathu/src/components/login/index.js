@@ -15,7 +15,7 @@ import {
 import socketIOClient from "socket.io-client";
 
 import {bindActionCreators} from 'redux';
-import {updateUser} from '../../store/actions/user';
+import {updateUser,initialState} from '../../store/actions/user';
 import { connect } from 'react-redux'; 
 import {changeAuth} from '../../store/actions/auth'
 
@@ -26,6 +26,7 @@ const mySwal = withReactContent(Swal);
 class UserLogin extends Component {
   constructor(props) {
     super(props)
+    this.props.initialState();
     this.handleLogin = this.handleLogin.bind(this);
     this.state = {
       usernameInput: {
@@ -37,6 +38,8 @@ class UserLogin extends Component {
         valid:false
       }
     }
+
+
   }
 
   handleUsername = (event) => {
@@ -164,7 +167,10 @@ const mapStateToProps=(state)=>{
 }
 
 const mapDispatchToProps=(dispatch)=>{
-  return bindActionCreators({updateUser,changeAuth},dispatch);
+  return bindActionCreators({
+    updateUser,changeAuth,initialState
+  }
+    ,dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserLogin);

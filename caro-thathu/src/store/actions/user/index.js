@@ -20,3 +20,14 @@ export const updateUserPattern=(pattern)=>{
         }
     }
 }
+export const userLogOut=()=>{
+    return{
+        type:'USER_LOG_OUT'
+    }
+}
+
+export const initialState=()=>{
+    return{
+        type:'INITIAL_STATE'
+    }
+}

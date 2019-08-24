@@ -47,6 +47,17 @@ const RoomGameReducer=(state=initialRoomGameState,action)=>{
                     opponent:action.payload
                 }
             }
+        case 'UPDATE_OPPONENT_TYPE_PATTERN':
+            return{
+                ...state,
+                roomGame:{
+                    ...state.roomGame,
+                    opponent:{
+                        ...state.roomGame.opponent,
+                        typePattern:action.payload.typePattern
+                    }
+                }
+            }
         default:
             return state;
     }

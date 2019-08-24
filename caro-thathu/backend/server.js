@@ -73,21 +73,26 @@ io.on("connection",function(socket){
         console.log('join_game',data);
         socket.join(''+data.gameId);
 
-        let clients = io.sockets.adapter.rooms[''+data.gameId].sockets;
-        for(const client of clients){
-            if(client.id !== socket.id){
-                
-                client.emit('opponent_join_game',{
-                    gameId:gameId,
-                    opponentId:data.userId,
-                    opponentName:data.username,
-                    opponentGolds:data.golds
-                });
-            }
-        }
-        for(const client of clients){
-            client.emit('ready_to_start_game',gameId);
-        }
+        // let clients = io.sockets.adapter.rooms[''+data.gameId].sockets;
+        io.sockets.in(''+data.gameId).clients((err,clients)=>{
+            clients.forEach((client)=>{
+                const clientSocket = io.of('/').connected[client];
+                if(client !== socket.id){
+                    clientSocket.emit('opponent_join_game',{
+                        gameId:data.gameId,
+                        opponentId:data.userId,
+                        opponentName:data.username,
+                        opponentGolds:data.golds
+                    });
+                }
+            })
+        })
+        io.sockets.in(''+data.gameId).clients((err,clients)=>{
+            clients.forEach((client)=>{
+                io.of('/').connected[client]
+                .emit('ready_to_start_game',data.gameId);
+            })
+        })
     })
     socket.on('ready_to_play',async (data)=>{
         let roomGame = await RedisClient.hgetall('room_game:'+data.gameId);
@@ -142,6 +147,7 @@ io.on("connection",function(socket){
             // for(const client of clients){
             //     client.emit('start_game',response);
             // }
+            await RedisClient.hset('room_game:'+data.gameId,'status','playing');
             io.to(''+data.gameId).emit('start_game',response);
 
 

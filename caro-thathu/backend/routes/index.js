@@ -146,7 +146,8 @@ router.post('/games',async (req,res)=>{
             let idGameCount = await RedisClient.incr('idGameCount');
             if(idGameCount){
                 let ok = await RedisClient.hmset('room_game:'+idGameCount,
-                'host_id',hostId,'hold_golds','betting_golds',bettingGolds,
+                'host_id',hostId,
+                'betting_golds',bettingGolds,
                 'status','waiting',
                 'opponent_id','null','winner_id','null',
                 'host_ready','false','opponent_ready','false');

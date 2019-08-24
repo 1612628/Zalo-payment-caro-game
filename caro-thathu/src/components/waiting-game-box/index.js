@@ -9,13 +9,12 @@ import {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {joinInRoomGame} from '../../store/actions/roomGame';
+import {JoinGameRequest} from '../../apis/';
 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 const mySwal = withReactContent(Swal);
 
-
-import {JoinGameRequest} from '../../apis/';
 
 class WaitingGameBox extends Component{
     constructor(props){
