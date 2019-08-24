@@ -42,6 +42,10 @@ io.use(function(socket,next){
     }
 })
 
+var CaroGameList = require('./caro-game-list.js');
+var CaroGame = require('./caro-game.js');
+var caroGames = new CaroGameList();
+
 io.on("connection",function(socket){
     console.log("New client socket connected");
 
@@ -61,12 +65,15 @@ io.on("connection",function(socket){
     socket.on('create_game',(gameId)=>{
         console.log('socker create room game: '+gameId);
         socket.join(''+gameId);
+        let caroGame = new CaroGame(gameId);
+        caroGames.addGame(caroGame);
     })
 
     socket.on('get_out_of_game',async (gameId)=>{
         console.log('socker get out of game: '+gameId);
         await RedisClient.del('room_game:'+gameId);
         socket.leave(''+gameId);
+        caroGames.removeGameByGameId(gameId);
     })
 
     socket.on('join_game',(data)=>{
