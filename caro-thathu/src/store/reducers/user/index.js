@@ -24,6 +24,11 @@ export default function UserReducer(state=initialUserState,action){
                     typePattern:action.payload.typePattern
                 }
             }
+        case 'USER_LOG_OUT':
+            console.log('USER_LOG_OUT');
+            return{
+                ...initialUserState
+            }
         default:
             return state;
     }

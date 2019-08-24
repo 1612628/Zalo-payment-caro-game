@@ -9,12 +9,14 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 .square:hover { 
-  background-color: #747d8c;
+  background-color: #807182;
 }
 
 .cell-o{
+  font-size: 25px;
   color:blue;
 }
 .cell-x{
+  font-size: 2em;
   color:red;
 }

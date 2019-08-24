@@ -77,7 +77,8 @@ class Register extends Component{
             let res = await RegisterRequest(this.state.usernameInput.value,
               this.state.passwordInput.value,
               this.state.emailInput.value);
-            if(res.status===201){
+             console.log(res)
+            if(res && res.status===201){
               mySwal.fire({
                 type:'success',
                 title: 'Create account successful',
@@ -88,7 +89,7 @@ class Register extends Component{
               mySwal.fire({
                 type: 'error',
                 title: 'Oops...',
-                text: 'There is an happened error',
+                text: 'User account is existed',
                 timer:2000
               });
             }

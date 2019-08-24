@@ -10,7 +10,7 @@ import {
 } from "mdbreact";
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { updateUser } from '../../store/actions/user';
+import { updateUser,userLogOut } from '../../store/actions/user';
 import { updateLeaderboard } from '../../store/actions/leaderboard';
 import { updateWaitingGame } from '../../store/actions/waitingGames';
 import {createRoomGame} from '../../store/actions/roomGame';
@@ -46,7 +46,8 @@ class MainScreenGame extends Component {
     window.onpopstate=(event)=>{
       event.preventDefault();
       LogoutRequest(this.props.UserReducer.user.token,this.props.UserReducer.user.id)
-      this.props.changeAuth(!this.props.AuthReducer.isAuthenticate);
+      this.props.changeAuth(false);
+      this.props.userLogOut();
       this.props.history.push('/');
     }    
    
@@ -57,7 +58,7 @@ class MainScreenGame extends Component {
     if(waitingGames){
       return waitingGames.map((waitingGame,index)=>{
         return(
-          <WaitingGameBox key={index} index={index}></WaitingGameBox>
+          <WaitingGameBox history={this.props.history} key={index} index={index}></WaitingGameBox>
         )
       })
     }else{
@@ -92,6 +93,7 @@ class MainScreenGame extends Component {
   handleBack = () => {
     LogoutRequest(this.props.UserReducer.user.token,this.props.UserReducer.user.id)
     this.props.changeAuth(false);
+    this.props.userLogOut();
     this.props.history.push('/');
   }
   handleTeamInfo = () => {
@@ -272,7 +274,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({ updateUser, 
     updateLeaderboard, updateWaitingGame,
-    createRoomGame,changeAuth }
+    createRoomGame,changeAuth,userLogOut }
     , dispatch);
 }
 

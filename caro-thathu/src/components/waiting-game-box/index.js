@@ -9,13 +9,12 @@ import {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {joinInRoomGame} from '../../store/actions/roomGame';
+import {JoinGameRequest} from '../../apis/';
 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 const mySwal = withReactContent(Swal);
 
-
-import {JoinGameRequest} from '../../apis/';
 
 class WaitingGameBox extends Component{
     constructor(props){
@@ -43,13 +42,14 @@ class WaitingGameBox extends Component{
                 if(res){
                   this.props.joinInRoomGame(this.props.WaitingGamesReducer.waitingGames[this.state.index].roomGameId,
                     res.status,this.props.WaitingGamesReducer.waitingGames[this.state.index].bettingGolds,
-                    res.opponent.id,res.opponent.name,res.opponent.golds);
+                    res.opponent.id,res.opponent.name,res.opponent.golds,res.opponent.totalPlayedGame);
                   
                   this.props.UserReducer.user.socket.emit('join_game',{
                     gameId:this.props.WaitingGamesReducer.waitingGames[this.state.index].roomGameId,
                     userId:this.props.UserReducer.user.id,
-                    userName:this.props.UserReducer.user.username,
-                    golds:this.props.UserReducer.user.golds
+                    username:this.props.UserReducer.user.username,
+                    golds:this.props.UserReducer.user.golds,
+                    totalPlayedGame:this.props.UserReducer.user.totalPlayedGame
                   });
                   
                   this.props.history.push("/playgame");
