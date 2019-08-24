@@ -15,11 +15,15 @@ import { BrowserRouter } from 'react-router-dom';
 import Board from '../Board';
 import Message from '../message';
 import ProcessBar from '../process-bar';
-import { appendMessage } from '../../store/actions/messages';
-import { startDecrementTime} from '../../store/actions/timer';
-import { pauseTime} from '../../store/actions/timer';
-import { restartTime} from '../../store/actions/timer';
 
+import { appendMessage } from '../../store/actions/messages';
+import { startDecrementTime,restartTime,pauseTime} from '../../store/actions/timer';
+import {getOutOfOwnCreatedRoomGame,opponentJoinGame} from '../../store/actions/roomGame';
+import {updateUserPattern} from '../../store/actions/user';
+
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+const mySwal = withReactContent(Swal);
 
 class PlayGame extends Component {
   constructor(props) {
@@ -29,19 +33,105 @@ class PlayGame extends Component {
       message: null,
       timeCount : null
     }
+
+    this.props.UserReducer.user.socket.on('opponent_join_game',(data)=>{
+      this.props.opponentJoinGame(data.opponentId,data.opponentName,data.opponentGolds);
+    })
+    this.props.UserReducer.user.socket.on('ready_to_start_game',(gameId)=>{
+      let timerInterval
+      mySwal.fire({
+        title: 'Please waiting for your opponent!',
+        html: '<strong></strong>.',
+        timer: 5000,
+        allowOutsideClick:false,
+        allowEscapeKey:false,
+        allowEnterKey:false,
+        onBeforeOpen: () => {
+          Swal.showLoading()
+          
+          this.props.UserReducer.user.socket.emit('ready_to_play',{
+            gameId:gameId,
+            userId:this.props.UserReducer.user.id
+          });
+
+          timerInterval = setInterval(() => {
+            Swal.getContent().querySelector('strong')
+              .textContent = (Swal.getTimerLeft()/1000).toFixed(0)
+          }, 100)
+        },
+        onClose: () => {
+          clearInterval(timerInterval)
+        }
+      }).then((result) => {
+        mySwal.fire({
+          title:'Start game',
+          type:'success',
+          timer:500,
+          showConfirmButton: false
+        })
+      })
+    })
+
+    this.props.UserReducer.user.socket.on('start_game',(data)=>{
+      let currentUserPattern,opponentPattern;
+      for(const pattern of data.patterns){
+        if(pattern.userId == this.props.UserReducer.user.id){
+          currentUserPattern=pattern.patternType;
+        }else{
+          opponentPattern = pattern.patternType;
+        }
+      }
+
+      this.handleStartGame(data.firstUserId,currentUserPattern,opponentPattern);
+    })
   }
+  
+  handleStartGame=(firstUserId,currentUserPattern,opponentPatterrn)=>{
+    this.props.updateUserPattern(currentUserPattern);
+
+    if(firstUserId==this.props.UserReducer.user.id){
+      this.props.restartTime();
+    }else{
+      this.props.startDecrementTime();
+    }
+
+  }
+
   componentWillMount()
   {
-    setInterval(() => {
-      console.log(this.props.TimeReducer.isMyTurn);
-      console.log(this.props.TimeReducer.time);
-      if(this.props.TimeReducer.isMyTurn===true){
-        this.props.startDecrementTime();
-      }
-    },1000);
+    // setInterval(() => {
+    //   console.log(this.props.TimeReducer.isMyTurn);
+    //   console.log(this.props.TimeReducer.time);
+    //   if(this.props.TimeReducer.isMyTurn===true){
+    //     this.props.startDecrementTime();
+    //   }
+    // },1000);
   }
   componentDidMount(){
     clearInterval(this.state.timeCount);
+  }
+
+  handleTeamInfo = () => {
+    mySwal.fire({
+      title: '<strong>ThaThu Caro</u></strong>',
+      type: 'info',
+      html:
+        'ThaThu Caro is a project that we were trained in Spring Zalopay Fresher Course!!' +
+        '<br/> <br/>' +
+        'To contact us:' +
+        '<br/>' +
+        '<a target="blank" href="https://github.com/1612628">thanhnguyenduy2304@gmail</a> <br/>' +
+        '<a target="blank" href="https://github.com/sv1612677">thuckhpro@gmail.com</a>',
+      showCloseButton: true,
+      showCancelButton: true,
+      focusConfirm: false,
+      confirmButtonText:
+        '<i class="fa fa-thumbs-up"></i> Great!',
+      confirmButtonAriaLabel: 'Thumbs up, great!',
+      cancelButtonText:
+        '<i class="fa fa-thumbs-down"></i>',
+      cancelButtonAriaLabel: 'Thumbs down'
+    });
   }
 
   handlePlayingPlayerTurn=()=>{
@@ -68,6 +158,18 @@ class PlayGame extends Component {
       [event.target.id]: event.target.value
     })
   }
+  
+  handleBackToWaitingRoom = async () => {
+    
+    
+    this.props.UserReducer.user.socket.emit('get_out_of_game',this.props.RoomGameReducer.roomGame.roomGameId)
+    this.props.getOutOfOwnCreatedRoomGame();
+    await mySwal.fire({
+      type: 'success',
+      html: 'Get out of game'
+    });
+    this.props.history.push('/mainscreengame');
+  }
 
   handleSendMessage() {
     console.log(this.props.TimeReducer.time);
@@ -87,8 +189,8 @@ class PlayGame extends Component {
         <BrowserRouter>
           <MDBNav style={{ backgroundColor: "#dddddd" }}>
             <MDBNavLink className="nav-logo  mr-auto p-2 " to="#"><img src="/images/avarta.png" height="64px" ></img></MDBNavLink>
-            <MDBNavLink className="nav-end mt-3" to="#"><img src="/images/info.svg" height="32px" width="32px"></img></MDBNavLink>
-            <MDBNavLink style={{ backgroundColor: "while" }} className="nav-end mt-3" to="#"><img src="/images/exit.svg" height="32px" width="32px"></img></MDBNavLink>
+            <MDBNavLink className="nav-end mt-3" to="#" onClick={this.handleTeamInfo}><img src="/images/info.svg" height="32px" width="32px"></img></MDBNavLink>
+            <MDBNavLink style={{ backgroundColor: "while" }} className="nav-end mt-3" to="#" onClick={this.handleBackToWaitingRoom}><img src="/images/exit.svg" height="32px" width="32px"></img></MDBNavLink>
           </MDBNav>
         </BrowserRouter>
         <MDBContainer fluid="true" className="mt-2">
@@ -172,12 +274,17 @@ class PlayGame extends Component {
 const mapStateToProps = (state) => {
   return {
     MessageReducer: state.MessageReducer,
-    TimeReducer: state.TimeReducer
+    TimeReducer: state.TimeReducer,
+    UserReducer:state.UserReducer,
+    RoomGameReducer:state.RoomGameReducer
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ appendMessage,startDecrementTime,pauseTime,restartTime }, dispatch);
+  return bindActionCreators({ appendMessage,
+    startDecrementTime,pauseTime,restartTime,
+    getOutOfOwnCreatedRoomGame,opponentJoinGame,
+    updateUserPattern }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlayGame);

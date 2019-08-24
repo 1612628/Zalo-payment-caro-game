@@ -91,7 +91,7 @@ class MainScreenGame extends Component {
 
   handleBack = () => {
     LogoutRequest(this.props.UserReducer.user.token,this.props.UserReducer.user.id)
-    this.props.changeAuth(!this.props.AuthReducer.isAuthenticate);
+    this.props.changeAuth(false);
     this.props.history.push('/');
   }
   handleTeamInfo = () => {
@@ -133,16 +133,18 @@ class MainScreenGame extends Component {
     .then(async (result)=> {
       if (result.value) {
         let res = await CreateRoomGameRequest(this.props.UserReducer.user.token,
-          this.props.UserReducer.user.id,this.props.UserReducer.user.username,
+          this.props.UserReducer.user.id,
           result.value);
         if(res){
           this.props.UserReducer.user.socket.emit('create_game',res.roomGameId);
 
           this.props.createRoomGame(res.roomGameId,'waiting',result.value);
+          
           await mySwal.fire({
             type: 'success',
             html: 'You create a room with betting golds: ' + result.value
           });
+          
           this.props.history.push('/playgame');
         }else{
           await mySwal.fire({
@@ -154,20 +156,6 @@ class MainScreenGame extends Component {
 
       }})
     };
-  
-
-  renderWaitingRoom = () => {
-    return this.props.waitingRoomGames.map((dataitem, index) => (
-        <WaitingRoomItem  key={index}  idGame={dataitem.idGame} bettingGold ={dataitem.bettingGold} username={dataitem.username} >
-        </WaitingRoomItem>
-    ));
-  }
-  renderLearBoard= ()=>{
-    return this.props.LeaderboardReducer.map((dataitem, index) => (
-      <LeaderboardItem  key={index}  rank={dataitem.rank} username ={dataitem.username} gold={dataitem.gold} >
-      </LeaderboardItem>
-  ));
-  }
 
   renderUserInfo = () => {
     return (
@@ -209,46 +197,11 @@ class MainScreenGame extends Component {
           <MDBRow className="mx-0">
 
             {/* list room game */}
-
             <MDBCol size="8" >            
               <MDBRow className="scrollbar scrollbar-default d-flex flex-wrap align-items-start" style={scrollContainerStyle} >
                 <MDBContainer>
                   <MDBRow>
                     {this.getRenderWaitingGames(this.props.WaitingGamesReducer.waitingGames)}
-                    <MDBCol size="6" className=" mt-3">
-                  <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
-                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
-                    <div className="font-light align-items-center">
-                      <MDBIcon className="text-room mr-1" icon="home" />
-                      <span className="text-room">{this.props.UserReducer.user.username}</span>
-                    </div>
-                    <div className="font-light align-items-center">
-                      <MDBIcon className="text-room mr-1" icon="ring" />
-                      <span className="text-room">{this.props.UserReducer.user.golds}</span>
-                    </div>
-                    <div className="font-light align-items-center">
-                      <MDBIcon className="text-room mr-1" icon="user-alt" />
-                      <span className="text-room">{this.props.UserReducer.user.totalPlayedGame}</span>
-                    </div>
-                  </div>
-                </MDBCol>
-                <MDBCol size="6" className=" mt-3">
-                  <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
-                    style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
-                    <div className="font-light align-items-center">
-                      <MDBIcon className="text-room mr-1" icon="home" />
-                      <span className="text-room">1234</span>
-                    </div>
-                    <div className="font-light align-items-center">
-                      <MDBIcon className="text-room mr-1" icon="ring" />
-                      <span className="text-room">Gold</span>
-                    </div>
-                    <div className="font-light align-items-center">
-                      <MDBIcon className="text-room mr-1" icon="user-alt" />
-                      <span className="text-room">username </span>
-                    </div>
-                  </div>
-                </MDBCol>    
                   </MDBRow>  
                 </MDBContainer>
               </MDBRow>
@@ -306,51 +259,6 @@ class MainScreenGame extends Component {
   }
 }
 
-
-
-class WaitingRoomItem extends Component {
-  render() {
-    return (
-      <MDBCol size="6" className=" mt-2">
-        <div className="d-flex justify-content-around align-items-center hoverable hover-item room-item"
-          style={{ backgroundColor: "#EE6C4D", height: "70px" }}>
-          <div className="font-light align-items-center">
-            <MDBIcon className="text-room mr-1" icon="home" />
-            <span className="text-room">{this.props.idGame}</span>
-          </div>
-          <div className="font-light align-items-center">
-            <MDBIcon className="text-room mr-1" icon="ring" />
-            <span className="text-room">{this.props.bettingGold}</span>
-          </div>
-          <div className="font-light align-items-center">
-            <MDBIcon className="text-room mr-1" icon="user-alt" />
-            <span className="text-room">{this.props.username} </span>
-          </div>
-        </div>
-      </MDBCol>
-    );
-  }
-}
-class LeaderboardItem extends Component {
-  render() {
-    return (
-      <div className="d-flex justify-content-around pt-2 pb-2" >
-        <div className="rounded" style={{ backgroundColor: "#9C9C9C" }} >
-          <span className="p-2 text-white" height="20px" width="20px">{this.props.rank}</span>
-        </div>
-        <div>
-          <span className="p-2 text-white" >{this.props.username}</span>
-        </div>
-        <div >
-          <span className="p-2 text-white" >{this.props.gold} <img src="/images/coin.svg" height="32px" width="32px"></img></span>
-        </div>
-      </div>
-    );
-  }
-}
-
-
-
 const mapStateToProps = (state) => {
   return {
     UserReducer: state.UserReducer,
@@ -362,7 +270,10 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ updateUser, updateLeaderboard, updateWaitingGame,createRoomGame,changeAuth }, dispatch);
+  return bindActionCreators({ updateUser, 
+    updateLeaderboard, updateWaitingGame,
+    createRoomGame,changeAuth }
+    , dispatch);
 }
 
 

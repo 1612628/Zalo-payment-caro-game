@@ -118,9 +118,11 @@ router.get('/games',async (req,res)=>{
         let status = await RedisClient.hget(roomGame,'status');
         if(status==='waiting'){
             let roomGameDetailInfo = await RedisClient.hgetall(roomGame);
-            if(roomGameDetailInfo){
+            let host = await RedisClient.hgetall('user:'+roomGameDetailInfo.host_id);
+            if(roomGameDetailInfo && host){
                 let gameId = roomGame.split(":")[1];
                 roomGameDetailInfo.room_game_id=gameId;
+                roomGameDetailInfo.host_name=host.username;
                 waitingRoomGames.push(roomGameDetailInfo);
             }else{
                 console.log('/games Error redis hgetall:',err);;
@@ -139,13 +141,15 @@ router.post('/games',async (req,res)=>{
     console.log('/games create game');
     if(req.body){
         let hostId = req.body.host_id;
-        let hostName = req.body.host_name;
         let bettingGolds = req.body.betting_golds;
-        if(hostId && hostName && bettingGolds){
+        if(hostId && bettingGolds){
             let idGameCount = await RedisClient.incr('idGameCount');
             if(idGameCount){
-                let ok = await RedisClient.hmset('room_game:'+idGameCount,'host_id',hostId,
-                'host_name',hostName,'betting_golds',bettingGolds,'status','waiting');
+                let ok = await RedisClient.hmset('room_game:'+idGameCount,
+                'host_id',hostId,'hold_golds','betting_golds',bettingGolds,
+                'status','waiting',
+                'opponent_id','null','winner_id','null',
+                'host_ready','false','opponent_ready','false');
                 console.log(ok);
                 if(ok){
                     res.status(200).json({roomGameId:idGameCount,betting_golds:bettingGolds,status:'waiting'});
@@ -157,6 +161,61 @@ router.post('/games',async (req,res)=>{
                 res.status(500);
                 res.send();
             }
+        }else{
+            res.status(400);
+            res.send();    
+        }
+    }else{
+        res.status(400);
+        res.send();
+    }
+})
+
+router.post('/games/join',async (req,res)=>{
+    console.log('/games/join');
+    if(req.body){
+        let userId = req.body.user_id;
+        let userGolds = req.body.user_golds;
+        let gameId = req.body.game_id;
+        if(userId && userGolds && gameId){
+            let status = await RedisClient.hget('room_game:'+gameId,'status');
+            if(status=='waiting'){
+                let ok = await RedisClient.hmset('room_game:'+gameId,
+                'opponent_id',userId,'status','ready');
+                if(ok){
+                    let roomGame = await RedisClient.hgetall('room_game:'+gameId);
+                    
+                    let host = await RedisClient.hgetall('user:'+roomGame.host_id);
+                    res.status(200).json({
+                        game_id:gameId,
+                        status:"ready",
+                        opponent:{
+                            id:roomGame.host_id,
+                            name:host.username,
+                            golds:host.golds,
+                        }
+                    });
+                }
+            }else{
+                res.status(409);
+                res.send();
+            }
+            // if(idGameCount){
+            //     let ok = await RedisClient.hmset('room_game:'+idGameCount,'host_id',hostId,
+            //     'host_name',hostName,'betting_golds',bettingGolds,'status','waiting',
+            //     'opponent_id','null','winner_id','null','host_ready','false',
+            //     'opponent_ready','false');
+            //     console.log(ok);
+            //     if(ok){
+            //         res.status(200).json({roomGameId:idGameCount,betting_golds:bettingGolds,status:'waiting'});
+            //     }else{
+            //         res.status(500);
+            //     res.send();
+            //     }
+            // }else{
+            //     res.status(500);
+            //     res.send();
+            // }
         }else{
             res.status(400);
             res.send();    

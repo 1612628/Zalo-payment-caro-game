@@ -16,7 +16,16 @@ export default function UserReducer(state=initialUserState,action){
             return {...state,
                 user:action.payload
             }
+        case 'UPDATE_USER_PATTERN':
+            return{
+                ...state,
+                user:{
+                    ...state.user,
+                    typePattern:action.payload.typePattern
+                }
+            }
         default:
             return state;
     }
 }
+

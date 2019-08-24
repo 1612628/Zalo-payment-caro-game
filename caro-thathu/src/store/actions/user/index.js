@@ -12,4 +12,11 @@ export const updateUser=(id,username,golds,token,totalPlayedGame,socket,typePatt
         }
     }
 }
-
+export const updateUserPattern=(pattern)=>{
+    return{
+        type:'UPDATE_USER_PATTERN',
+        payload:{    
+            typePattern:pattern            
+        }
+    }
+}

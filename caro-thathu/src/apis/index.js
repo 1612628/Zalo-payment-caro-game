@@ -76,11 +76,10 @@ export const WaitingRoomGamesRequest = async (token)=>{
     return res;
 
 }
-export const CreateRoomGameRequest = async(token,hostId,hostName,bettingGolds)=>{
+export const CreateRoomGameRequest = async(token,hostId,bettingGolds)=>{
     console.log("API: CreateRoomGameRequest");
     let data={
         host_id:hostId,
-        host_name:hostName,
         betting_golds:bettingGolds
     }
     let config={
@@ -130,4 +129,25 @@ export const ForgotPasswordRequest = async(username,email)=>{
         return null;
     })
     return res;
+}
+
+export const JoinGameRequest = async(token,gameId,userId,userGolds)=>{
+    console.log("API: LogoutRequest");
+    let data={
+        user_id:userId,
+        user_golds:userGolds,
+        game_id:gameId
+    }
+    let config={
+        headers:{
+            'Authorization':token
+        }
+    }
+    let res = await axios.post("http://127.0.0.1:4001/games/join",data,config)
+    .then(res => res)
+    .catch(error => {
+        console.log(error);
+        return null;
+    })
+    return res.data;
 }

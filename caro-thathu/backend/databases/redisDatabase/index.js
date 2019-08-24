@@ -20,11 +20,16 @@ asyncRedisClient.on('connect',async ()=>{
     
     await asyncRedisClient.set('idGameCount',0);
 
-    let roomGames = await asyncRedisClient.keys('room_game_continue:*');
+    let roomContinueGames = await asyncRedisClient.keys('room_game_continue:*');
+    for(const room of roomContinueGames){
+        await asyncRedisClient.del(room);
+    }
+
+    let roomGames = await asyncRedisClient.keys('room_game:*');
     for(const room of roomGames){
         await asyncRedisClient.del(room);
     }
-    
+
     let sockets= await asyncRedisClient.keys('socket:*:*');
     for(const socket of sockets){
         await asyncRedisClient.del(socket);
