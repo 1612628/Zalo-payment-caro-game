@@ -77,11 +77,11 @@ class PlayGame extends Component {
         allowEscapeKey: false,
         allowEnterKey: false,
         onBeforeOpen: () => {
-          Swal.showLoading()
+          mySwal.showLoading()
 
           timerInterval = setInterval(() => {
-            Swal.getContent().querySelector('strong')
-              .textContent = (Swal.getTimerLeft() / 1000).toFixed(0)
+            mySwal.getContent().querySelector('strong')
+              .textContent = (mySwal.getTimerLeft() / 1000).toFixed(0)
           }, 100)
         },
         onClose: () => {
@@ -101,9 +101,59 @@ class PlayGame extends Component {
 
     this.props.UserReducer.user.socket.on('next_turn',(data)=>{
       if(this.props.TimeReducer.isMyTurn==false){
+
         this.props.CellClick(data.x,data.y,true,data.pattern);
         this.props.restartTurn();
         this.handlePlayGame();
+      }
+    })
+    this.props.UserReducer.user.socket.on('end_game_and_play_new_game',async (data)=>{
+      if(data[0].type==='OLD_GAME' && data[0].winner != null){
+        if(data[0].winner == this.props.UserReducer.user.id){
+          //win
+          await mySwal.fire({
+            title: 'You WIN !!!',
+            width: 600,
+            padding: '3em',
+            background: '#fff url(/images/trees.png)',
+            backdrop: `
+              rgba(0,0,123,0.4)
+              url("/images/nyan-cat.gif")
+              center left
+              no-repeat
+            `
+          })
+          //play new game
+          await mySwal.fire({
+            title: 'Do you want to play new game!!',
+            text: "",
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result)=>{
+            if(result.value){
+              this.props.UserReducer.user.socket.emit('accept_to_play_new_game',{
+                gameId:data[1].gameId,
+                userId:this.props.UserReducer.user.id,
+                accept:"true"
+              });
+            }else{
+              this.props.UserReducer.user.socket.emit('accept_to_play_new_game',{
+                gameId:data[1].gameId,
+                userId:this.props.UserReducer.user.id,
+                accept:"false"
+              });
+            }
+          });
+
+        }else{
+          //lose
+        }
+      }else{
+        //draw
+
       }
     })
   }
@@ -133,7 +183,13 @@ class PlayGame extends Component {
             gameId:this.props.RoomGameReducer.roomGame.roomGameId,
             userId:this.props.UserReducer.user.id
           });
+          this.props.updateGameStatus('end');
+          this.props.restartTime();
           clearInterval(x);
+          mySwal.fire({
+            type: 'info',
+            html: 'Time is over'
+          });
         }
       } else {
         this.props.restartTime();

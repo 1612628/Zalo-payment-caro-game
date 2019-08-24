@@ -115,7 +115,7 @@ io.on("connection",function(socket){
 
         roomGame = await RedisClient.hgetall('room_game:'+data.gameId);
         if(roomGame.host_ready ==='true' && roomGame.opponent_ready==='true'){
-            let clients = io.sockets.adapter.rooms[''+data.gameId].sockets;
+            // let clients = io.sockets.adapter.rooms[''+data.gameId].sockets;
             
             // random who first
             // 0 is host and 1 id opponent
@@ -165,7 +165,7 @@ io.on("connection",function(socket){
         }
     })
 
-    socket.on('play_a_game_turn',(data)=>{
+    socket.on('play_a_game_turn',async (data)=>{
         let game = caroGames.findGameByGameId(data.gameId)
         if(game !=null){
             game.playerPlayTurn(data.y,data.x,data.pattern);
@@ -186,13 +186,16 @@ io.on("connection",function(socket){
                 let hostTotalPlayedGame = parseInt(host.total_played_game);
                 let bettingGolds =parseInt(roomGame.betting_golds);
                 let bonusGolds =1000;
+
+                
                 if(data.userId!=roomGame.host_id){
+
                     roomGame.winner_id=roomGame.opponent_id;                
 
-                    await RedisClient.hset('user:'+roomGame.host_id,
+                    await RedisClient.hmset('user:'+roomGame.host_id,
                     'total_played_game',hostTotalPlayedGame+1,
                     'golds',hostGolds-bettingGolds);
-                    await RedisClient.hset('user:'+roomGame.opponent_id,
+                    await RedisClient.hmset('user:'+roomGame.opponent_id,
                     'total_played_game',opponentTotalPlayedGame+1,
                     'golds',opponentGolds+bettingGolds+bonusGolds)
 
@@ -216,12 +219,13 @@ io.on("connection",function(socket){
                     })
 
                 }else{
+
                     roomGame.winner_id=roomGame.host_id;
 
                     await RedisClient.hset('user:'+roomGame.host_id,
                     'total_played_game',hostTotalPlayedGame+1,
                     'golds',hostGolds+bettingGolds+bonusGolds);
-                    await RedisClient.hset('user:'+roomGame.opponent_id,
+                    await RedisClient.hmset('user:'+roomGame.opponent_id,
                     'total_played_game',opponentTotalPlayedGame+1,
                     'golds',opponentGolds-bettingGolds)
 
@@ -274,7 +278,10 @@ io.on("connection",function(socket){
                 'status','waiting',
                 'opponent_id',opponent.id,
                 'winner_id','null',
-                'host_ready','false','opponent_ready','false');
+                'host_ready','false',
+                'opponent_ready','false');
+
+
 
                 response.push({
                     type:'NEW_GAME',
@@ -289,8 +296,12 @@ io.on("connection",function(socket){
                 'betting_golds',bettingGolds,
                 'status','waiting',
                 'opponent_id',opponent.id,
-                'host_accept_continue','false',
-                'opponent_accept_continue','false');
+                'host_accept_continue','null',
+                'opponent_accept_continue','null');
+
+                caroGames.removeGameByGameId(data.gameId);
+                let caroGame = new CaroGame(idGameCount);
+                caroGames.addGame(caroGame);
 
                 io.to(''+data.gameId).emit('end_game_and_play_new_game',response);
             }else if(resCode==2){
@@ -360,32 +371,37 @@ io.on("connection",function(socket){
 
                 //remove old game
                 await RedisClient.del('room_game:'+data.gameId);
-
+                
                 //create new game
                 let idGameCount = await RedisClient.incr('idGameCount');
                 await RedisClient.hmset('room_game:'+idGameCount,
-                'host_id',host.id,
+                'host_id',roomGame.host_id,
                 'betting_golds',bettingGolds,
                 'status','waiting',
-                'opponent_id',opponent.id,
+                'opponent_id',roomGame.opponent_id,
                 'winner_id','null',
-                'host_ready','false','opponent_ready','false');
+                'host_ready','false',
+                'opponent_ready','false');
 
                 response.push({
                     type:'NEW_GAME',
                     gameId:idGameCount,
-                    hostId:host.id,
-                    opponent:opponent.id
+                    hostId:roomGame.host_id,
+                    opponent:roomGame.opponent_id
                 })
 
                 //create temp continue room game
                 await RedisClient.hmset('room_game_continue:'+idGameCount,
-                'host_id',host.id,
+                'host_id',roomGame.host_id,
                 'betting_golds',bettingGolds,
                 'status','waiting',
-                'opponent_id',opponent.id,
-                'host_accept_continue','false',
-                'opponent_accept_continue','false');
+                'opponent_id',roomGame.opponent_id,
+                'host_accept_continue','null',
+                'opponent_accept_continue','null');
+
+                caroGames.removeGameByGameId(data.gameId);
+                let caroGame = new CaroGame(idGameCount);
+                caroGames.addGame(caroGame);
 
                 io.to(''+data.gameId).emit('end_game_and_play_new_game',response);
             }
@@ -407,8 +423,10 @@ io.on("connection",function(socket){
             let hostTotalPlayedGame = parseInt(host.total_played_game);
             let bettingGolds =parseInt(roomGame.betting_golds);
             let bonusGolds =1000;
-            if(data.userId==roomGame.host_id){
 
+            
+            if(data.userId==roomGame.host_id){
+                
                 roomGame.winner_id=roomGame.opponent_id;                
 
                 await RedisClient.hset('user:'+roomGame.host_id,
@@ -437,6 +455,8 @@ io.on("connection",function(socket){
                     bonus_golds:bonusGolds
                 })
             }else{
+                
+
                 roomGame.winner_id=roomGame.host_id;
 
                 await RedisClient.hset('user:'+roomGame.host_id,
@@ -494,7 +514,8 @@ io.on("connection",function(socket){
             'status','waiting',
             'opponent_id',opponent.id,
             'winner_id','null',
-            'host_ready','false','opponent_ready','false');
+            'host_ready','false',
+            'opponent_ready','false');
 
             response.push({
                 type:'NEW_GAME',
@@ -509,15 +530,53 @@ io.on("connection",function(socket){
             'betting_golds',bettingGolds,
             'status','waiting',
             'opponent_id',opponent.id,
-            'host_accept_continue','false',
-            'opponent_accept_continue','false');
+            'host_accept_continue','null',
+            'opponent_accept_continue','null');
 
             io.to(''+data.gameId).emit('end_game_and_play_new_game',response);
-
             
         }
     })
     
+    socket.on('accept_to_play_new_game',async (data)=>{
+        let continueRoomGame = await RedisClient.hgetall('room_game_continue:'+data.gameId);
+        if(data.userId == continueRoomGame.host_id){
+            if(data.accept === "true"){
+                await RedisClient.hset('room_game_continue:'+data.gameId,
+                'host_accept_continue','true')
+                socket.join(''+data.gameId)
+            }else{
+                await RedisClient.hset('room_game_continue:'+data.gameId,
+                'host_accept_continue','false');
+                await RedisClient.hmset('room_game:'+data.gameId,
+                'host_id',continueRoomGame.opponent_id,
+                'opponent_id','null')
+            }
+        }else{
+            if(data.accept === "true"){
+                await RedisClient.hset('room_game_continue:'+data.gameId,
+                'opponent_accept_continue','true')
+                socket.join(''+data.gameId)
+            }else{
+                await RedisClient.hset('room_game_continue:'+data.gameId,
+                'opponent_accept_continue','false')
+            }
+        }
+
+        continueRoomGame = await RedisClient.hgetall('room_game_continue:'+data.gameId);
+
+        if(continueRoomGame.host_accept_continue 
+            && continueRoomGame.opponent_accept_continue){
+                io.to(''+data.gameId).emit('ready_to_start_game',data.gameId);
+                await RedisClient.del('room_game_continue:'+data.gameId);
+            }
+        else if(!continueRoomGame.host_accept_continue 
+            && !continueRoomGame.opponent_accept_continue){
+                await RedisClient.del('room_game:'+data.gameId);
+                await RedisClient.del('room_game_continue:'+data.gameId);
+                caroGames.removeGameByGameId(data.gameId);
+            }
+    })
     
 });
 

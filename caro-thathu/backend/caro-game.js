@@ -117,7 +117,7 @@ class CaroGame {
                 break;   
             }
         }
-        for(let i=y+1;j<=bottom;++i){
+        for(let i=y+1;i<=bottom;++i){
             let current = this.boardData[i][x];
             if(current.typePattern===pattern){
                 ++count;
