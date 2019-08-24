@@ -2,23 +2,24 @@ var CaroGame = require('./caro-game.js');
 
 class CaroGameList{
     constructor(){
+        console.log('Caro game list created ');
         this.gameList=[];
     }
 
-    findGameByGameId(gameId){
+    findIndexGameByGameId(gameId){
         for(let i =0;i<this.gameList.length;++i){
             if(this.gameList[i].findGame(gameId)){
-                return this.gameList[i];
+                return i;
             }
         }
         return null;
     }
 
     removeGameByGameId(gameId){
+        console.log('removeGameByGameId: '+gameId);
         for(let i =0;i<this.gameList.length;++i){
             if(this.gameList[i].findGame(gameId)){
                 return this.gameList.splice(i,1);
-                
             }
         }
         return null;
@@ -26,6 +27,10 @@ class CaroGameList{
     addGame(game){
         this.gameList.push(game);
         return game;
+    }
+
+    playerPlayATurnOfGameIndex(index,y,x,pattern){
+        return this.gameList[index].playerPlayTurn(y,x,pattern)
     }
 }
 

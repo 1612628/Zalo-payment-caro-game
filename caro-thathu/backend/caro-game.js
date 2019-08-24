@@ -2,13 +2,13 @@
 
 class CaroGame {
     constructor(gameId){
+        console.log('Caro game board created '+gameId);
         this.height = 15;
         this.width = 15;
         this.gameId = gameId;
         this.boardData= this.createEmptyBoard(this.width,this.height);
         this.checkedCount;
         this.players=[]
-        
     }
 
     findGame(gameId){
@@ -35,8 +35,11 @@ class CaroGame {
                 ++ this.checkedCount;
                 this.boardData[y][x].isChecked = true;
                 this.boardData[y][x].typePattern = pattern;
+
+                return this.isPlayerWin(y,x,pattern);
             }
         }
+        return null;
     }
 
     // 0 win , 1 draw ,2 next turn
@@ -77,7 +80,7 @@ class CaroGame {
             if(current.typePattern===pattern){
                 ++count;
             }
-            else if(current.typePattern === null){
+            else if(current.typePattern === ""){
                 break;
             }else{
                 blockedHead=true;
@@ -89,20 +92,22 @@ class CaroGame {
             if(current.typePattern===pattern){
                 ++count;
             }
-            else if(current.typePattern === null){
+            else if(current.typePattern === ""){
                 break;
             }else{
                 blockedTail=true;
                 break;   
             }
         }
-
-        if((count==5 && !(blockedHead&&blockedTail))){
+        
+        console.log('//check horizontal',count);
+        if((count==5 && !(blockedHead && blockedTail))){
             return 0;
         }
 
         blockedHead=false;
         blockedTail=false;
+        count=0;
         
         //check vertical
         for(let i=y;i>=top;--i){
@@ -110,7 +115,7 @@ class CaroGame {
             if(current.typePattern===pattern){
                 ++count;
             }
-            else if(current.typePattern === null){
+            else if(current.typePattern === ""){
                 break;
             }else{
                 blockedHead=true;
@@ -122,27 +127,28 @@ class CaroGame {
             if(current.typePattern===pattern){
                 ++count;
             }
-            else if(current.typePattern === null){
+            else if(current.typePattern === ""){
                 break;
             }else{
                 blockedTail=true;
                 break;   
             }
         }
+        console.log('//check vertical',count);
         if((count==5 && !(blockedHead&&blockedTail))){
             return 0;
         }
         
         blockedHead=false;
         blockedTail=false;
-        
+        count=0;
         //check diagonal
         for(let i=x, j=y; i>=left && j>=top; --i,--j){
             let current = this.boardData[j][i];
             if(current.typePattern===pattern){
                 ++count;
             }
-            else if(current.typePattern === null){
+            else if(current.typePattern === ""){
                 break;
             }else{
                 blockedHead=true;
@@ -154,27 +160,28 @@ class CaroGame {
             if(current.typePattern===pattern){
                 ++count;
             }
-            else if(current.typePattern === null){
+            else if(current.typePattern === ""){
                 break;
             }else{
                 blockedTail=true;
                 break;   
             }
         }
+        console.log('//check diagonal',count);
         if((count==5 && !(blockedHead&&blockedTail))){
             return 0;
         }
 
         blockedHead=false;
         blockedTail=false;
-        
+        count=0;
         //check back diagonal
         for(let i=x, j=y; i<=right && j>=top; ++i,--j){
             let current = this.boardData[j][i];
             if(current.typePattern===pattern){
                 ++count;
             }
-            else if(current.typePattern === null){
+            else if(current.typePattern === ""){
                 break;
             }else{
                 blockedHead=true;
@@ -186,13 +193,14 @@ class CaroGame {
             if(current.typePattern===pattern){
                 ++count;
             }
-            else if(current.typePattern === null){
+            else if(current.typePattern === ""){
                 break;
             }else{
                 blockedTail=true;
                 break;   
             }
         }
+        console.log('//check back diagonal',count);
         if((count==5 && !(blockedHead&&blockedTail))){
             return 0;
         }

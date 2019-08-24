@@ -86,8 +86,9 @@ class PlayGame extends Component {
           mySwal.showLoading()
 
           timerInterval = setInterval(() => {
-            mySwal.getContent().querySelector('strong')
-              .textContent = (mySwal.getTimerLeft() / 1000).toFixed(0)
+            let strong = mySwal.getContent().querySelector('strong');
+            if(strong)
+              strong.textContent = (mySwal.getTimerLeft() / 1000).toFixed(0)
           }, 100)
         },
         onClose: () => {

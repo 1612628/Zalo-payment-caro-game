@@ -75,6 +75,7 @@ io.on("connection",function(socket){
             data:waitingRoomGames,
             userId:data.userId
         })
+    })
 
     socket.on('get_out_of_game',async (gameId)=>{
         console.log('socker get out of game: '+gameId);
@@ -188,12 +189,11 @@ io.on("connection",function(socket){
     })
 
     socket.on('play_a_game_turn',async (data)=>{
-        let game = caroGames.findGameByGameId(data.gameId)
-        if(game !=null){
-            game.playerPlayTurn(data.y,data.x,data.pattern);
-            let resCode = game.isPlayerWin(data.y,data.x,data.pattern);
-
+        let index = caroGames.findIndexGameByGameId(data.gameId)
+        if(index !=null){
             
+            let resCode = await caroGames.playerPlayATurnOfGameIndex(index,data.y,data.x,data.pattern);
+            console.log(resCode);
             if(resCode == 0){
                 //current user win
                 let response =[];
@@ -431,8 +431,8 @@ io.on("connection",function(socket){
     })
 
     socket.on('play_time_out',async (data)=>{
-        let game = caroGames.findGameByGameId(data.gameId)
-        if(game !=null){
+        let index = caroGames.findIndexGameByGameId(data.gameId)
+        if(index !=null){
             let response =[];
 
             let roomGame = await RedisClient.hgetall('room_game:'+data.gameId);
@@ -625,8 +625,4 @@ async function getNewWaitingRoomList()
 
 server.listen(port,()=>{
     console.log(`Listening on port ${port}`);
-});
-
-module.exports={
-    io:io
-}
+})
