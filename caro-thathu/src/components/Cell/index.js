@@ -11,25 +11,24 @@ class Cell extends React.Component {
         super(props);
         this.state = {
             x: this.props.data.x,
-            y: this.props.data.y,
-            isChecked: this.props.data.isChecked
+            y: this.props.data.y
         }
         this.handleClick = this.handleClick.bind(this);
-
-
     }
 
     handleClick() {
         if(this.props.RoomGameReducer.roomGame.status !== 'playing' ||
-         this.state.isChecked===true || !this.props.TimeReducer.isMyTurn)
+         this.props.CellListReducer.cellList[this.state.y][this.state.x].isChecked===true 
+         || !this.props.TimeReducer.isMyTurn)
         {
             console.log("khong check dc nua");
             return;
         }
         // let typePattern = this.props.UserReducer.typePattern;
-        this.state.isChecked = true;
+        
+        
         this.props.CellClick(this.state.x, this.state.y,
-            this.state.isChecked,this.props.UserReducer.user.typePattern);
+            true,this.props.UserReducer.user.typePattern);
         this.props.restartTime();
         console.log("is click")
 
