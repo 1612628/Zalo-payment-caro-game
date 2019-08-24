@@ -12,9 +12,29 @@ asyncRedisClient.on('connect',async ()=>{
     console.log('Redis database connected!');
     
     await asyncRedisClient.del('leaderboard');
-    await asyncRedisClient.del('user:*');
+    
+    let users = await asyncRedisClient.keys('user:*');
+    for(const user of users){
+        await asyncRedisClient.del(user);
+    }
+    
     await asyncRedisClient.set('idGameCount',0);
-    await asyncRedisClient.del('room_game_continue:*');
+
+    let roomContinueGames = await asyncRedisClient.keys('room_game_continue:*');
+    for(const room of roomContinueGames){
+        await asyncRedisClient.del(room);
+    }
+
+    let roomGames = await asyncRedisClient.keys('room_game:*');
+    for(const room of roomGames){
+        await asyncRedisClient.del(room);
+    }
+
+    let sockets= await asyncRedisClient.keys('socket:*:*');
+    for(const socket of sockets){
+        await asyncRedisClient.del(socket);
+    }
+    
     // await asyncRedisClient.del('room_game:*');
     
     let allUsers = await UserController.getLeaderBoard();

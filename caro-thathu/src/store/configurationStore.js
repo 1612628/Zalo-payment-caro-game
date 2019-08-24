@@ -16,12 +16,20 @@ export const JSOGTransform = createTransform(
 const persistConfig = {
   key: 'root',
   storage:storage,
-  whitelist:['UserReducer'],
+  whitelist:['UserReducer','AuthReducer'],
   transforms: [JSOGTransform]
 }
 export const history = createBrowserHistory()
 
-const persistedReducer = persistReducer(persistConfig, allReducers(history));
+const rootReducer = (state,action)=>{
+  if(action.type==='INITIAL_STATE'){
+    storage.removeItem('persist:root');
+    state=undefined
+  }
+  return allReducers(history)(state,action);
+}
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 
 export default function configureStore() {

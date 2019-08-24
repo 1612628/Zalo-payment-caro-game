@@ -1,12 +1,12 @@
 const initialAuthState={
-    auth:false    
+    isAuthenticate:false    
 }
 
 const AuthReducer = (state=initialAuthState,action)=>{
     switch(action.type){
         case 'CHANGE_AUTH':
             return {...state,
-                auth:action.payload.auth
+                isAuthenticate:action.payload.isAuthenticate
             }
         default:
             return state;

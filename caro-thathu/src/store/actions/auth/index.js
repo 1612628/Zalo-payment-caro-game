@@ -1,8 +1,8 @@
-export const changeAuth=(auth)=>{
+export const changeAuth=(isAuthenticate)=>{
     return{
         type:'CHANGE_AUTH',
         payload:{
-            auth
+            isAuthenticate
         }
     }
 }

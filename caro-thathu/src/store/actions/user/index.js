@@ -12,4 +12,22 @@ export const updateUser=(id,username,golds,token,totalPlayedGame,socket,typePatt
         }
     }
 }
+export const updateUserPattern=(pattern)=>{
+    return{
+        type:'UPDATE_USER_PATTERN',
+        payload:{    
+            typePattern:pattern            
+        }
+    }
+}
+export const userLogOut=()=>{
+    return{
+        type:'USER_LOG_OUT'
+    }
+}
 
+export const initialState=()=>{
+    return{
+        type:'INITIAL_STATE'
+    }
+}
