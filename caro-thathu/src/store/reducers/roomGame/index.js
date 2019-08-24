@@ -6,7 +6,9 @@ const initialRoomGameState={
         opponent:{
             id:-1,
             username:"-1",
-            golds:-1
+            golds:-1,
+            typePattern:"O",
+            numberPlayedGame: 1
         }
     }    
 };

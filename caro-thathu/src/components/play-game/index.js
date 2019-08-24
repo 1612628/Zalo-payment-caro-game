@@ -9,14 +9,14 @@ import {
   MDBNav, MDBNavLink,
   MDBCard,
   MDBCardBody,
-  MDBCardTitle,
-  MDBCardText
 } from "mdbreact";
 
 import { bindActionCreators } from 'redux';
 import { connect } from "react-redux";
 import { BrowserRouter } from 'react-router-dom';
 import Board from '../Board';
+import OpponentInfo from '../opponent-info';
+import UserInfo from '../user-info';
 import Message from '../message';
 import ProcessBar from '../process-bar';
 import { appendMessage } from '../../store/actions/messages';
@@ -34,11 +34,6 @@ class PlayGame extends Component {
     }
   }
   componentDidMount() {
-    // if(this.props.TimeReducer.time <=0)
-    // {
-    //   clearInterval(this.state.timeCount);
-    // }
-
     this.handlePlayGame();
   }
 
@@ -75,8 +70,6 @@ class PlayGame extends Component {
 
   }
   render() {
-
-    // const scrollContainerStyle = { width: "100%", maxHeight: "360px" };
     return (
       <MDBContainer fluid="true" className="my-row-play-screen" >
         <BrowserRouter>
@@ -89,89 +82,45 @@ class PlayGame extends Component {
         <MDBContainer fluid="true" className="mt-2">
           <MDBRow className="my-row-play-screen">
             {/* render board game */}
-            <MDBCol className="board-game d-flex align-items-center justify-content-center" size="6" style={{ backgroundColor: "#dddddd" }} >
+            <MDBCol className="board-game d-flex align-items-center justify-content-center radius" size="7" style={{ backgroundColor: "#dddddd" }} >
               <Board width={15} height={15} onClick={this.onClick} ></Board>
             </MDBCol>
-            <MDBCol size="6" className="pl-2" >
+            <MDBCol size="5" className="pl-2" >
               {/* user info */}
-
-              <MDBContainer style={{ backgroundColor: "#DDDDDD" }} >
-                <MDBRow className="user-info" >
-                  <MDBCol className="d-flex justify-content-start" size="4"  >
-                    <MDBCard style={{ backgroundColor: "#747d8c" }} className="p-3">
-                      <MDBCardBody className="p-2 ">
-                        <img src="/images/boy.svg" height="64px" width="64px" className="pl-2 ml-2"></img>
-                        <div className="py-2">
-                          <div className="d-flex align-middle">
-                            <img className="mr-2" src="/images/name.svg" height="32px" width="32px"></img>
-                            <span className="text-while mt-1">Chí Thức</span>
-                          </div>
-                          <div className="d-flex align-middle">
-                            <img src="/images/coin.svg" height="32px" width="32px" className="mr-2"></img>
-                            <span className="text-room">10000</span>
-                          </div>
-                          <div className="d-flex align-middle">
-                            <img src="/images/gamepad.svg" height="32px" width="32px" className="mr-2"></img>
-                            <span className="text-room mt-2">100</span>
-                          </div>
-                        </div>
-                      </MDBCardBody>
-
-                    </MDBCard>
+              <MDBContainer style={{ backgroundColor: "#DDDDDD" }} className="radius" >
+                <MDBRow className="user-info rounded" >
+                  <MDBCol size="4"  >
+                    <UserInfo></UserInfo>
                   </MDBCol>
                   <MDBCol size="4">
-                    <MDBContainer style={{height:'10vh'}} className="d-flex justify-content-center">
-                      <p className="bet-gold-play-screen"> Bet Gold: 10000</p>
+                    <MDBContainer style={{ height: '10vh' }} className="d-flex justify-content-center">
+                      <p className="bet-gold-play-screen mt-2"> Bet Gold {this.props.RoomGameReducer.roomGame.bettingGolds}</p>
                     </MDBContainer>
                     <MDBContainer className="d-flex justify-content-center align-items-center">
-                      <p className="font-pattern pattern-x">X</p>
+                      <p className="font-pattern pattern-x">X{this.props.UserReducer.user.typePattern}</p>
                       <img src="/images/war.svg" height="50%" width="50%"></img>
-                      <p className="font-pattern pattern-o">O</p>
+                      <p className="font-pattern pattern-o">{this.props.RoomGameReducer.roomGame.opponent.typePattern}</p>
                     </MDBContainer>
                   </MDBCol>
-                  <MDBCol className="d-flex justify-content-end" size="4" >
-                    <MDBCard style={{ backgroundColor: "#747d8c" }} className="p-3">
-                      <MDBCardBody className="p-2 ">
-                        <img src="/images/boy.svg" height="64px" width="64px" className="pl-2 ml-2"></img>
-                        <div className="py-2">
-                          <div className="d-flex align-middle">
-                            <img className="mr-2" src="/images/name.svg" height="32px" width="32px"></img>
-                            <span className="text-while mt-1">Chí Thức</span>
-                          </div>
-                          <div className="d-flex align-middle">
-                            <img src="/images/coin.svg" height="32px" width="32px" className="mr-2"></img>
-                            <span className="text-room">10000</span>
-                          </div>
-                          <div className="d-flex align-middle">
-                            <img src="/images/gamepad.svg" height="32px" width="32px" className="mr-2"></img>
-                            <span className="text-room mt-2">100</span>
-                          </div>
-                        </div>
-                      </MDBCardBody>
-
-                    </MDBCard>
+                  <MDBCol size="4" >
+                    <OpponentInfo></OpponentInfo>
                   </MDBCol>
-
                 </MDBRow >
               </MDBContainer>
-
               {/* board game */}
-              <MDBContainer className="process-bar-in-play-game">
+              <MDBContainer className="process-bar-in-play-game ">
                 <ProcessBar />
               </MDBContainer>
               {/* chat info */}
               <MDBContainer className="chat-block-in-play-game">
-                <MDBRow style={{ width: "100%", height: "44vh" }} className="mt-2 scrollbar scrollbar-primary chat-body d-flex flex-column" >
+                <MDBRow className="scrollbar-chatbox chat-body" >
                   <Message ></Message>
                 </MDBRow>
                 {/* button  send  */}
-                <MDBRow style={{ backgroundColor: "#DDDDDD" }} className="pr-4 form-send-message-play-screen">
-                  <MDBCol size="1" className="d-flex align-items-center">
-                    <MDBIcon far icon="comment" className="fa-2x " />
-                  </MDBCol>
-                  <MDBCol size="9" >
-                    <MDBInput onInput={this.handleMessage}
-                      className="text-while input-message-play-game" style={{ backgroundColor: "#9C9C9C" }} />
+                <MDBRow style={{ backgroundColor: "#dddddd" }} className="pr-4 form-send-message-play-screen">
+                  <MDBCol size="10" >
+                    <MDBInput onInput={this.handleMessage} label="Message Here"
+                      className="text-dark input-message-play-game" />
                   </MDBCol>
                   <MDBCol size="2" className="d-flex align-items-center">
                     <button className="btn-send-message-play-game " onClick={this.handleSendMessage}>Send</button>
@@ -189,7 +138,9 @@ class PlayGame extends Component {
 const mapStateToProps = (state) => {
   return {
     MessageReducer: state.MessageReducer,
-    TimeReducer: state.TimeReducer
+    TimeReducer: state.TimeReducer,
+    UserReducer: state.UserReducer,
+    RoomGameReducer: state.RoomGameReducer
   }
 }
 

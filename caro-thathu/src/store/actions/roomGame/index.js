@@ -1,4 +1,4 @@
-export const createRoomGame=(roomGameId,status,bettingGolds)=>{
+export const createRoomGame=(roomGameId,status,bettingGolds,numberPlayedGame)=>{
     return{
         type:'CREATE_ROOM_GAME',
         payload:{
