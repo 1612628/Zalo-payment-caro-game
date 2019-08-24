@@ -60,29 +60,45 @@ io.on("connection",function(socket){
         console.log("Client disconnected")
         let socketRedis= await RedisClient.keys('socket:'+socket.id+':*');
         let id = await RedisClient.get(socketRedis);
-
         await RedisClient.hset("user:"+id,'is_online','false');
         await RedisClient.del(socketRedis);
     });
 
-    socket.on('create_game',(gameId)=>{
-        console.log('socker create room game: '+gameId);
-        socket.join(''+gameId);
-        let caroGame = new CaroGame(gameId);
+    socket.on('create_game',async (data)=>{
+        console.log('socker create room game: '+data.gameId);
+        socket.join(''+ data.gameId);
+        socket.join('chat'+ data.gameId);
+        let caroGame = new CaroGame(data.gameId);
         caroGames.addGame(caroGame);
-    })
+        let waitingRoomGames = await getNewWaitingRoomList();
+        socket.broadcast.emit('update_list_waiting_game',{
+            data:waitingRoomGames,
+            userId:data.userId
+        })
 
     socket.on('get_out_of_game',async (gameId)=>{
         console.log('socker get out of game: '+gameId);
         await RedisClient.del('room_game:'+gameId);
         socket.leave(''+gameId);
+        socket.leave('chat'+ gameId);
+
         caroGames.removeGameByGameId(gameId);
     })
+
+    socket.on('chat',data=>{
+        console.log("socket chat");
+        console.log(data);
+        io.sockets.in('chat'+data.gameId).emit('message_come',{
+            message: data.message,
+            time:data.time,
+            userIdSend: data.userId
+        })
+    });
 
     socket.on('join_game',(data)=>{
         console.log('join_game',data);
         socket.join(''+data.gameId);
-
+        socket.join('chat'+data.gameId);
         // let clients = io.sockets.adapter.rooms[''+data.gameId].sockets;
         io.sockets.in(''+data.gameId).clients((err,clients)=>{
             clients.forEach((client)=>{
@@ -98,13 +114,20 @@ io.on("connection",function(socket){
                 }
             })
         })
+
         io.sockets.in(''+data.gameId).clients((err,clients)=>{
             clients.forEach((client)=>{
                 io.of('/').connected[client]
                 .emit('ready_to_start_game',data.gameId);
             })
         })
+        let waitingRoomGames = getNewWaitingRoomList();
+        socket.broadcast.emit('update_list_waiting_game',{
+            data:waitingRoomGames,
+            userId:data.userId
+        })
     })
+    
     socket.on('ready_to_play',async (data)=>{
         let roomGame = await RedisClient.hgetall('room_game:'+data.gameId);
         if(data.userId==roomGame.host_id){
@@ -119,7 +142,6 @@ io.on("connection",function(socket){
             
             // random who first
             // 0 is host and 1 id opponent
-
             let first = Math.round(Math.random());
             let response = {};
             if(first==0){
@@ -580,6 +602,31 @@ io.on("connection",function(socket){
     
 });
 
+async function getNewWaitingRoomList()
+{
+    let waitingRoomGames=[];
+    let roomGames = await RedisClient.keys('room_game:*')
+    for(let roomGame of roomGames){
+        let status = await RedisClient.hget(roomGame,'status');
+        if(status==='waiting'){
+            let roomGameDetailInfo = await RedisClient.hgetall(roomGame);
+            let host = await RedisClient.hgetall('user:'+roomGameDetailInfo.host_id);
+            if(roomGameDetailInfo && host){
+                let gameId = roomGame.split(":")[1];
+                roomGameDetailInfo.room_game_id=gameId;
+                roomGameDetailInfo.host_name=host.username;
+                waitingRoomGames.push(roomGameDetailInfo);
+            }
+        }
+
+    }
+    return waitingRoomGames;
+}
+
 server.listen(port,()=>{
     console.log(`Listening on port ${port}`);
 });
+
+module.exports={
+    io:io
+}

@@ -1,9 +1,10 @@
-export const appendMessage=(message,userId)=>{
+export const appendMessage=(message,time,userIdSend)=>{
     return {
         type: "APPEND_MESSAGE",
         payload:{
             message,
-            userId
+            time,
+            userIdSend
         }
     }
 }
