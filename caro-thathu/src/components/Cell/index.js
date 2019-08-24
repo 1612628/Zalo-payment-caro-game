@@ -15,19 +15,31 @@ class Cell extends React.Component {
             isChecked: this.props.data.isChecked
         }
         this.handleClick = this.handleClick.bind(this);
+
+
     }
 
     handleClick() {
-        if(this.state.isChecked===true)
+        if(this.props.RoomGameReducer.roomGame.status !== 'playing' &&
+         this.state.isChecked===true && !this.TimeReducer.isMyTurn)
         {
             console.log("khong check dc nua");
             return;
         }
-        let typePattern = this.props.UserReducer.typePattern;
+        // let typePattern = this.props.UserReducer.typePattern;
         this.state.isChecked = true;
         this.props.CellClick(this.state.x, this.state.y,  this.state.isChecked, "O");
         this.props.restartTime();
         console.log("is click")
+
+        this.props.UserReducer.user.socket.emit('play_a_game_turn',{
+            gameId:this.props.RoomGameReducer.roomGame.roomGameId,
+            userId:this.props.UserReducer.user.id,
+            y:this.state.y,
+            x:this.state.x,
+            pattern:this.props.UserReducer.user.typePattern
+        })
+
     }
     render() {
 
@@ -52,7 +64,8 @@ const mapStateToProps = (state) => {
     return {
         CellListReducer: state.CellListReducer,
         UserReducer:state.UserReducer,
-        TimeReducer:state.TimeReducer
+        TimeReducer:state.TimeReducer,
+        RoomGameReducer:state.RoomGameReducer
     }
 }
 

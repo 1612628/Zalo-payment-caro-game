@@ -194,6 +194,7 @@ router.post('/games/join',async (req,res)=>{
                             id:roomGame.host_id,
                             name:host.username,
                             golds:host.golds,
+                            totalPlayedGame:host.total_played_game
                         }
                     });
                 }

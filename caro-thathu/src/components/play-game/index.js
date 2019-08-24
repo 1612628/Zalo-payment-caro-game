@@ -21,9 +21,12 @@ import Message from '../message';
 import ProcessBar from '../process-bar';
 
 import { appendMessage } from '../../store/actions/messages';
-import { startDecrementTime, restartTime, pauseTime } from '../../store/actions/timer';
-import { getOutOfOwnCreatedRoomGame, opponentJoinGame, updateOpponentTypePattern } from '../../store/actions/roomGame';
+import { startDecrementTime, restartTime, pauseTime,restartTurn } from '../../store/actions/timer';
+import { getOutOfOwnCreatedRoomGame, opponentJoinGame,
+  updateOpponentTypePattern,updateGameStatus } from '../../store/actions/roomGame';
 import { updateUserPattern } from '../../store/actions/user';
+import {CellClick} from '../../store/actions/celllist';
+
 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -41,12 +44,32 @@ class PlayGame extends Component {
 
     this.props.UserReducer.user.socket.on('opponent_join_game', (data) => {
       console.log('socket opponent_join_game')
-      this.props.opponentJoinGame(data.opponentId, data.opponentName, data.opponentGolds);
+      this.props.opponentJoinGame(data.opponentId, data.opponentName, 
+        data.opponentGolds,data.opponentTotalPlayedGame);
     })
     this.props.UserReducer.user.socket.on('ready_to_start_game', (gameId) => {
-      console.log('socket ready_to_start_game')
+      console.log('socket ready_to_start_game');
+      this.props.UserReducer.user.socket.emit('ready_to_play', {
+        gameId: gameId,
+        userId: this.props.UserReducer.user.id
+      });
+    })
+
+    this.props.UserReducer.user.socket.on('start_game', async (data) => {
+      console.log('socket start_game')
+      let currentUserPattern, opponentPattern;
+      for (const pattern of data.patterns) {
+        if (pattern.userId == this.props.UserReducer.user.id) {
+          currentUserPattern = pattern.patternType;
+        } else {
+          opponentPattern = pattern.patternType;
+        }
+      }
+
+      this.props.updateGameStatus('playing');
+
       let timerInterval
-      mySwal.fire({
+      await mySwal.fire({
         title: 'Please waiting for your opponent!',
         html: '<strong></strong>.',
         timer: 5000,
@@ -55,11 +78,6 @@ class PlayGame extends Component {
         allowEnterKey: false,
         onBeforeOpen: () => {
           Swal.showLoading()
-
-          this.props.UserReducer.user.socket.emit('ready_to_play', {
-            gameId: gameId,
-            userId: this.props.UserReducer.user.id
-          });
 
           timerInterval = setInterval(() => {
             Swal.getContent().querySelector('strong')
@@ -77,20 +95,16 @@ class PlayGame extends Component {
           showConfirmButton: false
         })
       })
-    })
-
-    this.props.UserReducer.user.socket.on('start_game', (data) => {
-      console.log('socket start_game')
-      let currentUserPattern, opponentPattern;
-      for (const pattern of data.patterns) {
-        if (pattern.userId == this.props.UserReducer.user.id) {
-          currentUserPattern = pattern.patternType;
-        } else {
-          opponentPattern = pattern.patternType;
-        }
-      }
 
       this.handleStartGame(data.firstUserId, currentUserPattern, opponentPattern);
+    })
+
+    this.props.UserReducer.user.socket.on('next_turn',(data)=>{
+      if(this.props.TimeReducer.isMyTurn==false){
+        this.props.CellClick(data.x,data.y,true,data.pattern);
+        this.props.restartTurn();
+        this.handlePlayGame();
+      }
     })
   }
 
@@ -98,14 +112,15 @@ class PlayGame extends Component {
     this.props.updateUserPattern(currentUserPattern);
     this.props.updateOpponentTypePattern(opponentPatterrn);
     if (firstUserId == this.props.UserReducer.user.id) {
-      this.props.restartTime();
+      this.props.restartTurn();
+      this.handlePlayGame();
     } else {
-      this.props.startDecrementTime();
+      this.props.restartTime();
     }
 
   }
   componentDidMount() {
-    this.handlePlayGame();
+    
   }
 
   handlePlayGame = () => {
@@ -113,6 +128,11 @@ class PlayGame extends Component {
       if (this.props.TimeReducer.isMyTurn === true) {
         this.props.startDecrementTime();
         if (this.props.TimeReducer.time <= 0) {
+          this.props.updateGameStatus('end');
+          this.props.UserReducer.user.socket.emit('play_time_out',{
+            gameId:this.props.RoomGameReducer.roomGame.roomGameId,
+            userId:this.props.UserReducer.user.id
+          });
           clearInterval(x);
         }
       } else {
@@ -143,19 +163,6 @@ class PlayGame extends Component {
           '<i class="fa fa-thumbs-down"></i>',
         cancelButtonAriaLabel: 'Thumbs down'
       });
-    }
-
-    handlePlayingPlayerTurn = () => {
-      let playing = setInterval(() => {
-        if (this.props.TimeReducer.isMyTurn === true) {
-          console.log(this.props.TimeReducer.time);
-          this.props.startDecrementTime();
-          if (this.props.TimeReducer.time < 0) {
-            clearInterval(playing);
-          }
-        }
-
-      }, 1000);
     }
 
     handleMessage = (event) => {
@@ -214,7 +221,7 @@ class PlayGame extends Component {
                         <p className="bet-gold-play-screen mt-2"> Bet Gold {this.props.RoomGameReducer.roomGame.bettingGolds}</p>
                       </MDBContainer>
                       <MDBContainer className="d-flex justify-content-center align-items-center">
-                        <p className="font-pattern pattern-x">X{this.props.UserReducer.user.typePattern}</p>
+                        <p className="font-pattern pattern-x">{this.props.UserReducer.user.typePattern}</p>
                         <img src="/images/war.svg" height="50%" width="50%"></img>
                         <p className="font-pattern pattern-o">{this.props.RoomGameReducer.roomGame.opponent.typePattern}</p>
                       </MDBContainer>
@@ -269,7 +276,9 @@ const mapDispatchToProps = (dispatch) => {
     startDecrementTime, pauseTime, restartTime,
     getOutOfOwnCreatedRoomGame, opponentJoinGame,
     updateUserPattern,
-    updateOpponentTypePattern
+    updateOpponentTypePattern,
+    restartTurn,CellClick,
+    updateGameStatus
   }, dispatch);
 }
 

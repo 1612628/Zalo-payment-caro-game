@@ -5,9 +5,10 @@ class CaroGame {
         this.height = 15;
         this.width = 15;
         this.gameId = gameId;
-        this.boardData= this.createEmptyBoard(width,height);
+        this.boardData= this.createEmptyBoard(this.width,this.height);
         this.checkedCount;
         this.players=[]
+        
     }
 
     findGame(gameId){
@@ -40,9 +41,6 @@ class CaroGame {
 
     // 0 win , 1 draw ,2 next turn
     isPlayerWin(y,x,pattern){
-        if(this.checkedCount == this.height*this.width){
-            return 1;
-        }
 
         let left = x-6;
         if(left<0){
@@ -199,6 +197,10 @@ class CaroGame {
             return 0;
         }
 
+        if(this.checkedCount == this.height*this.width){
+            return 1;
+        }
+        
         return 2;
     }
 
