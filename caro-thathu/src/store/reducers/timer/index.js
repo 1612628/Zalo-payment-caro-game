@@ -20,6 +20,12 @@ const TimeReducer = (state = intInitTime, action) => {
                 ...state,
                 isMyTurn:action.payload.isMyTurn,
                 time:15
+            };
+        case "RESTART_NEW_TURN":
+            return{
+                ...state,
+                isMyTurn:action.payload.isMyTurn,
+                time:15
             }
         default:
             return state;

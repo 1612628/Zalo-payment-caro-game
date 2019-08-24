@@ -3,10 +3,7 @@
   color:white;
   word-wrap: break-word;
   width: 200px;
-  justify-content: end;
 }
 .message-other{
-  margin-left:200px;
-  /* display: flex;
-  justify-content: end; */
+  margin-left:22vw;
 }

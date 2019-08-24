@@ -25,7 +25,7 @@ class Cell extends React.Component {
         }
         let typePattern = this.props.UserReducer.typePattern;
         this.state.isChecked = true;
-        this.props.CellClick(this.state.x, this.state.y,  this.state.isChecked, "X");
+        this.props.CellClick(this.state.x, this.state.y,  this.state.isChecked, "O");
         this.props.restartTime();
         console.log("is click")
     }

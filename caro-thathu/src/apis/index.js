@@ -39,7 +39,7 @@ export const RegisterRequest = async function Register(username,password,email) 
     })
     .catch(error => {
         console.log(error);
-        return null;
+        return error;
     })
     return res;
 

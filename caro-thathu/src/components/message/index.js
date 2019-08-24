@@ -12,9 +12,9 @@ class Message extends React.Component {
         return this.props.MessageReducer.messages.map((messageItem, index) => {
             let classNameOfMessage = "rounded p-2  message-in-play-screen message-other mt-2";
             return (
-                <p key={index} className={classNameOfMessage}   >
+                <span key={index} className={classNameOfMessage}   >
                     {messageItem.message}
-                </p>
+                </span>
             );
         })
 

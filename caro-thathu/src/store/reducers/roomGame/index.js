@@ -7,7 +7,8 @@ const initialRoomGameState={
             id:-1,
             username:"-1",
             golds:-1,
-            typePattern:null
+            typePattern:"O",
+            numberPlayedGame: 1
         }
     }    
 };
