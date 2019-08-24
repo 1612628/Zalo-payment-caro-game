@@ -107,3 +107,8 @@ input:focus{
 .radius{
   border-radius: 10px;
 }
+.list-group-item{
+  margin-bottom: 0;
+  border: 0;
+  border-bottom: 1px solid;
+}

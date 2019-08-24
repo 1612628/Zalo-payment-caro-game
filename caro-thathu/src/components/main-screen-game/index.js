@@ -30,8 +30,26 @@ const mySwal = withReactContent(Swal);
 class MainScreenGame extends Component {
   constructor(props) {
     super(props);
-
+    this.props.UserReducer.user.socket.on('update_list_waiting_game', (msg) => {
+      console.log('socket update_list_waiting_game');
+      if(msg.userId !== this.props.UserReducer.user.id)
+      {
+        if(msg.data == undefined  || msg.data == null 
+          || msg.data.length == 0)
+        {
+          console.log("no have data")
+          this.props.updateWaitingGame([]);
+        }
+        else{
+          console.log("have data")
+          console.log(msg.data)
+          this.props.updateWaitingGame(msg.data);
+        }
+      }
+    })
   }
+
+  
   async componentDidMount() {
     let users = await LeaderboardRequest(this.props.UserReducer.user.token);
     if(users){
@@ -138,10 +156,13 @@ class MainScreenGame extends Component {
           this.props.UserReducer.user.id,
           result.value);
         if(res){
-          this.props.UserReducer.user.socket.emit('create_game',res.roomGameId);
+          // res.status(200).json({roomGameId:idGameCount,betting_golds:bettingGolds,status:'waiting'});
 
+          this.props.UserReducer.user.socket.emit('create_game',{
+            gameId:res.roomGameId,
+            userId: this.props.UserReducer.user.id
+          });
           this.props.createRoomGame(res.roomGameId,'waiting',result.value);
-          
           await mySwal.fire({
             type: 'success',
             html: 'You create a room with betting golds: ' + result.value

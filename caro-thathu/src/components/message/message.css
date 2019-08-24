@@ -5,5 +5,9 @@
   width: 200px;
 }
 .message-other{
-  margin-left:22vw;
+  margin-left: 300px !important;
+}
+.message-body{
+  max-width: 200px;
+  margin:10px 0px;
 }
