@@ -6,5 +6,7 @@
   justify-content: end;
 }
 .message-other{
-  margin-left:250px;
+  margin-left:200px;
+  /* display: flex;
+  justify-content: end; */
 }

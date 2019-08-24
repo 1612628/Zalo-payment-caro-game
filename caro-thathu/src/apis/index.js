@@ -33,7 +33,10 @@ export const RegisterRequest = async function Register(username,password,email) 
         }
     }
     let res = await axios.post("http://127.0.0.1:4001/register",data,config)
-    .then(res => res.data)
+    .then(res => {
+        console.log(res);
+        return res;
+    })
     .catch(error => {
         console.log(error);
         return null;
@@ -73,11 +76,10 @@ export const WaitingRoomGamesRequest = async (token)=>{
     return res;
 
 }
-export const CreateRoomGameRequest = async(token,hostId,hostName,bettingGolds)=>{
+export const CreateRoomGameRequest = async(token,hostId,bettingGolds)=>{
     console.log("API: CreateRoomGameRequest");
     let data={
         host_id:hostId,
-        host_name:hostName,
         betting_golds:bettingGolds
     }
     let config={
@@ -111,4 +113,41 @@ export const LogoutRequest = async(token,userId)=>{
         return null;
     })
     return res;
+}
+
+export const ForgotPasswordRequest = async(username,email)=>{
+    console.log("API: LogoutRequest");
+    let data={
+        username:username,
+        email:email
+    }
+
+    let res = await axios.post("http://127.0.0.1:4001/forgotpassword",data)
+    .then(res => res)
+    .catch(error => {
+        console.log(error);
+        return null;
+    })
+    return res;
+}
+
+export const JoinGameRequest = async(token,gameId,userId,userGolds)=>{
+    console.log("API: LogoutRequest");
+    let data={
+        user_id:userId,
+        user_golds:userGolds,
+        game_id:gameId
+    }
+    let config={
+        headers:{
+            'Authorization':token
+        }
+    }
+    let res = await axios.post("http://127.0.0.1:4001/games/join",data,config)
+    .then(res => res)
+    .catch(error => {
+        console.log(error);
+        return null;
+    })
+    return res.data;
 }

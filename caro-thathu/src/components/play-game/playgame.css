@@ -25,20 +25,30 @@ body{
   padding-left: 0px !important;
   padding-right: 0px !important;
 }
-.send-message-play-game{
+.btn-send-message-play-game{
   background-color:#9C9C9C; 
   border: none;
   color: white;
-  padding: 10px 24px;
+  padding: 10px 20px;
   text-align: center;
   border-radius: 24px;
-    text-decoration: none;
+  text-decoration: none;
   font-size: 16px;
   cursor: pointer;
 
 
 }
-.send-message-play-game:hover {
+.form-send-message-play-screen
+{
+  margin-left:0px !important;
+  margin-right:0px !important;
+}
+.user-info{
+  margin-left:0px !important;
+  margin-right:0px !important;
+}
+
+.btn-send-message-play-game:hover {
   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
 .input-message-play-game{
@@ -46,4 +56,7 @@ body{
 }
 input:focus{
   color: white;
+}
+.my-row-play-screen{
+  margin-right: 0px !important;
 }

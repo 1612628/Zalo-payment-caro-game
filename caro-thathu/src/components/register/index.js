@@ -9,7 +9,7 @@ import {
     MDBCardBody,
     MDBCardHeader,
     MDBBtn,
-    MDBInput
+    MDBInput,
   } from "mdbreact";
 
 import Swal from 'sweetalert2';
@@ -64,39 +64,49 @@ class Register extends Component{
     async handleRegister(event)
     {
       event.preventDefault();
-      if(this.state.passwordInput.value !== this.state.passwordRepeatInput.value)
-      {
-        mySwal.fire({
-          type: 'error',
-          title: 'Không trùng mật khẩu',
-          timer:2000
-        });
-      }else{
-        let res = await RegisterRequest(this.state.usernameInput.value,
-          this.state.passwordInput.value,
-          this.state.emailInput.value);
-        if(res.status===201){
-          mySwal.fire({
-            type:'success',
-            title: 'Tạo tài khoản thành công',
-            timer:2000
-          });
-          this.props.history.push("/");
+      if(this.state.usernameInput.value && this.state.passwordInput.value && 
+        this.state.passwordInput.value && this.state.passwordRepeatInput.value){
+          if(this.state.passwordInput.value !== this.state.passwordRepeatInput.value)
+          {
+            mySwal.fire({
+              type: 'error',
+              title: 'Repeat password is not matched',
+              timer:2000
+            });
+          }else{
+            let res = await RegisterRequest(this.state.usernameInput.value,
+              this.state.passwordInput.value,
+              this.state.emailInput.value);
+            if(res.status===201){
+              mySwal.fire({
+                type:'success',
+                title: 'Create account successful',
+                timer:2000
+              });
+              this.props.history.push("/");
+            }else{
+              mySwal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'There is an happened error',
+                timer:2000
+              });
+            }
+          }
         }else{
           mySwal.fire({
-            type: 'error',
-            title: 'Oops...',
-            text: 'Xảy ra lỗi trong quá trình tạo tài khoản',
+            title: 'Please fill all information in the form.',
             timer:2000
           });
         }
-
-        
-      }      
+           
     }
 
     handleRedirectToLogin=()=>{
       this.props.history.push("/");
+    }
+    handleRedirectToForgotPassword=()=>{
+      this.props.history.push("/forgotpassword");
     }
 
     render(){
@@ -160,7 +170,7 @@ class Register extends Component{
                           required containerClass="mb-0"/>
   
                           <p className="font-small d-flex justify-content-end">
-                            <a href="#!" className="green-text ml-1 font-weight-bold">Forgot Password?</a>
+                            <a href="#!" className="green-text ml-1 font-weight-bold" onClick={this.handleRedirectToForgotPassword}>Forgot Password?</a>
                           </p>
                           <MDBRow className="d-flex justify-content-end align-items-center mb-4">
                               <p className="font-small">

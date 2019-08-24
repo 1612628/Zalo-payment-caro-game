@@ -6,11 +6,16 @@ import {
   MDBIcon,
 } from "mdbreact";
 
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import {joinInRoomGame} from '../../store/actions/roomGame';
 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 const mySwal = withReactContent(Swal);
+
+
+import {JoinGameRequest} from '../../apis/';
 
 class WaitingGameBox extends Component{
     constructor(props){
@@ -30,9 +35,26 @@ class WaitingGameBox extends Component{
             confirmButtonText: 'Yes',
             cancelButtonText:'No'
           })
-          .then((result)=>{
+          .then(async (result)=>{
             if(result.value){
-                
+                let res = await JoinGameRequest(this.props.UserReducer.user.token,
+                  this.props.WaitingGamesReducer.waitingGames[this.state.index].roomGameId,
+                  this.props.UserReducer.user.id,this.props.UserReducer.user.golds);
+                if(res){
+                  this.props.joinInRoomGame(this.props.WaitingGamesReducer.waitingGames[this.state.index].roomGameId,
+                    res.status,this.props.WaitingGamesReducer.waitingGames[this.state.index].bettingGolds,
+                    res.opponent.id,res.opponent.name,res.opponent.golds);
+                  
+                  this.props.UserReducer.user.socket.emit('join_game',{
+                    gameId:this.props.WaitingGamesReducer.waitingGames[this.state.index].roomGameId,
+                    userId:this.props.UserReducer.user.id,
+                    userName:this.props.UserReducer.user.username,
+                    golds:this.props.UserReducer.user.golds
+                  });
+                  
+                  this.props.history.push("/playgame");
+
+                }
             }
           })
     }
@@ -66,12 +88,16 @@ class WaitingGameBox extends Component{
 
 const mapStateToProps = (state) => {
     return {
-        WaitingGamesReducer:state.WaitingGamesReducer
+        WaitingGamesReducer:state.WaitingGamesReducer,
+        UserReducer:state.UserReducer,
     }
   }
   
-//   const mapDispatchToProps = (dispatch) => {
-//     return bindActionCreators({ updateUser, updateLeaderboard, updateWaitingGame }, dispatch);
-//   }
+const mapDispatchToProps=(dispatch)=>{
+  return bindActionCreators({
+    joinInRoomGame
+  },dispatch);
+}
+
   
-  export default connect(mapStateToProps, null)(WaitingGameBox);
+export default connect(mapStateToProps, mapDispatchToProps)(WaitingGameBox);
