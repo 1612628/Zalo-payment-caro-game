@@ -26,7 +26,7 @@ class OpponentInfo extends Component {
             </div>
             <div className="d-flex align-middle">
               <img src="/images/gamepad.svg" height="32px" width="32px" className="mr-2"></img>
-              <p className="text-room mt-2">{this.props.RoomGameReducer.roomGame.opponent.golds}</p>
+              <p className="text-room mt-2">{this.props.RoomGameReducer.roomGame.opponent.totalPlayedGame}</p>
             </div>
           </div>
         </MDBCardBody>

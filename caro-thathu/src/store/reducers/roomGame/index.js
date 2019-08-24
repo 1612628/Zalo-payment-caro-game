@@ -8,7 +8,8 @@ const initialRoomGameState={
             username:"-1",
             golds:-1,
             typePattern:"O",
-            numberPlayedGame: 1
+            totalPlayedGame: 1,
+            
         }
     }    
 };
@@ -57,6 +58,14 @@ const RoomGameReducer=(state=initialRoomGameState,action)=>{
                         ...state.roomGame.opponent,
                         typePattern:action.payload.typePattern
                     }
+                }
+            }
+        case 'UPDATE_GAME_STATUS':
+            return{
+                ...state,
+                roomGame:{
+                    ...state.roomGame,
+                    status:action.payload.status
                 }
             }
         default:

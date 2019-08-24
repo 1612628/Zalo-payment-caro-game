@@ -125,12 +125,14 @@ router.get('/games',async (req,res)=>{
                 roomGameDetailInfo.host_name=host.username;
                 waitingRoomGames.push(roomGameDetailInfo);
             }else{
-                console.log('/games Error redis hgetall:');;
+                console.log('/games Error redis hgetall:');
                 res.status(500).send();
+                return;
             }
         }else{
             console.log('/games Error redis hget:');
             res.status(500).send();
+            return;
         }
     }
     res.status(200).json(waitingRoomGames)
@@ -194,6 +196,7 @@ router.post('/games/join',async (req,res)=>{
                             id:roomGame.host_id,
                             name:host.username,
                             golds:host.golds,
+                            totalPlayedGame:host.total_played_game
                         }
                     });
                 }

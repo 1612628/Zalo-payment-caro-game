@@ -1,6 +1,7 @@
 const intInitTime = {
     time: 15,
-    isMyTurn: true
+    isMyTurn: false,
+    
 }
 const TimeReducer = (state = intInitTime, action) => {
     switch (action.type) {
