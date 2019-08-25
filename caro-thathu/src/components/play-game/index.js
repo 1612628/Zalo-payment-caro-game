@@ -64,6 +64,7 @@ class PlayGame extends Component {
       this.props.opponentOutGame(data[0].gameId,data[0].bettingGolds);
       this.props.updateUserGolds(this.props.UserReducer.user.golds
         + data[0].bettingGolds+data[0].bonusGolds);
+
       this.props.updateUserTotalPlayedGame(this.props.UserReducer.user.totalPlayedGame+1);
       this.props.restartTime();
       let board = await this.createEmptyBoard(15, 15);
@@ -168,6 +169,7 @@ class PlayGame extends Component {
       this.props.updateGameIdToContinueGame(data[1].gameId);
       this.props.updateUserTotalPlayedGame(
         this.props.UserReducer.user.totalPlayedGame+1);
+   
       
       if(data[0].type==='OLD_GAME' && data[0].winner != null){
           
@@ -200,8 +202,8 @@ class PlayGame extends Component {
             -data[0].betting_golds);
 
           this.props.updateOpponentInfoToContinueGame(
-            this.props.RoomGameReducer.roomGame.opponent.golds 
-            +data[0].betting_golds+data[0].bonus_golds,
+            parseInt(this.props.RoomGameReducer.roomGame.opponent.golds) 
+            +parseInt(data[0].betting_golds)+parseInt(data[0].bonus_golds),
             this.props.RoomGameReducer.roomGame.opponent.totalPlayedGame+1
           )
 
@@ -481,7 +483,7 @@ class PlayGame extends Component {
                 </MDBRow>
                 <div className="scrollable-chat"> */}
                 <div className=" chat-body list-unstyled scrollbar-chatbox">
-                  <MDBListGroup className="list-unstyled pl-3 pr-3 ">
+                  <MDBListGroup id="message-list-group" className="list-unstyled pl-3 pr-3 ">
                     <Message></Message>
                   </MDBListGroup>
                 </div>

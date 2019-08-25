@@ -9,6 +9,8 @@ import {
     MDBCardBody,
 } from "mdbreact";
 class Message extends React.Component {
+
+
     render() {
         return this.props.MessageReducer.messages.map((messageItem, index) => {
             let classNameOfMessage = "message-body ";

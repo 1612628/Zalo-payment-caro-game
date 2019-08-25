@@ -132,7 +132,7 @@ router.get('/games',async (req,res)=>{
             let roomGameDetailInfo = await RedisClient.hgetall(roomGame);
             let host = await RedisClient.hgetall('user:'+roomGameDetailInfo.host_id);
             if(roomGameDetailInfo && host){
-                let gameId = roomGame.split(":")[1];
+                let gameId = parseInt(roomGame.split(":")[1]);
                 roomGameDetailInfo.room_game_id=gameId;
                 roomGameDetailInfo.host_name=host.username;
                 waitingRoomGames.push(roomGameDetailInfo);

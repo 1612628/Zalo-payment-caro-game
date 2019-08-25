@@ -116,6 +116,7 @@ io.on("connection", function (socket) {
                 if(data.userId==roomGame.host_id){
 
                     roomGame.winner_id=roomGame.opponent_id;                
+                    
                     await RedisClient.hmset('user:'+roomGame.host_id,
                     'total_played_game',hostTotalPlayedGame+1,
                     'golds',hostGolds-bettingGolds);
@@ -125,13 +126,6 @@ io.on("connection", function (socket) {
     
                     await RedisClient.zincrby('leaderboard',bettingGolds,roomGame.opponent_id)
                     await RedisClient.zincrby('leaderboard',-bettingGolds,roomGame.host_id);
-    
-                    await RedisClient.hset('user:' + roomGame.host_id,
-                        'total_played_game', hostTotalPlayedGame + 1,
-                        'golds', hostGolds - bettingGolds);
-                    await RedisClient.hset('user:' + roomGame.opponent_id,
-                        'total_played_game', opponentTotalPlayedGame + 1,
-                        'golds', opponentGolds + bettingGolds + bonusGolds)
 
     
                     await mongoUserModel.findByIdAndUpdate(roomGame.host_id,
@@ -180,7 +174,6 @@ io.on("connection", function (socket) {
                         )
                 }
             }
-            
 
             roomGame.status = 'end'
             //save to mongoose
@@ -234,6 +227,7 @@ io.on("connection", function (socket) {
                 clients.forEach((client) => {
                     const clientSocket = io.of('/').connected[client];
                     if (client !== socket.id) {
+                        clientSocket.join(''+idGameCount);
                         clientSocket.emit('opponent_out_game',response);
                     }
                 })
@@ -968,7 +962,7 @@ async function getNewWaitingRoomList() {
             let roomGameDetailInfo = await RedisClient.hgetall(roomGame);
             let host = await RedisClient.hgetall('user:' + roomGameDetailInfo.host_id);
             if (roomGameDetailInfo && host) {
-                let gameId = roomGame.split(":")[1];
+                let gameId = parseInt(roomGame.split(":")[1]);
                 roomGameDetailInfo.room_game_id = gameId;
                 roomGameDetailInfo.host_name = host.username;
                 waitingRoomGames.push(roomGameDetailInfo);
