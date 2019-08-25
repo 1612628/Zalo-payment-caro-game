@@ -165,7 +165,8 @@ class MainScreenGame extends Component {
           this.props.createRoomGame(res.roomGameId,'waiting',result.value);
           await mySwal.fire({
             type: 'success',
-            html: 'You create a room with betting golds: ' + result.value
+            html: 'You create a room with betting golds: ' + result.value,
+            timer:1500
           });
           
           this.props.history.push('/playgame');

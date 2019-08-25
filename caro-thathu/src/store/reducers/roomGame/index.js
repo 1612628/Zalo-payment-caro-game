@@ -68,6 +68,26 @@ const RoomGameReducer=(state=initialRoomGameState,action)=>{
                     status:action.payload.status
                 }
             }
+        case 'UPDATE_GAME_ID_TO_CONTINUE_GAME':
+            return{
+                ...state,
+                roomGame:{
+                    ...state.roomGame,
+                    roomGameId:action.payload.gameId,
+                }
+            }
+        case 'UPDATE_OPPONENT_INFO_TO_CONTINUE_GAME':
+            return{
+                ...state,
+                roomGame:{
+                    ...state.roomGame,
+                    opponent:{
+                        ...state.roomGame.opponent,
+                        golds:action.payload.opponentGolds,
+                        totalPlayedGame:action.payload.opponentTotalPlayedGame
+                    }
+                }
+            }
         default:
             return state;
     }
