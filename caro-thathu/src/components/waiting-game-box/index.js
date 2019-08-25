@@ -25,6 +25,7 @@ class WaitingGameBox extends Component{
         }
     }
     handleWaitingGameBoxClick=()=>{
+      console.log("somebody");
         mySwal.fire({
             title: 'Do you want to join this game?',
             type:'question',

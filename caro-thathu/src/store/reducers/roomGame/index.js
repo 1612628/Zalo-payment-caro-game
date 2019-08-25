@@ -32,9 +32,32 @@ const RoomGameReducer=(state=initialRoomGameState,action)=>{
                 }  
                       
             }
+        case 'OPPONENT_OUT_GAME':
+            console.log(action.payload.newGameId)
+                return{
+                    ...state,
+                    roomGame:{
+                        roomGameId:action.payload.newGameId,
+                        bettingGolds:action.payload.bettingGolds,
+                        status:"waiting",
+                        opponent:{
+                            id:-1,
+                            username:"-1",
+                            golds:-1,
+                            typePattern:"O",
+                            totalPlayedGame: 1,
+                        }
+                    }
+                }
+        
+        case 'GET_OUT_OF_GAME':
+            return {
+                ...initialRoomGameState
+            }
+
         case 'GET_OUT_OWN_CREATED_ROOM_GAME':
             return{
-                ...state   
+                ...state
             }
         case 'JOIN_IN_ROOM_GAME':
             return{

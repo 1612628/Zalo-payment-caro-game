@@ -14,6 +14,13 @@ export const getOutOfOwnCreatedRoomGame=()=>{
         payload:{}
     }
 }
+
+export const getOutOfGame = ()=>{
+    return {
+        type:'GET_OUT_OF_GAME'
+    }
+}
+
 export const joinInRoomGame=(roomGameId,status,bettingGolds,opponentId,opponentUsername,opponentGolds,opponentTotalPlayedGame)=>{
     return{
         type:'JOIN_IN_ROOM_GAME',
@@ -40,6 +47,16 @@ export const opponentJoinGame=(opponentId,opponentUsername,opponentGolds,opponen
             golds:opponentGolds,
             typePattern:null,
             totalPlayedGame:opponentTotalPlayedGame
+        }
+    }
+}
+
+export const opponentOutGame=(newGameId,bettingGolds)=>{
+    return{
+        type:'OPPONENT_OUT_GAME',
+        payload:{
+            newGameId:newGameId,
+            bettingGolds:bettingGolds
         }
     }
 }
