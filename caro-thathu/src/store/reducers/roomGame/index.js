@@ -44,7 +44,7 @@ const RoomGameReducer=(state=initialRoomGameState,action)=>{
                             id:-1,
                             username:"-1",
                             golds:-1,
-                            typePattern:"O",
+                            typePattern:null,
                             totalPlayedGame: 1,
                         }
                     }
@@ -123,6 +123,7 @@ const RoomGameReducer=(state=initialRoomGameState,action)=>{
                     }
                 }
             }
+        
         default:
             return state;
     }

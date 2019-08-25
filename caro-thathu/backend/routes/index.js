@@ -20,13 +20,23 @@ router.post('/register',async (req,res)=>{
             res.send();
         }else{
             if(username && password && email){
-                var createdUser = UserController.createUser({username:username,password:password,email:email});
-                if(createdUser==null){
+                var createdUser = await UserController.createUser({username:username,password:password,email:email});
+                console.log(createdUser);
+                if(createdUser == null){
                     console.log('/register fail to create user');
                     res.status(500);
                     res.send();
                 }else{
                     console.log('/register created user');
+
+                    const userId = createdUser._id.toString();
+                    await RedisClient.zadd('leaderboard',createdUser.golds,userId);
+                    await RedisClient.hmset('user:'+userId,
+                    'username',createdUser.username,
+                    'total_played_game',createdUser.total_played_game,
+                    'golds',createdUser.golds,
+                    'is_online','false');
+
                     res.status(201);
                     res.send();
                 }

@@ -22,7 +22,7 @@ class Message extends React.Component {
             console.log(messageItem.userIdSend);
             console.log(this.props.UserReducer.user.id )
             return (
-                <MDBCard className={classNameOfMessage}>
+                <MDBCard key={index} className={classNameOfMessage}>
                     <MDBCardBody>
                         <p className="mb-0">{messageItem.message}</p>
                         <small className="pull-right text-muted">

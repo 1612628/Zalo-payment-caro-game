@@ -112,7 +112,9 @@ io.on("connection", function (socket) {
                 let opponentGolds = parseInt(opponent.golds);
                 let opponentTotalPlayedGame = parseInt(opponent.total_played_game);
                 let hostTotalPlayedGame = parseInt(host.total_played_game);
+                
                 if(data.userId==roomGame.host_id){
+
                     roomGame.winner_id=roomGame.opponent_id;                
                     await RedisClient.hmset('user:'+roomGame.host_id,
                     'total_played_game',hostTotalPlayedGame+1,
@@ -130,9 +132,7 @@ io.on("connection", function (socket) {
                     await RedisClient.hset('user:' + roomGame.opponent_id,
                         'total_played_game', opponentTotalPlayedGame + 1,
                         'golds', opponentGolds + bettingGolds + bonusGolds)
-    
-                    await RedisClient.zincrby('leaderboard', bettingGolds, opponent.id)
-                    await RedisClient.zincrby('leaderboard', -bettingGolds, host.id);
+
     
                     await mongoUserModel.findByIdAndUpdate(roomGame.host_id,
                         {
@@ -152,9 +152,11 @@ io.on("connection", function (socket) {
                     
                 }else{
                     isHostOutGame = false;
+
                     await RedisClient.hset('user:'+roomGame.host_id,
                     'total_played_game',hostTotalPlayedGame+1,
                     'golds',hostGolds+bettingGolds+bonusGolds);
+
                     await RedisClient.hmset('user:'+roomGame.opponent_id,
                     'total_played_game',opponentTotalPlayedGame+1,
                     'golds',opponentGolds-bettingGolds)
@@ -162,8 +164,6 @@ io.on("connection", function (socket) {
                     await RedisClient.zincrby('leaderboard',-bettingGolds,roomGame.opponent_id)
                     await RedisClient.zincrby('leaderboard',bettingGolds,roomGame.host_id);
     
-                    await RedisClient.zincrby('leaderboard', -bettingGolds, opponent.id)
-                    await RedisClient.zincrby('leaderboard', bettingGolds, host.id);
     
                     await mongoUserModel.findByIdAndUpdate(roomGame.opponent_id,
                         {
@@ -204,7 +204,7 @@ io.on("connection", function (socket) {
             await RedisClient.del('room_game:' + data.gameId);
 
             let newHostId = roomGame.host_id;
-            if(!isHostOutGame)
+            if(isHostOutGame)
             {   
                 newHostId = roomGame.opponent_id;
             }
@@ -221,6 +221,7 @@ io.on("connection", function (socket) {
             response.push({
                 gameId:idGameCount,
                 bettingGolds:bettingGolds,
+                bonusGolds:1000,
                 opponent:null
             })
 
@@ -365,32 +366,42 @@ io.on("connection", function (socket) {
                 let hostTotalPlayedGame = parseInt(host.total_played_game);
                 let bettingGolds = parseInt(roomGame.betting_golds);
                 let bonusGolds = 1000;
-
+                
 
                 if (data.userId != roomGame.host_id) {
 
                     roomGame.winner_id = roomGame.opponent_id;
+                    hostGolds = hostGolds- bettingGolds;
+                    opponentGolds = opponentGolds+bettingGolds+bonusGolds;
+
+                    await RedisClient.hset('user:' + roomGame.host_id,
+                        'total_played_game', hostTotalPlayedGame + 1,
+                        'golds', hostGolds);
+                    await RedisClient.hmset('user:' + roomGame.opponent_id,
+                        'total_played_game', opponentTotalPlayedGame + 1,
+                        'golds', opponentGolds)
 
                     await RedisClient.zincrby('leaderboard',bettingGolds,roomGame.opponent_id)
                     await RedisClient.zincrby('leaderboard',-bettingGolds,roomGame.host_id);
 
-                    await RedisClient.zincrby('leaderboard', bettingGolds, opponent.id)
-                    await RedisClient.zincrby('leaderboard', -bettingGolds, host.id);
-
+                    
                     await mongoUserModel.findByIdAndUpdate(roomGame.host_id,
                         {
-                            golds:hostGolds-bettingGolds,
+                            golds:hostGolds,
                             total_played_game:hostTotalPlayedGame+1
 
                         })
+                    
                     let opponentMongo = await mongoUserModel.findById(roomGame.opponent_id);
+                    
                     await mongoUserModel.findByIdAndUpdate(roomGame.opponent_id,
                         {
-                            golds:opponentGolds+bettingGolds+bonusGolds,
+                            golds:opponentGolds,
                             won_game:opponentMongo.won_game+1,
                             total_played_game:opponentMongo.total_played_game+1,
                         }
                     )
+
                     
                     response.push({
                         type:'OLD_GAME',
@@ -402,28 +413,32 @@ io.on("connection", function (socket) {
                     })
 
                 } else {
-
                     roomGame.winner_id = roomGame.host_id;
+                    opponentGolds = opponentGolds - bettingGolds;
+                    hostGolds = hostGolds+bettingGolds+bonusGolds;
 
                     await RedisClient.hset('user:' + roomGame.host_id,
                         'total_played_game', hostTotalPlayedGame + 1,
-                        'golds', hostGolds + bettingGolds + bonusGolds);
+                        'golds', hostGolds);
                     await RedisClient.hmset('user:' + roomGame.opponent_id,
                         'total_played_game', opponentTotalPlayedGame + 1,
-                        'golds', opponentGolds - bettingGolds)
+                        'golds', opponentGolds)
 
                     await RedisClient.zincrby('leaderboard',-bettingGolds,roomGame.opponent_id)
                     await RedisClient.zincrby('leaderboard',bettingGolds,roomGame.host_id);
 
+                    
                     await mongoUserModel.findByIdAndUpdate(roomGame.opponent_id,
                         {
-                            golds:opponentGolds-bettingGolds,
+                            golds:opponentGolds,
                             total_played_game:opponentTotalPlayedGame+1
                         })
+                    
                     let hostMongo = await mongoUserModel.findById(roomGame.host_id);
+                    
                     await mongoUserModel.findByIdAndUpdate(roomGame.host_id,
                         {
-                            golds:hostGolds+bettingGolds+bonusGolds,
+                            golds:hostGolds,
                             won_game:hostMongo.won_game+1,
                             total_played_game:hostMongo.total_played_game+1
                         }
@@ -461,37 +476,72 @@ io.on("connection", function (socket) {
 
                 //create new game
                 let idGameCount = await RedisClient.incr('idGameCount');
-                await RedisClient.hmset('room_game:'+idGameCount,
-                'host_id',roomGame.host_id,
-                'betting_golds',bettingGolds,
-                'status','ready',
-                'opponent_id',roomGame.opponent_id,
-                'winner_id','null',
-                'host_ready','false',
-                'opponent_ready','false');
 
-                response.push({
-                    type:'NEW_GAME',
-                    gameId:idGameCount,
-                    hostId:roomGame.host_id,
-                    opponent:roomGame.opponent_id
-                })
+                if(opponentGolds >= bettingGolds && hostGolds>= bettingGolds){
+                    await RedisClient.hmset('room_game:'+idGameCount,
+                    'host_id',roomGame.host_id,
+                    'betting_golds',bettingGolds,
+                    'status','ready',
+                    'opponent_id',roomGame.opponent_id,
+                    'winner_id','null',
+                    'host_ready','false',
+                    'opponent_ready','false');
 
-                //create temp continue room game
-                await RedisClient.hmset('room_game_continue:'+idGameCount,
-                'host_id',roomGame.host_id,
-                'betting_golds',bettingGolds,
-                'status','waiting',
-                'opponent_id',roomGame.opponent_id,
-                'host_accept_continue','null',
-                'opponent_accept_continue','null');
+                    response.push({
+                        type:'NEW_GAME',
+                        gameId:idGameCount,
+                        hostId:roomGame.host_id,
+                        opponentId:roomGame.opponent_id
+                    })
+    
+                    //create temp continue room game
+                    await RedisClient.hmset('room_game_continue:'+idGameCount,
+                    'host_id',roomGame.host_id,
+                    'betting_golds',bettingGolds,
+                    'status','waiting',
+                    'opponent_id',roomGame.opponent_id,
+                    'host_accept_continue','null',
+                    'opponent_accept_continue','null');
+                }else if(opponentGolds<bettingGolds && hostGolds>=bettingGolds){
+                    await RedisClient.hmset('room_game:'+idGameCount,
+                    'host_id',roomGame.host_id,
+                    'betting_golds',bettingGolds,
+                    'status','ready',
+                    'opponent_id','null',
+                    'winner_id','null',
+                    'host_ready','false',
+                    'opponent_ready','false');
 
+                    response.push({
+                        type:'NEW_GAME',
+                        gameId:idGameCount,
+                        hostId:roomGame.host_id,
+                        opponentId: null
+                    })
+                }else if(hostGolds<bettingGolds && opponentGolds>=bettingGolds){
+                    await RedisClient.hmset('room_game:'+idGameCount,
+                    'host_id',roomGame.opponent_id,
+                    'betting_golds',bettingGolds,
+                    'status','ready',
+                    'opponent_id','null',
+                    'winner_id','null',
+                    'host_ready','false',
+                    'opponent_ready','false');
+
+                    response.push({
+                        type:'NEW_GAME',
+                        gameId:idGameCount,
+                        hostId:roomGame.opponent_id,
+                        opponentId: null
+                    })
+                }
+                
                 caroGames.removeGameByGameId(data.gameId);
                 let caroGame = new CaroGame(idGameCount);
                 caroGames.addGame(caroGame);
 
                 io.to(''+data.gameId).emit('end_game_and_play_new_game',response);
-            
+                
             }else if(resCode==2){
                 // next turn
                 console.log('next turn');
@@ -509,21 +559,16 @@ io.on("connection", function (socket) {
                             });
                         }
                     }
-                    // clients.forEach((client)=>{
-                        
-                    // })
                 })
             } else {
                 //draw
                 let response = [];
 
                 let roomGame = await RedisClient.hgetall('room_game:' + data.gameId);
-                let host = await RedisClient.hgetall('user:' + roomGame.host_id);
-                let opponent = await RedisClient.hgetall('user:' + roomGame.opponent_id);
+                // let host = await RedisClient.hgetall('user:' + roomGame.host_id);
+                // let opponent = await RedisClient.hgetall('user:' + roomGame.opponent_id);
 
                 let bettingGolds = parseInt(roomGame.betting_golds);
-
-
 
                 let opponentMongo = await mongoUserModel.findById(roomGame.opponent_id);
                 await mongoUserModel.findByIdAndUpdate(roomGame.opponent_id,
@@ -621,38 +666,32 @@ io.on("connection", function (socket) {
             
             if(data.userId==roomGame.host_id){
 
-                roomGame.winner_id=roomGame.opponent_id;                
+                roomGame.winner_id=roomGame.opponent_id;
+
+                hostGolds = hostGolds-bettingGolds;
+                opponentGolds=opponentGolds+bettingGolds+bonusGolds;
 
                 await RedisClient.hmset('user:'+roomGame.host_id,
                 'total_played_game',hostTotalPlayedGame+1,
-                'golds',hostGolds-bettingGolds);
+                'golds',hostGolds);
                 await RedisClient.hmset('user:'+roomGame.opponent_id,
                 'total_played_game',opponentTotalPlayedGame+1,
-                'golds',opponentGolds+bettingGolds+bonusGolds)
+                'golds',opponentGolds)
 
                 await RedisClient.zincrby('leaderboard',bettingGolds,roomGame.opponent_id)
                 await RedisClient.zincrby('leaderboard',-bettingGolds,roomGame.host_id);
 
-                await RedisClient.hset('user:' + roomGame.host_id,
-                    'total_played_game', hostTotalPlayedGame + 1,
-                    'golds', hostGolds - bettingGolds);
-                await RedisClient.hset('user:' + roomGame.opponent_id,
-                    'total_played_game', opponentTotalPlayedGame + 1,
-                    'golds', opponentGolds + bettingGolds + bonusGolds)
-
-                await RedisClient.zincrby('leaderboard', bettingGolds, opponent.id)
-                await RedisClient.zincrby('leaderboard', -bettingGolds, host.id);
-
                 await mongoUserModel.findByIdAndUpdate(roomGame.host_id,
                     {
-                        golds:hostGolds-bettingGolds,
+                        golds:hostGolds,
                         total_played_game:hostTotalPlayedGame+1
 
                     })
                 let opponentMongo = await mongoUserModel.findById(roomGame.opponent_id);
+                
                 await mongoUserModel.findByIdAndUpdate(roomGame.opponent_id,
                     {
-                        golds:opponentGolds+bettingGolds+bonusGolds,
+                        golds:opponentGolds,
                         won_game:opponentMongo.won_game+1,
                         total_played_game:opponentMongo.total_played_game+1,
                     }
@@ -669,29 +708,29 @@ io.on("connection", function (socket) {
 
             }else{
 
+                hostGolds = hostGolds+bettingGolds+bonusGolds
+                opponentGolds = opponentGolds-bettingGolds;
 
                 await RedisClient.hset('user:'+roomGame.host_id,
                 'total_played_game',hostTotalPlayedGame+1,
-                'golds',hostGolds+bettingGolds+bonusGolds);
+                'golds',hostGolds);
                 await RedisClient.hmset('user:'+roomGame.opponent_id,
                 'total_played_game',opponentTotalPlayedGame+1,
-                'golds',opponentGolds-bettingGolds)
+                'golds',opponentGolds)
 
                 await RedisClient.zincrby('leaderboard',-bettingGolds,roomGame.opponent_id)
                 await RedisClient.zincrby('leaderboard',bettingGolds,roomGame.host_id);
 
-                await RedisClient.zincrby('leaderboard', -bettingGolds, opponent.id)
-                await RedisClient.zincrby('leaderboard', bettingGolds, host.id);
-
                 await mongoUserModel.findByIdAndUpdate(roomGame.opponent_id,
                     {
-                        golds:opponentGolds-bettingGolds,
+                        golds:opponentGolds,
                         total_played_game:opponentTotalPlayedGame+1
                     })
                 let hostMongo = await mongoUserModel.findById(roomGame.host_id);
+
                 await mongoUserModel.findByIdAndUpdate(roomGame.host_id,
                     {
-                        golds:hostGolds+bettingGolds+bonusGolds,
+                        golds:hostGolds,
                         won_game:hostMongo.won_game+1,
                         total_played_game:hostMongo.total_played_game+1
                     }
@@ -723,37 +762,70 @@ io.on("connection", function (socket) {
                 console.log("gameModel save successful");
             })
 
-
-
             //remove old game
             await RedisClient.del('room_game:' + data.gameId);
 
             //create new game
             let idGameCount = await RedisClient.incr('idGameCount');
-            await RedisClient.hmset('room_game:'+idGameCount,
-            'host_id',roomGame.host_id,
-            'betting_golds',bettingGolds,
-            'status','ready',
-            'opponent_id',roomGame.opponent_id,
-            'winner_id','null',
-            'host_ready','false',
-            'opponent_ready','false');
 
-            response.push({
-                type:'NEW_GAME',
-                gameId:idGameCount,
-                hostId:roomGame.host_id,
-                opponent:roomGame.opponent_id
-            })
+            if(opponentGolds >= bettingGolds && hostGolds>= bettingGolds){
+                await RedisClient.hmset('room_game:'+idGameCount,
+                'host_id',roomGame.host_id,
+                'betting_golds',bettingGolds,
+                'status','ready',
+                'opponent_id',roomGame.opponent_id,
+                'winner_id','null',
+                'host_ready','false',
+                'opponent_ready','false');
 
-            //create temp continue room game
-            await RedisClient.hmset('room_game_continue:'+idGameCount,
-            'host_id',roomGame.host_id,
-            'betting_golds',bettingGolds,
-            'status','waiting',
-            'opponent_id',roomGame.opponent_id,
-            'host_accept_continue','null',
-            'opponent_accept_continue','null');
+                response.push({
+                    type:'NEW_GAME',
+                    gameId:idGameCount,
+                    hostId:roomGame.host_id,
+                    opponentId:roomGame.opponent_id
+                })
+
+                //create temp continue room game
+                await RedisClient.hmset('room_game_continue:'+idGameCount,
+                'host_id',roomGame.host_id,
+                'betting_golds',bettingGolds,
+                'status','waiting',
+                'opponent_id',roomGame.opponent_id,
+                'host_accept_continue','null',
+                'opponent_accept_continue','null');
+            }else if(opponentGolds<bettingGolds && hostGolds>=bettingGolds){
+                await RedisClient.hmset('room_game:'+idGameCount,
+                'host_id',roomGame.host_id,
+                'betting_golds',bettingGolds,
+                'status','ready',
+                'opponent_id','null',
+                'winner_id','null',
+                'host_ready','false',
+                'opponent_ready','false');
+
+                response.push({
+                    type:'NEW_GAME',
+                    gameId:idGameCount,
+                    hostId:roomGame.host_id,
+                    opponentId: null
+                })
+            }else if(hostGolds<bettingGolds && opponentGolds>=bettingGolds){
+                await RedisClient.hmset('room_game:'+idGameCount,
+                'host_id',roomGame.opponent_id,
+                'betting_golds',bettingGolds,
+                'status','ready',
+                'opponent_id','null',
+                'winner_id','null',
+                'host_ready','false',
+                'opponent_ready','false');
+
+                response.push({
+                    type:'NEW_GAME',
+                    gameId:idGameCount,
+                    hostId:roomGame.opponent_id,
+                    opponentId: null
+                })
+            }
 
             caroGames.removeGameByGameId(data.gameId);
             let caroGame = new CaroGame(idGameCount);
@@ -782,6 +854,18 @@ io.on("connection", function (socket) {
                     'opponent_id','null')
                     await RedisClient.del('room_game_continue:'+data.gameId);
                     socket.emit('opponent_get_out_of_game',data.gameId);
+
+                    io.sockets.in(''+data.gameId).clients((err,clients)=>{
+                        clients.forEach(async (client)=>{
+                            if(client != socket.id){
+                                const clientSocket = io.of('/').connected[client];
+                                let waitingRoomGames = await getNewWaitingRoomList();
+                                clientSocket.emit('update_list_waiting_game',{
+                                    data: waitingRoomGames,
+                                });
+                            }
+                        })
+                    })
                 }
 
             }else{
@@ -821,6 +905,18 @@ io.on("connection", function (socket) {
                     'opponent_id','null')
                     await RedisClient.del('room_game_continue:'+data.gameId);
                     socket.emit('opponent_get_out_of_game',data.gameId);
+
+                    io.sockets.in(''+data.gameId).clients((err,clients)=>{
+                        clients.forEach(async (client)=>{
+                            if(client != socket.id){
+                                const clientSocket = io.of('/').connected[client];
+                                let waitingRoomGames = await getNewWaitingRoomList();
+                                clientSocket.emit('update_list_waiting_game',{
+                                    data: waitingRoomGames,
+                                });
+                            }
+                        })
+                    })
                 }
             }else{
                 console.log('opponent reject')
@@ -845,7 +941,8 @@ io.on("connection", function (socket) {
             }
         }
 
-        if(continueRoomGame && continueRoomGame.host_accept_continue === 'true'
+        continueRoomGame = await RedisClient.hgetall('room_game_continue:'+data.gameId);
+        if(continueRoomGame && continueRoomGame.host_accept_continue == 'true'
             && continueRoomGame.opponent_accept_continue =='true'){
                 console.log('two accept')
                 io.to(''+data.gameId).emit('ready_to_start_game',data.gameId);

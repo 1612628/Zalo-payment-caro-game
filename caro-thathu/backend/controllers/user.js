@@ -3,9 +3,9 @@ const mongoRoomGameModel = require('../databases/mongoDatabase/models/roomGame')
 const mongoUserModel = require('../databases/mongoDatabase/models/user');
 
 
-async function createUser(userInfo){
+function createUser(userInfo){
     console.log("createUser",userInfo);
-    let user = await new mongoUserModel({
+    let user = new mongoUserModel({
         username:userInfo.username,
         password:userInfo.password,
         email:userInfo.email,
@@ -14,14 +14,18 @@ async function createUser(userInfo){
         draw_game:0,
         total_played_game:0
     })
-    await user.save(function(err,createdUser){
+    return user.save()
+    .then((createUser)=>{
+        console.log("createUser successful");
+        return createUser;
+    })
+    .catch(err=>{
         if(err){
             console.log('createUser Error: '+err);
             return null;
         }
-        console.log("createUser successful");
-        return createdUser;
     })
+    
 }
 
 function isCorrectUser(userInfo){

@@ -21,13 +21,14 @@ import UserInfo from '../user-info';
 import Message from '../message';
 import ProcessBar from '../process-bar';
 
-import { appendMessage } from '../../store/actions/messages';
+import { appendMessage,restartMessageList } from '../../store/actions/messages';
 import { startDecrementTime, restartTime,restartTurn } from '../../store/actions/timer';
 import { getOutOfOwnCreatedRoomGame, opponentJoinGame,
   updateOpponentTypePattern,updateGameStatus,
   updateGameIdToContinueGame,
   updateOpponentInfoToContinueGame,
-  resetRoomGame,resetOpponentToDefault } from '../../store/actions/roomGame';
+  resetRoomGame,resetOpponentToDefault,
+  opponentOutGame,getOutOfGame } from '../../store/actions/roomGame';
 import { updateUserPattern,updateUserGolds,updateUserTotalPlayedGame } from '../../store/actions/user';
 import {CellClick,InitBoard} from '../../store/actions/celllist';
  
@@ -59,6 +60,16 @@ class PlayGame extends Component {
     this.props.UserReducer.user.socket.on('opponent_out_game', async (data) => {
       console.log('socket opponent_out_game')
       console.log(data)
+      
+      this.props.opponentOutGame(data[0].gameId,data[0].bettingGolds);
+      this.props.updateUserGolds(this.props.UserReducer.user.golds
+        + data[0].bettingGolds+data[0].bonusGolds);
+      this.props.updateUserTotalPlayedGame(this.props.UserReducer.user.totalPlayedGame+1);
+      this.props.restartTime();
+      let board = await this.createEmptyBoard(15, 15);
+      this.props.InitBoard(board);
+      this.props.restartMessageList();
+      
       await mySwal.fire({
         title: 'You WIN !!!',
         width: 600,
@@ -71,12 +82,6 @@ class PlayGame extends Component {
           no-repeat
         `
       })
-      this.props.opponentOutGame(data[0].gameId,data[0].bettingGolds);
-      this.props.restartTime();
-      let board = await this.createEmptyBoard(15, 15);
-      this.props.InitBoard(board);
-      this.props.restartMessageList();
-      
     })
 
 
@@ -167,7 +172,6 @@ class PlayGame extends Component {
       if(data[0].type==='OLD_GAME' && data[0].winner != null){
           
         if(data[0].winner == this.props.UserReducer.user.id){
-
           this.props.updateUserGolds(this.props.UserReducer.user.golds+
             data[0].betting_golds+data[0].bonus_golds);
           this.props.updateOpponentInfoToContinueGame(
@@ -184,8 +188,10 @@ class PlayGame extends Component {
             backdrop: `
               rgba(0,0,123,0.4)
               url("/images/nyan-cat.gif")
-              center center
+              top center
               no-repeat
+              z-index-99
+              
             `
           })
         }else{
@@ -213,6 +219,10 @@ class PlayGame extends Component {
             // `
           })
           
+          if(data[1].opponentId == null){
+            this.props.resetRoomGame();
+            this.props.history.push('/mainscreengame')
+          }
         }
       }else{
         //draw
@@ -240,18 +250,20 @@ class PlayGame extends Component {
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, I want!'
       }).then((result)=>{
-        if(result.value){
+        if(result.value && data[1].opponentId != null){
           this.props.UserReducer.user.socket.emit('accept_to_play_new_game',{
             gameId:data[1].gameId,
             userId:this.props.UserReducer.user.id,
             accept:"true"
           });
         }else{
-          this.props.UserReducer.user.socket.emit('accept_to_play_new_game',{
-            gameId:data[1].gameId,
-            userId:this.props.UserReducer.user.id,
-            accept:"false"
-          });
+          if(data[1].opponentId !=null){
+            this.props.UserReducer.user.socket.emit('accept_to_play_new_game',{
+              gameId:data[1].gameId,
+              userId:this.props.UserReducer.user.id,
+              accept:"false"
+            });
+          }          
 
           
           this.props.resetRoomGame();
@@ -284,11 +296,6 @@ class PlayGame extends Component {
     this.props.UserReducer.user.socket.removeAllListeners('opponent_get_out_of_game');
     
     console.log(this.props.UserReducer.user.socket._callbacks)
-  }
-
-  getTimeNow()
-  {
-    
   }
   
   getTimeNow() {
@@ -405,10 +412,17 @@ class PlayGame extends Component {
       gameId: this.props.RoomGameReducer.roomGame.roomGameId,
       userId: this.props.UserReducer.user.id
     })
+
+    this.props.updateUserGolds(this.props.UserReducer.user.golds 
+      -this.props.RoomGameReducer.roomGame.bettingGolds);
+    this.props.updateUserTotalPlayedGame(this.props.UserReducer.user.totalPlayedGame+1);
+
+    this.props.restartTime();
     this.props.restartMessageList();
     this.props.getOutOfGame();
     let newBoard = await this.createEmptyBoard(15,15);
     this.props.InitBoard(newBoard);
+
     await mySwal.fire({   
       type: 'success',
       html: 'Get out of game'
@@ -512,7 +526,8 @@ const mapDispatchToProps = (dispatch) => {
     updateGameStatus, updateGameIdToContinueGame,
     updateUserGolds,updateUserTotalPlayedGame,
     updateOpponentInfoToContinueGame,
-    resetRoomGame,resetOpponentToDefault
+    resetRoomGame,resetOpponentToDefault,
+    restartMessageList
   }, dispatch);
 }
 
