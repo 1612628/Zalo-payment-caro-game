@@ -153,36 +153,11 @@ class PlayGame extends Component {
               no-repeat
             `
           })
-          //play new game
-          await mySwal.fire({
-            title: 'Do you want to play new game!!',
-            text: "",
-            type: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-          }).then((result)=>{
-            if(result.value){
-              this.props.UserReducer.user.socket.emit('accept_to_play_new_game',{
-                gameId:data[1].gameId,
-                userId:this.props.UserReducer.user.id,
-                accept:"true"
-              });
-            }else{
-              this.props.UserReducer.user.socket.emit('accept_to_play_new_game',{
-                gameId:data[1].gameId,
-                userId:this.props.UserReducer.user.id,
-                accept:"false"
-              });
-            }
-          });
-
         }else{
 
           this.props.updateUserGolds(this.props.UserReducer.user.golds
             -data[0].betting_golds);
-            
+
           this.props.updateOpponentInfoToContinueGame(
             this.props.RoomGameReducer.roomGame.opponent.golds 
             +data[0].betting_golds+data[0].bonus_golds,
@@ -202,30 +177,7 @@ class PlayGame extends Component {
               no-repeat
             `
           })
-          //play new game
-          await mySwal.fire({
-            title: 'Do you want to play new game!!',
-            text: "",
-            type: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-          }).then((result)=>{
-            if(result.value){
-              this.props.UserReducer.user.socket.emit('accept_to_play_new_game',{
-                gameId:data[1].gameId,
-                userId:this.props.UserReducer.user.id,
-                accept:"true"
-              });
-            }else{
-              this.props.UserReducer.user.socket.emit('accept_to_play_new_game',{
-                gameId:data[1].gameId,
-                userId:this.props.UserReducer.user.id,
-                accept:"false"
-              });
-            }
-          });
+          
         }
       }else{
         //draw
@@ -241,31 +193,32 @@ class PlayGame extends Component {
             no-repeat
           `
         })
-        //play new game
-        await mySwal.fire({
-          title: 'Do you want to play new game!!',
-          text: "",
-          type: 'question',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!'
-        }).then((result)=>{
-          if(result.value){
-            this.props.UserReducer.user.socket.emit('accept_to_play_new_game',{
-              gameId:data[1].gameId,
-              userId:this.props.UserReducer.user.id,
-              accept:"true"
-            });
-          }else{
-            this.props.UserReducer.user.socket.emit('accept_to_play_new_game',{
-              gameId:data[1].gameId,
-              userId:this.props.UserReducer.user.id,
-              accept:"false"
-            });
-          }
-        });
+        
       }
+      //play new game
+      await mySwal.fire({
+        title: 'Do you want to play new game!!',
+        text: "",
+        type: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, I want!'
+      }).then((result)=>{
+        if(result.value){
+          this.props.UserReducer.user.socket.emit('accept_to_play_new_game',{
+            gameId:data[1].gameId,
+            userId:this.props.UserReducer.user.id,
+            accept:"true"
+          });
+        }else{
+          this.props.UserReducer.user.socket.emit('accept_to_play_new_game',{
+            gameId:data[1].gameId,
+            userId:this.props.UserReducer.user.id,
+            accept:"false"
+          });
+        }
+      });
     })
   }
   getTimeNow()
