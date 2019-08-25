@@ -83,7 +83,6 @@ io.on("connection", function (socket) {
         await RedisClient.del('room_game:' + gameId);
         socket.leave('' + gameId);
         socket.leave('chat' + gameId);
-
         caroGames.removeGameByGameId(gameId);
     })
 
