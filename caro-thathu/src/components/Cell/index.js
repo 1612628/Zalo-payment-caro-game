@@ -29,8 +29,10 @@ class Cell extends React.Component {
         
         this.props.CellClick(this.state.x, this.state.y,
             true,this.props.UserReducer.user.typePattern);
-        this.props.restartTime();
-        console.log("is click")
+        
+        console.log("y: "+this.state.y+", x: "+this.state.x+" is clicked");
+        console.log('restartTime cell click');
+        this.props.restartTime(); 
 
         this.props.UserReducer.user.socket.emit('play_a_game_turn',{
             gameId:this.props.RoomGameReducer.roomGame.roomGameId,

@@ -18,7 +18,6 @@ class Board extends React.Component {
   }
 
   renderBoard() {
-    console.log(this.props.CellListReducer.cellList)
     if(this.props.CellListReducer.cellList){
       return this.props.CellListReducer.cellList.map((datarow, i) => (
         <div key={i} className="game-row">

@@ -116,6 +116,8 @@ router.get('/games',async (req,res)=>{
     
     for(let roomGame of roomGames){
         let status = await RedisClient.hget(roomGame,'status');
+        console.log(roomGame);
+        console.log(status);
         if(status==='waiting'){
             let roomGameDetailInfo = await RedisClient.hgetall(roomGame);
             let host = await RedisClient.hgetall('user:'+roomGameDetailInfo.host_id);

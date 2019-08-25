@@ -10,6 +10,7 @@ import {
 } from "mdbreact";
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+
 import { updateUser,userLogOut } from '../../store/actions/user';
 import { updateLeaderboard } from '../../store/actions/leaderboard';
 import { updateWaitingGame } from '../../store/actions/waitingGames';
@@ -47,6 +48,10 @@ class MainScreenGame extends Component {
         }
       }
     })
+  }
+
+  componentWillUnmount(){
+    this.props.UserReducer.user.socket.removeAllListeners('update_list_waiting_game')
   }
 
   

@@ -7,7 +7,7 @@ const initialRoomGameState={
             id:-1,
             username:"-1",
             golds:-1,
-            typePattern:"O",
+            typePattern:null,
             totalPlayedGame: 1,
             
         }
@@ -85,6 +85,18 @@ const RoomGameReducer=(state=initialRoomGameState,action)=>{
                         ...state.roomGame.opponent,
                         golds:action.payload.opponentGolds,
                         totalPlayedGame:action.payload.opponentTotalPlayedGame
+                    }
+                }
+            }
+        case 'RESET_ROOM_GAME_TO_DEFAULT':
+            return initialRoomGameState;
+        case 'RESET_OPPONENT_TO_DEFAULT':
+            return{
+                ...state,
+                roomGame:{
+                    ...state.roomGame,
+                    opponent:{
+                        ...initialRoomGameState.roomGame.opponent
                     }
                 }
             }

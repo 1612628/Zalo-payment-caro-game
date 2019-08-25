@@ -22,11 +22,12 @@ import Message from '../message';
 import ProcessBar from '../process-bar';
 
 import { appendMessage } from '../../store/actions/messages';
-import { startDecrementTime, restartTime, pauseTime,restartTurn } from '../../store/actions/timer';
+import { startDecrementTime, restartTime,restartTurn } from '../../store/actions/timer';
 import { getOutOfOwnCreatedRoomGame, opponentJoinGame,
   updateOpponentTypePattern,updateGameStatus,
   updateGameIdToContinueGame,
-  updateOpponentInfoToContinueGame } from '../../store/actions/roomGame';
+  updateOpponentInfoToContinueGame,
+  resetRoomGame,resetOpponentToDefault } from '../../store/actions/roomGame';
 import { updateUserPattern,updateUserGolds,updateUserTotalPlayedGame } from '../../store/actions/user';
 import {CellClick,InitBoard} from '../../store/actions/celllist';
  
@@ -44,6 +45,8 @@ class PlayGame extends Component {
       message: null,
       timeCount: null
     }
+    console.log(this.props.UserReducer.user.socket._callbacks)
+    console.log('PlayGame constructor');
 
     this.props.UserReducer.user.socket.on('opponent_join_game', (data) => {
       console.log('socket opponent_join_game')
@@ -112,10 +115,13 @@ class PlayGame extends Component {
     })
 
     this.props.UserReducer.user.socket.on('next_turn',(data)=>{
+      console.log('next turn',data);
       if(this.props.TimeReducer.isMyTurn==false){
-
+        console.log('next_turn cell clicked')
         this.props.CellClick(data.x,data.y,true,data.pattern);
+        console.log('next_turn restartTurn')
         this.props.restartTurn();
+        console.log('next_turn handlePlayGame')
         this.handlePlayGame();
       }
     })
@@ -124,6 +130,7 @@ class PlayGame extends Component {
       
       let board = this.createEmptyBoard(15,15);
       this.props.InitBoard(board);
+      console.log('restartTime end_game_and_play_new_game')
       this.props.restartTime();
       this.props.updateGameIdToContinueGame(data[1].gameId);
       this.props.updateUserTotalPlayedGame(
@@ -149,7 +156,7 @@ class PlayGame extends Component {
             backdrop: `
               rgba(0,0,123,0.4)
               url("/images/nyan-cat.gif")
-              center left
+              center center
               no-repeat
             `
           })
@@ -169,13 +176,13 @@ class PlayGame extends Component {
             title: 'You LOST !!!',
             width: 600,
             padding: '3em',
-            background: '#fff url(/images/trees.png)',
-            backdrop: `
-              rgba(0,0,123,0.4)
-              url("/images/nyan-cat.gif")
-              center left
-              no-repeat
-            `
+            background: '#fff url(/images/lost-background.png)',
+            // backdrop: `
+            //   rgba(0,0,123,0.4)
+            //   url("/images/nyan-cat.gif")
+            //   center left
+            //   no-repeat
+            // `
           })
           
         }
@@ -189,7 +196,7 @@ class PlayGame extends Component {
           backdrop: `
             rgba(0,0,123,0.4)
             url("/images/nyan-cat.gif")
-            center left
+            center center
             no-repeat
           `
         })
@@ -217,10 +224,40 @@ class PlayGame extends Component {
             userId:this.props.UserReducer.user.id,
             accept:"false"
           });
+
+          
+          this.props.resetRoomGame();
+          this.props.history.push('/mainscreengame')
         }
       });
     })
+
+    this.props.UserReducer.user.socket.on('opponent_get_out_of_game',async(data)=>{
+      mySwal.fire({
+        type:'info',
+        title:'Your opponent has left the game.',
+         timer:1500
+      })
+      console.log('restartTime opponent_get_out_of_game')
+      this.props.restartTime();
+      this.props.resetOpponentToDefault();
+    })
   }
+
+  componentWillUnmount(){
+    console.log(this.props.UserReducer.user.socket._callbacks)
+  
+    this.props.UserReducer.user.socket.removeAllListeners('opponent_join_game');  
+    this.props.UserReducer.user.socket.removeAllListeners('message_come');
+    this.props.UserReducer.user.socket.removeAllListeners('ready_to_start_game');
+    this.props.UserReducer.user.socket.removeAllListeners('start_game');
+    this.props.UserReducer.user.socket.removeAllListeners('next_turn');
+    this.props.UserReducer.user.socket.removeAllListeners('end_game_and_play_new_game');
+    this.props.UserReducer.user.socket.removeAllListeners('opponent_get_out_of_game');
+    
+    console.log(this.props.UserReducer.user.socket._callbacks)
+  }
+
   getTimeNow()
   {
       let date = new Date();
@@ -251,6 +288,7 @@ class PlayGame extends Component {
       this.props.restartTurn();
       this.handlePlayGame();
     } else {
+      console.log('restartTime handleStartGame')
       this.props.restartTime();
     }
 
@@ -261,7 +299,7 @@ class PlayGame extends Component {
 
   handlePlayGame = () => {
     let x = setInterval(() => {
-      if (this.props.TimeReducer.isMyTurn === true) {
+      if (this.props.TimeReducer.isMyTurn == true) {
         this.props.startDecrementTime();
         if (this.props.TimeReducer.time <= 0) {
           this.props.updateGameStatus('end');
@@ -270,6 +308,7 @@ class PlayGame extends Component {
             userId:this.props.UserReducer.user.id
           });
           this.props.updateGameStatus('end');
+          console.log('restartTime handlePlayGame isMyTurn true and time <=0')
           this.props.restartTime();
           clearInterval(x);
           mySwal.fire({
@@ -277,7 +316,9 @@ class PlayGame extends Component {
             html: 'Time is over'
           });
         }
-      } else {
+      }else {
+        console.log('my turn ',this.props.TimeReducer.isMyTurn);
+        console.log('restartTime handlePlayGame isMyTurn false')
         this.props.restartTime();
         clearInterval(x);
       }
@@ -432,14 +473,15 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     appendMessage,
-    startDecrementTime, pauseTime, restartTime,
+    startDecrementTime, restartTime,
     getOutOfOwnCreatedRoomGame, opponentJoinGame,
     updateUserPattern,
     updateOpponentTypePattern,
     restartTurn,CellClick,InitBoard,
     updateGameStatus, updateGameIdToContinueGame,
     updateUserGolds,updateUserTotalPlayedGame,
-    updateOpponentInfoToContinueGame
+    updateOpponentInfoToContinueGame,
+    resetRoomGame,resetOpponentToDefault
   }, dispatch);
 }
 

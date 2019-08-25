@@ -15,13 +15,31 @@ import {
 import socketIOClient from "socket.io-client";
 
 import {bindActionCreators} from 'redux';
-import {updateUser,initialState} from '../../store/actions/user';
-import { connect } from 'react-redux'; 
+import { connect } from 'react-redux';
+
+import {updateUser,initialState,
+  updateUserPattern,
+  updateUserGolds,
+  updateUserTotalPlayedGame} from '../../store/actions/user';
+import {CellClick,InitBoard} from '../../store/actions/celllist';
+import { getOutOfOwnCreatedRoomGame, opponentJoinGame,
+  updateOpponentTypePattern,updateGameStatus,
+  updateGameIdToContinueGame,
+  updateOpponentInfoToContinueGame,
+  resetRoomGame,resetOpponentToDefault } from '../../store/actions/roomGame';
+import { appendMessage } from '../../store/actions/messages';
+import { startDecrementTime, 
+      restartTime,
+      restartTurn } from '../../store/actions/timer/index';
+import { updateWaitingGame } from '../../store/actions/waitingGames';
+
 import {changeAuth} from '../../store/actions/auth'
 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 const mySwal = withReactContent(Swal);
+
+
 
 class UserLogin extends Component {
   constructor(props) {
@@ -39,8 +57,7 @@ class UserLogin extends Component {
       }
     }
 
-
-  }
+  } 
 
   handleUsername = (event) => {
     this.setState({
@@ -53,12 +70,14 @@ class UserLogin extends Component {
       passwordInput: {value:event.target.value,valid:!!event.target.value}
     })
   }
+  
   async handleLogin(event) {
     event.preventDefault();
     if(this.state.usernameInput.value && this.state.passwordInput.value){
       let res = await LoginRequest(this.state.usernameInput.value, this.state.passwordInput.value);
       if(res!=null){
         
+        // this.handleSocket(res);
         const socket = socketIOClient(this.props.ServerReducer.server.endpoint,{
           query:{token:this.props.UserReducer.user.token}
         });
@@ -162,13 +181,27 @@ const mapStateToProps=(state)=>{
   return{
     UserReducer:state.UserReducer,
     ServerReducer:state.ServerReducer,
-    AuthReducer:state.AuthReducer
+    AuthReducer:state.AuthReducer,
+    MessageReducer: state.MessageReducer,
+    TimeReducer: state.TimeReducer,  
+    RoomGameReducer: state.RoomGameReducer
   }
 }
 
 const mapDispatchToProps=(dispatch)=>{
   return bindActionCreators({
-    updateUser,changeAuth,initialState
+    updateUser,changeAuth,initialState,
+    appendMessage,
+    startDecrementTime, restartTime,
+    getOutOfOwnCreatedRoomGame, opponentJoinGame,
+    updateUserPattern,
+    updateOpponentTypePattern,
+    restartTurn,CellClick,InitBoard,
+    updateGameStatus, updateGameIdToContinueGame,
+    updateUserGolds,updateUserTotalPlayedGame,
+    updateOpponentInfoToContinueGame,
+    resetRoomGame,resetOpponentToDefault,
+    updateWaitingGame
   }
     ,dispatch);
 }

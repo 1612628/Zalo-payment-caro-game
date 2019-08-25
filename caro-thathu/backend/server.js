@@ -66,6 +66,7 @@ io.on("connection",function(socket){
 
     socket.on('create_game',async (data)=>{
         console.log('socker create room game: '+data.gameId);
+        
         socket.join(''+ data.gameId);
         socket.join('chat'+ data.gameId);
         let caroGame = new CaroGame(data.gameId);
@@ -80,6 +81,7 @@ io.on("connection",function(socket){
     socket.on('get_out_of_game',async (gameId)=>{
         console.log('socker get out of game: '+gameId);
         await RedisClient.del('room_game:'+gameId);
+        
         socket.leave(''+gameId);
         socket.leave('chat'+ gameId);
 
@@ -98,13 +100,14 @@ io.on("connection",function(socket){
 
     socket.on('join_game',(data)=>{
         console.log('join_game',data);
+        
         socket.join(''+data.gameId);
         socket.join('chat'+data.gameId);
         // let clients = io.sockets.adapter.rooms[''+data.gameId].sockets;
         io.sockets.in(''+data.gameId).clients((err,clients)=>{
             clients.forEach((client)=>{
-                const clientSocket = io.of('/').connected[client];
-                if(client !== socket.id){
+                if(client != socket.id){
+                    const clientSocket = io.of('/').connected[client];
                     clientSocket.emit('opponent_join_game',{
                         gameId:data.gameId,
                         opponentId:data.userId,
@@ -311,7 +314,7 @@ io.on("connection",function(socket){
                 await RedisClient.hmset('room_game:'+idGameCount,
                 'host_id',roomGame.host_id,
                 'betting_golds',bettingGolds,
-                'status','waiting',
+                'status','ready',
                 'opponent_id',roomGame.opponent_id,
                 'winner_id','null',
                 'host_ready','false',
@@ -338,12 +341,16 @@ io.on("connection",function(socket){
                 caroGames.addGame(caroGame);
 
                 io.to(''+data.gameId).emit('end_game_and_play_new_game',response);
+            
             }else if(resCode==2){
                 // next turn
+                console.log('next turn');
                 io.sockets.in(''+data.gameId).clients((err,clients)=>{
-                    clients.forEach((client)=>{
-                        const clientSocket = io.of('/').connected[client];
-                        if(client !== socket.id){
+                    console.log(clients,socket.id);
+                    for(const client of clients){
+                        if(client != socket.id){
+                            console.log('client emit',client);
+                            const clientSocket = io.of('/').connected[client];
                             clientSocket.emit('next_turn',{
                                 gameId:data.gameId,
                                 y:data.y,
@@ -351,7 +358,10 @@ io.on("connection",function(socket){
                                 pattern:data.pattern
                             });
                         }
-                    })
+                    }
+                    // clients.forEach((client)=>{
+                        
+                    // })
                 })
             }else{
                 //draw
@@ -561,7 +571,7 @@ io.on("connection",function(socket){
             await RedisClient.hmset('room_game:'+idGameCount,
             'host_id',roomGame.host_id,
             'betting_golds',bettingGolds,
-            'status','waiting',
+            'status','ready',
             'opponent_id',roomGame.opponent_id,
             'winner_id','null',
             'host_ready','false',
@@ -587,7 +597,10 @@ io.on("connection",function(socket){
             let caroGame = new CaroGame(idGameCount);
             caroGames.addGame(caroGame);
 
+            
             io.to(''+data.gameId).emit('end_game_and_play_new_game',response);
+       
+            
         }
     })
     
@@ -598,37 +611,85 @@ io.on("connection",function(socket){
                 console.log('host accept')
                 await RedisClient.hset('room_game_continue:'+data.gameId,
                 'host_accept_continue','true')
+                
                 socket.join(''+data.gameId)
+                socket.join('chat'+data.gameId);
+                if(continueRoomGame.opponent_accept_continue == 'false'){
+                    await RedisClient.hmset('room_game:'+data.gameId,
+                    'status','waiting',
+                    'opponent_id','null')
+                    await RedisClient.del('room_game_continue:'+data.gameId);
+                    socket.emit('opponent_get_out_of_game',data.gameId);
+                }
+
             }else{
                 console.log('host reject')
                 await RedisClient.hset('room_game_continue:'+data.gameId,
                 'host_accept_continue','false');
-                await RedisClient.hmset('room_game:'+data.gameId,
-                'host_id',continueRoomGame.opponent_id,
-                'opponent_id','null')
+                if(continueRoomGame.opponent_accept_continue == 'true'){
+                    await RedisClient.hmset('room_game:'+data.gameId,
+                    'status','waiting',
+                    'host_id',continueRoomGame.opponent_id,
+                    'opponent_id','null')
+                    await RedisClient.del('room_game_continue:'+data.gameId);
+
+                    io.sockets.in(''+data.gameId).clients((err,clients)=>{
+                        clients.forEach((client)=>{
+                            if(client != socket.id){
+                                const clientSocket = io.of('/').connected[client];
+                                clientSocket.emit('opponent_get_out_of_game',data.gameId);
+                            }
+                        })
+                    })
+                    
+                }
             }
         }else{
             if(data.accept === "true"){
                 console.log('opponent accept')
                 await RedisClient.hset('room_game_continue:'+data.gameId,
                 'opponent_accept_continue','true')
+                
                 socket.join(''+data.gameId)
+                socket.join('chat'+data.gameId);
+                if(continueRoomGame.host_accept_continue== 'false'){
+                    await RedisClient.hmset('room_game:'+data.gameId,
+                    'status','waiting',
+                    'host_id',continueRoomGame.opponent_id,
+                    'opponent_id','null')
+                    await RedisClient.del('room_game_continue:'+data.gameId);
+                    socket.emit('opponent_get_out_of_game',data.gameId);
+                }
             }else{
                 console.log('opponent reject')
                 await RedisClient.hset('room_game_continue:'+data.gameId,
                 'opponent_accept_continue','false')
+                if(continueRoomGame.host_accept_continue == 'true'){
+                    await RedisClient.hmset('room_game:'+data.gameId,
+                    'status','waiting',
+                    'opponent_id','null')
+                    await RedisClient.del('room_game_continue:'+data.gameId);
+
+                    io.sockets.in(''+data.gameId).clients((err,clients)=>{
+                        clients.forEach((client)=>{
+                            if(client != socket.id){
+                                const clientSocket = io.of('/').connected[client];
+                                clientSocket.emit('opponent_get_out_of_game',data.gameId);
+                            }
+                        })
+                    })
+                    
+                }
             }
         }
 
-        continueRoomGame = await RedisClient.hgetall('room_game_continue:'+data.gameId);
-
-        if(continueRoomGame.host_accept_continue === 'true'
+        if(continueRoomGame && continueRoomGame.host_accept_continue === 'true'
             && continueRoomGame.opponent_accept_continue =='true'){
                 console.log('two accept')
                 io.to(''+data.gameId).emit('ready_to_start_game',data.gameId);
                 await RedisClient.del('room_game_continue:'+data.gameId);
             }
-        else if(continueRoomGame.host_accept_continue ==='false'
+        else if(continueRoomGame && continueRoomGame.host_accept_continue ==='false'
             && continueRoomGame.opponent_accept_continue === 'false'){
                 console.log('two reject')
                 await RedisClient.del('room_game:'+data.gameId);

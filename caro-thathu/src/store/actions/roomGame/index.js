@@ -80,3 +80,15 @@ export const updateOpponentInfoToContinueGame=(opponentGolds,opponentTotalPlayed
         }
     }
 }
+
+export const resetRoomGame=()=>{
+    return{
+        type:'RESET_ROOM_GAME_TO_DEFAULT'
+    }
+}
+
+export const resetOpponentToDefault=()=>{
+    return{
+        type:'RESET_OPPONENT_TO_DEFAULT'
+    }
+}

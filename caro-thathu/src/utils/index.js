@@ -15,3 +15,19 @@ export const generateMockCellList=()=>{
     }
     return({cellList:cellList});
 }
+
+export const createEmptyBoard=(height, width)=> {
+    let data = [];
+    for (let i = 0; i < width; i++) {
+      data.push([]);
+      for (let j = 0; j < height; j++) {
+        data[i][j]= {
+          x:j,
+          y:i,
+          isChecked:false,
+          typePattern: ""
+        }
+      }
+    }
+    return data;
+  }
