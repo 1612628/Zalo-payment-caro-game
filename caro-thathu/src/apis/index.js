@@ -42,7 +42,6 @@ export const RegisterRequest = async function Register(username,password,email) 
         return error;
     })
     return res;
-
 }
 
 export const LeaderboardRequest = async (token)=>{

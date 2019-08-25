@@ -8,7 +8,7 @@ import {
   MDBCol,
   MDBNav,
   MDBNavLink,
-  MDBScrollbar ,
+  MDBScrollbar,
   MDBListGroup
 } from "mdbreact";
 
@@ -32,6 +32,7 @@ import { updateUserPattern,updateUserGolds,updateUserTotalPlayedGame } from '../
 import {CellClick,InitBoard} from '../../store/actions/celllist';
  
 
+
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 const mySwal = withReactContent(Swal);
@@ -50,14 +51,41 @@ class PlayGame extends Component {
 
     this.props.UserReducer.user.socket.on('opponent_join_game', (data) => {
       console.log('socket opponent_join_game')
-      this.props.opponentJoinGame(data.opponentId, data.opponentName, 
-        data.opponentGolds,data.opponentTotalPlayedGame);
+      this.props.opponentJoinGame(data.opponentId, data.opponentName,
+        data.opponentGolds, data.opponentTotalPlayedGame);
     })
-    this.props.UserReducer.user.socket.on('message_come',(data)=>{
+  
+
+    this.props.UserReducer.user.socket.on('opponent_out_game', async (data) => {
+      console.log('socket opponent_out_game')
+      console.log(data)
+      await mySwal.fire({
+        title: 'You WIN !!!',
+        width: 600,
+        padding: '3em',
+        background: '#fff url(/images/trees.png)',
+        backdrop: `
+          rgba(0,0,123,0.4)
+          url("/images/nyan-cat.gif")
+          center left
+          no-repeat
+        `
+      })
+      this.props.opponentOutGame(data[0].gameId,data[0].bettingGolds);
+      this.props.restartTime();
+      let board = await this.createEmptyBoard(15, 15);
+      this.props.InitBoard(board);
+      this.props.restartMessageList();
+      
+    })
+
+
+    this.props.UserReducer.user.socket.on('message_come', (data) => {
       console.log("message_come");
       console.log(data);
-      this.props.appendMessage(data.message,data.time,data.userIdSend);
+      this.props.appendMessage(data.message, data.time, data.userIdSend);
     })
+
     this.props.UserReducer.user.socket.on('ready_to_start_game', (gameId) => {
       console.log('socket ready_to_start_game');
       this.props.UserReducer.user.socket.emit('ready_to_play', {
@@ -91,10 +119,10 @@ class PlayGame extends Component {
           mySwal.showLoading()
 
           timerInterval = setInterval(() => {
-            if(mySwal.getContent()){
+            if (mySwal.getContent()) {
               let strong = mySwal.getContent().querySelector('strong');
-              if(strong){
-                strong.textContent = (mySwal.getTimerLeft() / 1000).toFixed(0)  
+              if (strong) {
+                strong.textContent = (mySwal.getTimerLeft() / 1000).toFixed(0)
               }
             }
           }, 500)
@@ -260,25 +288,22 @@ class PlayGame extends Component {
 
   getTimeNow()
   {
-      let date = new Date();
-      return (date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
+    
+  }
+  
+  getTimeNow() {
+    let date = new Date();
+    return (date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
   }
   handleSendMessage() {
-    // this.props.restartTurn();
-    // this.handlePlayGame();
     if (this.state.message != null) {
-      this.props.UserReducer.user.socket.emit('chat',{
-        message:this.state.message,
+      this.props.UserReducer.user.socket.emit('chat', {
+        message: this.state.message,
         userId: this.props.UserReducer.user.id,
         time: this.getTimeNow(),
         gameId: this.props.RoomGameReducer.roomGame.roomGameId.toString()
       });
     }
-    // if (this.state.message != null) {
-    //   let userSend = "b";
-    //   let userIdSend = "X";
-    //   this.props.appendMessage(this.state.message, userSend, userIdSend);
-    // }
   }
 
   handleStartGame = (firstUserId, currentUserPattern, opponentPatterrn) => {
@@ -294,7 +319,7 @@ class PlayGame extends Component {
 
   }
   componentDidMount() {
-    
+
   }
 
   handlePlayGame = () => {
@@ -303,9 +328,9 @@ class PlayGame extends Component {
         this.props.startDecrementTime();
         if (this.props.TimeReducer.time <= 0) {
           this.props.updateGameStatus('end');
-          this.props.UserReducer.user.socket.emit('play_time_out',{
-            gameId:this.props.RoomGameReducer.roomGame.roomGameId,
-            userId:this.props.UserReducer.user.id
+          this.props.UserReducer.user.socket.emit('play_time_out', {
+            gameId: this.props.RoomGameReducer.roomGame.roomGameId,
+            userId: this.props.UserReducer.user.id
           });
           this.props.updateGameStatus('end');
           console.log('restartTime handlePlayGame isMyTurn true and time <=0')
@@ -330,10 +355,10 @@ class PlayGame extends Component {
     for (let i = 0; i < width; i++) {
       data.push([]);
       for (let j = 0; j < height; j++) {
-        data[i][j]= {
-          x:j,
-          y:i,
-          isChecked:false,
+        data[i][j] = {
+          x: j,
+          y: i,
+          isChecked: false,
           typePattern: ""
         }
       }
@@ -376,9 +401,15 @@ class PlayGame extends Component {
 
 
   handleBackToWaitingRoom = async () => {
-    this.props.UserReducer.user.socket.emit('get_out_of_game', this.props.RoomGameReducer.roomGame.roomGameId)
-    this.props.getOutOfOwnCreatedRoomGame();
-    await mySwal.fire({
+    this.props.UserReducer.user.socket.emit('get_out_of_game', {
+      gameId: this.props.RoomGameReducer.roomGame.roomGameId,
+      userId: this.props.UserReducer.user.id
+    })
+    this.props.restartMessageList();
+    this.props.getOutOfGame();
+    let newBoard = await this.createEmptyBoard(15,15);
+    this.props.InitBoard(newBoard);
+    await mySwal.fire({   
       type: 'success',
       html: 'Get out of game'
     });
@@ -436,9 +467,9 @@ class PlayGame extends Component {
                 </MDBRow>
                 <div className="scrollable-chat"> */}
                 <div className=" chat-body list-unstyled scrollbar-chatbox">
-                    <MDBListGroup className="list-unstyled pl-3 pr-3 ">
-                      <Message></Message>
-                    </MDBListGroup>
+                  <MDBListGroup className="list-unstyled pl-3 pr-3 ">
+                    <Message></Message>
+                  </MDBListGroup>
                 </div>
                 {/* button  send  */}
                 <MDBRow style={{ backgroundColor: "#dddddd" }} className="pr-4 form-send-message-play-screen">
@@ -475,9 +506,9 @@ const mapDispatchToProps = (dispatch) => {
     appendMessage,
     startDecrementTime, restartTime,
     getOutOfOwnCreatedRoomGame, opponentJoinGame,
-    updateUserPattern,
+    updateUserPattern,opponentOutGame,
     updateOpponentTypePattern,
-    restartTurn,CellClick,InitBoard,
+    restartTurn, CellClick, InitBoard,getOutOfGame,
     updateGameStatus, updateGameIdToContinueGame,
     updateUserGolds,updateUserTotalPlayedGame,
     updateOpponentInfoToContinueGame,
