@@ -14,7 +14,6 @@ class Board extends React.Component {
     const height = 15;
     const width = 15;
     let boardData= this.createEmptyBoard(width,height);
-    console.log(boardData);
     this.props.InitBoard(boardData);
   }
 

@@ -24,10 +24,12 @@ import ProcessBar from '../process-bar';
 import { appendMessage } from '../../store/actions/messages';
 import { startDecrementTime, restartTime, pauseTime,restartTurn } from '../../store/actions/timer';
 import { getOutOfOwnCreatedRoomGame, opponentJoinGame,
-  updateOpponentTypePattern,updateGameStatus } from '../../store/actions/roomGame';
-import { updateUserPattern } from '../../store/actions/user';
-import {CellClick} from '../../store/actions/celllist';
-
+  updateOpponentTypePattern,updateGameStatus,
+  updateGameIdToContinueGame,
+  updateOpponentInfoToContinueGame } from '../../store/actions/roomGame';
+import { updateUserPattern,updateUserGolds,updateUserTotalPlayedGame } from '../../store/actions/user';
+import {CellClick,InitBoard} from '../../store/actions/celllist';
+ 
 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -86,10 +88,13 @@ class PlayGame extends Component {
           mySwal.showLoading()
 
           timerInterval = setInterval(() => {
-            let strong = mySwal.getContent().querySelector('strong');
-            if(strong)
-              strong.textContent = (mySwal.getTimerLeft() / 1000).toFixed(0)
-          }, 100)
+            if(mySwal.getContent()){
+              let strong = mySwal.getContent().querySelector('strong');
+              if(strong){
+                strong.textContent = (mySwal.getTimerLeft() / 1000).toFixed(0)  
+              }
+            }
+          }, 500)
         },
         onClose: () => {
           clearInterval(timerInterval)
@@ -115,8 +120,26 @@ class PlayGame extends Component {
       }
     })
     this.props.UserReducer.user.socket.on('end_game_and_play_new_game',async (data)=>{
+      console.log(data);
+      
+      let board = this.createEmptyBoard(15,15);
+      this.props.InitBoard(board);
+      this.props.restartTime();
+      this.props.updateGameIdToContinueGame(data[1].gameId);
+      this.props.updateUserTotalPlayedGame(
+        this.props.UserReducer.user.totalPlayedGame+1);
+      
       if(data[0].type==='OLD_GAME' && data[0].winner != null){
+          
         if(data[0].winner == this.props.UserReducer.user.id){
+
+          this.props.updateUserGolds(this.props.UserReducer.user.golds+
+            data[0].betting_golds+data[0].bonus_golds);
+          this.props.updateOpponentInfoToContinueGame(
+            this.props.RoomGameReducer.roomGame.opponent.golds -data[0].betting_golds,
+            this.props.RoomGameReducer.roomGame.opponent.totalPlayedGame+1
+          )
+
           //win
           await mySwal.fire({
             title: 'You WIN !!!',
@@ -156,11 +179,92 @@ class PlayGame extends Component {
           });
 
         }else{
+
+          this.props.updateUserGolds(this.props.UserReducer.user.golds
+            -data[0].betting_golds);
+            
+          this.props.updateOpponentInfoToContinueGame(
+            this.props.RoomGameReducer.roomGame.opponent.golds 
+            +data[0].betting_golds+data[0].bonus_golds,
+            this.props.RoomGameReducer.roomGame.opponent.totalPlayedGame+1
+          )
+
           //lose
+          await mySwal.fire({
+            title: 'You LOST !!!',
+            width: 600,
+            padding: '3em',
+            background: '#fff url(/images/trees.png)',
+            backdrop: `
+              rgba(0,0,123,0.4)
+              url("/images/nyan-cat.gif")
+              center left
+              no-repeat
+            `
+          })
+          //play new game
+          await mySwal.fire({
+            title: 'Do you want to play new game!!',
+            text: "",
+            type: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result)=>{
+            if(result.value){
+              this.props.UserReducer.user.socket.emit('accept_to_play_new_game',{
+                gameId:data[1].gameId,
+                userId:this.props.UserReducer.user.id,
+                accept:"true"
+              });
+            }else{
+              this.props.UserReducer.user.socket.emit('accept_to_play_new_game',{
+                gameId:data[1].gameId,
+                userId:this.props.UserReducer.user.id,
+                accept:"false"
+              });
+            }
+          });
         }
       }else{
         //draw
-
+        await mySwal.fire({
+          title: 'DRAW !!!',
+          width: 600,
+          padding: '3em',
+          background: '#fff url(/images/trees.png)',
+          backdrop: `
+            rgba(0,0,123,0.4)
+            url("/images/nyan-cat.gif")
+            center left
+            no-repeat
+          `
+        })
+        //play new game
+        await mySwal.fire({
+          title: 'Do you want to play new game!!',
+          text: "",
+          type: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result)=>{
+          if(result.value){
+            this.props.UserReducer.user.socket.emit('accept_to_play_new_game',{
+              gameId:data[1].gameId,
+              userId:this.props.UserReducer.user.id,
+              accept:"true"
+            });
+          }else{
+            this.props.UserReducer.user.socket.emit('accept_to_play_new_game',{
+              gameId:data[1].gameId,
+              userId:this.props.UserReducer.user.id,
+              accept:"false"
+            });
+          }
+        });
       }
     })
   }
@@ -227,6 +331,22 @@ class PlayGame extends Component {
     }, 1000);
   }
 
+  createEmptyBoard(height, width) {
+    let data = [];
+    for (let i = 0; i < width; i++) {
+      data.push([]);
+      for (let j = 0; j < height; j++) {
+        data[i][j]= {
+          x:j,
+          y:i,
+          isChecked:false,
+          typePattern: ""
+        }
+      }
+    }
+    return data;
+  }
+
   handleTeamInfo = () => {
     mySwal.fire({
       title: '<strong>ThaThu Caro</u></strong>',
@@ -250,15 +370,15 @@ class PlayGame extends Component {
     });
   }
 
-    handleMessage = (event) => {
-      console.log(event.target.value)
-      this.state.message = event.target.value
-    }
-    handleInput = (event) => {
-      this.setState({
-        [event.target.id]: event.target.value
-      })
-    }
+  handleMessage = (event) => {
+    console.log(event.target.value)
+    this.state.message = event.target.value
+  }
+  handleInput = (event) => {
+    this.setState({
+      [event.target.id]: event.target.value
+    })
+  }
 
 
   handleBackToWaitingRoom = async () => {
@@ -363,8 +483,10 @@ const mapDispatchToProps = (dispatch) => {
     getOutOfOwnCreatedRoomGame, opponentJoinGame,
     updateUserPattern,
     updateOpponentTypePattern,
-    restartTurn,CellClick,
-    updateGameStatus
+    restartTurn,CellClick,InitBoard,
+    updateGameStatus, updateGameIdToContinueGame,
+    updateUserGolds,updateUserTotalPlayedGame,
+    updateOpponentInfoToContinueGame
   }, dispatch);
 }
 

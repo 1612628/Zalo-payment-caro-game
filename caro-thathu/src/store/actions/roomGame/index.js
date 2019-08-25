@@ -61,3 +61,22 @@ export const updateGameStatus=(status)=>{
         }
     }
 }
+
+export const updateGameIdToContinueGame=(gameId)=>{
+    return{
+        type:'UPDATE_GAME_ID_TO_CONTINUE_GAME',
+        payload:{
+            gameId
+        }
+    }
+}
+
+export const updateOpponentInfoToContinueGame=(opponentGolds,opponentTotalPlayedGame)=>{
+    return{
+        type:'UPDATE_OPPONENT_INFO_TO_CONTINUE_GAME',
+        payload:{
+            opponentGolds,
+            opponentTotalPlayedGame
+        }
+    }
+}

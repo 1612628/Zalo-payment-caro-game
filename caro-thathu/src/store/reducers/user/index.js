@@ -29,6 +29,22 @@ export default function UserReducer(state=initialUserState,action){
             return{
                 ...initialUserState
             }
+        case 'UPDATE_USER_GOLDS':
+            return{
+                ...state,
+                user:{
+                    ...state.user,
+                    golds:action.payload.golds
+                }
+            }
+        case 'UPDATE_USER_TOTAL_PLAYED_GAME':
+            return{
+                ...state,
+                user:{
+                    ...state.user,
+                    totalPlayedGame:action.payload.totalPlayedGame
+                }
+            }
         default:
             return state;
     }

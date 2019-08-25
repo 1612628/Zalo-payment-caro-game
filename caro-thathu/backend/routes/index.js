@@ -204,22 +204,6 @@ router.post('/games/join',async (req,res)=>{
                 res.status(409);
                 res.send();
             }
-            // if(idGameCount){
-            //     let ok = await RedisClient.hmset('room_game:'+idGameCount,'host_id',hostId,
-            //     'host_name',hostName,'betting_golds',bettingGolds,'status','waiting',
-            //     'opponent_id','null','winner_id','null','host_ready','false',
-            //     'opponent_ready','false');
-            //     console.log(ok);
-            //     if(ok){
-            //         res.status(200).json({roomGameId:idGameCount,betting_golds:bettingGolds,status:'waiting'});
-            //     }else{
-            //         res.status(500);
-            //     res.send();
-            //     }
-            // }else{
-            //     res.status(500);
-            //     res.send();
-            // }
         }else{
             res.status(400);
             res.send();    
