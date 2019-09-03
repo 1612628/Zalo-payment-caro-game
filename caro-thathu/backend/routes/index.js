@@ -20,13 +20,23 @@ router.post('/register',async (req,res)=>{
             res.send();
         }else{
             if(username && password && email){
-                var createdUser = UserController.createUser({username:username,password:password,email:email});
-                if(createdUser==null){
+                var createdUser = await UserController.createUser({username:username,password:password,email:email});
+                console.log(createdUser);
+                if(createdUser == null){
                     console.log('/register fail to create user');
                     res.status(500);
                     res.send();
                 }else{
                     console.log('/register created user');
+
+                    const userId = createdUser._id.toString();
+                    await RedisClient.zadd('leaderboard',createdUser.golds,userId);
+                    await RedisClient.hmset('user:'+userId,
+                    'username',createdUser.username,
+                    'total_played_game',createdUser.total_played_game,
+                    'golds',createdUser.golds,
+                    'is_online','false');
+
                     res.status(201);
                     res.send();
                 }
@@ -57,7 +67,7 @@ router.post('/login',async (req,res)=>{
                 
                 if(isOnline==='false'){
                     let token = jwtUtil.createToken(user._id);
-                        await RedisClient.hset("user:"+user._id.toString(),'is_online','true');
+                    await RedisClient.hset("user:"+user._id.toString(),'is_online','true');
                     res.status(200);
                     res.json({
                         user:user,
@@ -116,11 +126,13 @@ router.get('/games',async (req,res)=>{
     
     for(let roomGame of roomGames){
         let status = await RedisClient.hget(roomGame,'status');
+        console.log(roomGame);
+        console.log(status);
         if(status==='waiting'){
             let roomGameDetailInfo = await RedisClient.hgetall(roomGame);
             let host = await RedisClient.hgetall('user:'+roomGameDetailInfo.host_id);
             if(roomGameDetailInfo && host){
-                let gameId = roomGame.split(":")[1];
+                let gameId = parseInt(roomGame.split(":")[1]);
                 roomGameDetailInfo.room_game_id=gameId;
                 roomGameDetailInfo.host_name=host.username;
                 waitingRoomGames.push(roomGameDetailInfo);
@@ -136,6 +148,7 @@ router.get('/games',async (req,res)=>{
         }
     }
     res.status(200).json(waitingRoomGames)
+    
 })
 
 router.post('/games',async (req,res)=>{
