@@ -14,12 +14,10 @@ class Board extends React.Component {
     const height = 15;
     const width = 15;
     let boardData= this.createEmptyBoard(width,height);
-    console.log(boardData);
     this.props.InitBoard(boardData);
   }
 
   renderBoard() {
-    console.log(this.props.CellListReducer.cellList)
     if(this.props.CellListReducer.cellList){
       return this.props.CellListReducer.cellList.map((datarow, i) => (
         <div key={i} className="game-row">

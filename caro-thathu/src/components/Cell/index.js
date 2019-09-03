@@ -11,26 +11,28 @@ class Cell extends React.Component {
         super(props);
         this.state = {
             x: this.props.data.x,
-            y: this.props.data.y,
-            isChecked: this.props.data.isChecked
+            y: this.props.data.y
         }
         this.handleClick = this.handleClick.bind(this);
-
-
     }
 
     handleClick() {
-        if(this.props.RoomGameReducer.roomGame.status !== 'playing' &&
-         this.state.isChecked===true && !this.TimeReducer.isMyTurn)
+        if(this.props.RoomGameReducer.roomGame.status !== 'playing' ||
+         this.props.CellListReducer.cellList[this.state.y][this.state.x].isChecked===true 
+         || !this.props.TimeReducer.isMyTurn)
         {
             console.log("khong check dc nua");
             return;
         }
         // let typePattern = this.props.UserReducer.typePattern;
-        this.state.isChecked = true;
-        this.props.CellClick(this.state.x, this.state.y,  this.state.isChecked, "O");
-        this.props.restartTime();
-        console.log("is click")
+        
+        
+        this.props.CellClick(this.state.x, this.state.y,
+            true,this.props.UserReducer.user.typePattern);
+        
+        console.log("y: "+this.state.y+", x: "+this.state.x+" is clicked");
+        console.log('restartTime cell click');
+        this.props.restartTime(); 
 
         this.props.UserReducer.user.socket.emit('play_a_game_turn',{
             gameId:this.props.RoomGameReducer.roomGame.roomGameId,
@@ -44,8 +46,8 @@ class Cell extends React.Component {
     render() {
 
         let classname = "square hoverable"
-        if (this.props.data.typePattern != "") {
-            if (this.props.data.typePattern == "X") {
+        if (this.props.CellListReducer.cellList[this.state.y][this.state.x].typePattern != "") {
+            if (this.props.CellListReducer.cellList[this.state.y][this.state.x].typePattern == "X") {
                 classname += " cell-x"
             }
             else {
@@ -54,7 +56,7 @@ class Cell extends React.Component {
         }
         return (
             <div className={classname} onClick={this.handleClick}>
-                {this.props.data.typePattern}
+                {this.props.CellListReducer.cellList[this.state.y][this.state.x].typePattern}
             </div>
         );
     }

@@ -25,6 +25,7 @@ class WaitingGameBox extends Component{
         }
     }
     handleWaitingGameBoxClick=()=>{
+      console.log("somebody");
         mySwal.fire({
             title: 'Do you want to join this game?',
             type:'question',
@@ -42,7 +43,8 @@ class WaitingGameBox extends Component{
                 if(res){
                   this.props.joinInRoomGame(this.props.WaitingGamesReducer.waitingGames[this.state.index].roomGameId,
                     res.status,this.props.WaitingGamesReducer.waitingGames[this.state.index].bettingGolds,
-                    res.opponent.id,res.opponent.name,res.opponent.golds,res.opponent.totalPlayedGame);
+                    res.opponent.id,res.opponent.name,res.opponent.golds,
+                    parseInt(res.opponent.totalPlayedGame,10));
                   
                   this.props.UserReducer.user.socket.emit('join_game',{
                     gameId:this.props.WaitingGamesReducer.waitingGames[this.state.index].roomGameId,

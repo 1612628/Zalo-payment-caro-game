@@ -14,6 +14,13 @@ export const getOutOfOwnCreatedRoomGame=()=>{
         payload:{}
     }
 }
+
+export const getOutOfGame = ()=>{
+    return {
+        type:'GET_OUT_OF_GAME'
+    }
+}
+
 export const joinInRoomGame=(roomGameId,status,bettingGolds,opponentId,opponentUsername,opponentGolds,opponentTotalPlayedGame)=>{
     return{
         type:'JOIN_IN_ROOM_GAME',
@@ -44,6 +51,16 @@ export const opponentJoinGame=(opponentId,opponentUsername,opponentGolds,opponen
     }
 }
 
+export const opponentOutGame=(newGameId,bettingGolds)=>{
+    return{
+        type:'OPPONENT_OUT_GAME',
+        payload:{
+            newGameId:newGameId,
+            bettingGolds:bettingGolds
+        }
+    }
+}
+
 export const updateOpponentTypePattern=(typePattern)=>{
     return{
         type:'UPDATE_OPPONENT_TYPE_PATTERN',
@@ -59,5 +76,36 @@ export const updateGameStatus=(status)=>{
         payload:{
             status
         }
+    }
+}
+
+export const updateGameIdToContinueGame=(gameId)=>{
+    return{
+        type:'UPDATE_GAME_ID_TO_CONTINUE_GAME',
+        payload:{
+            gameId
+        }
+    }
+}
+
+export const updateOpponentInfoToContinueGame=(opponentGolds,opponentTotalPlayedGame)=>{
+    return{
+        type:'UPDATE_OPPONENT_INFO_TO_CONTINUE_GAME',
+        payload:{
+            opponentGolds,
+            opponentTotalPlayedGame
+        }
+    }
+}
+
+export const resetRoomGame=()=>{
+    return{
+        type:'RESET_ROOM_GAME_TO_DEFAULT'
+    }
+}
+
+export const resetOpponentToDefault=()=>{
+    return{
+        type:'RESET_OPPONENT_TO_DEFAULT'
     }
 }

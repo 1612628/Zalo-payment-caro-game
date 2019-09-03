@@ -42,7 +42,6 @@ export const RegisterRequest = async function Register(username,password,email) 
         return error;
     })
     return res;
-
 }
 
 export const LeaderboardRequest = async (token)=>{
@@ -144,10 +143,10 @@ export const JoinGameRequest = async(token,gameId,userId,userGolds)=>{
         }
     }
     let res = await axios.post("http://127.0.0.1:4001/games/join",data,config)
-    .then(res => res)
+    .then(res => res.data)
     .catch(error => {
         console.log(error);
         return null;
     })
-    return res.data;
+    return res;
 }

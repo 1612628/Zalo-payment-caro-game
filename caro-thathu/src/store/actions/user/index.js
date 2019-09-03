@@ -31,3 +31,20 @@ export const initialState=()=>{
         type:'INITIAL_STATE'
     }
 }
+
+export const updateUserGolds=(golds)=>{
+    return{
+        type:'UPDATE_USER_GOLDS',
+        payload:{
+            golds
+        }
+    }
+}
+export const updateUserTotalPlayedGame=(totalPlayedGame)=>{
+    return{
+        type:'UPDATE_USER_TOTAL_PLAYED_GAME',
+        payload:{
+            totalPlayedGame
+        }
+    }
+}
