@@ -4,9 +4,42 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import {Provider} from 'react-redux';
+import {Route,Switch} from 'react-router-dom';
+import {ConnectedRouter} from 'connected-react-router';
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
+import configureStore,{history} from './store/configurationStore';
+
+import Register from './components/register';
+import MainScreenGame from './components/main-screen-game/'
+import ForgotPassword from './components/forgot-password';
+import PlayGame from './components/play-game';
+
+import PrivateRoute from './privateRoute';
+import { PersistGate } from 'redux-persist/integration/react';
+
+const {store,persistor} = configureStore();
+
+
+
+ReactDOM.render(
+    <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+            <ConnectedRouter history={history}>
+                <>
+                    <Switch>
+                        <Route exact path="/" component={App}></Route>
+                        <Route exact path="/register" component={Register}></Route>
+                        {/* <Route exact path="/mainscreengame" component={MainScreenGame}></Route> */}
+                        <PrivateRoute path="/mainscreengame" component={MainScreenGame}></PrivateRoute>
+                        <PrivateRoute path="/playgame" component={PlayGame}></PrivateRoute>
+                        <Route exact path="/forgotpassword" component={ForgotPassword}></Route>
+                    </Switch>
+                </>            
+            </ConnectedRouter>
+        </PersistGate>
+           
+    </Provider>
+, document.getElementById('root'));
+
 serviceWorker.unregister();

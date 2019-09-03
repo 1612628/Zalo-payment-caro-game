@@ -1,0 +1,22 @@
+.square {
+    border: 1px solid rgb(121, 117, 117);
+    line-height: 4vmin;
+    height: 5vmin;
+    text-align: center;
+    width: 5vmin;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.square:hover { 
+  background-color: #807182;
+}
+
+.cell-o{
+  font-size: 25px;
+  color:blue;
+}
+.cell-x{
+  font-size: 2em;
+  color:red;
+}

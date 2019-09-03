@@ -1,0 +1,13 @@
+.message-in-play-screen{
+  background-color: #9C9C9C;
+  color:white;
+  word-wrap: break-word;
+  width: 200px;
+}
+.message-other{
+  margin-left: 300px !important;
+}
+.message-body{
+  max-width: 200px;
+  margin:10px 0px;
+}

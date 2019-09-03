@@ -1,0 +1,114 @@
+body{
+    font-family: 'Open Sans', sans-serif;
+    background-color: #ffffff   !important;
+}
+
+.board-game{
+  padding-left: 0px !important ;
+  padding-right: 0px !important ;
+
+}
+
+#logo{
+    display: flex;
+    justify-content: start;
+    float: left;
+}
+
+.text-while{
+  color:white;
+}
+.bet-gold-play-screen{
+  color: #111;  
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  font-size: 18px; 
+  font-weight: bold;
+  text-align: center;
+}
+.font-pattern{
+  
+}
+.chat-body{
+  border-radius:10px 10px 0px 0px;
+  border: 0px !important;
+  background-color: #DDDDDD !important;
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+.btn-send-message-play-game{
+
+  background-color:#9C9C9C; 
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  border-radius: 24px;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+
+}
+.form-send-message-play-screen
+{
+  border-radius:0px 0px 10px 10px;
+  margin-left:0px !important;
+  margin-right:0px !important;
+}
+.user-info{
+  margin-right: -30px;
+  margin-left: -30px;
+}
+.chat-block-in-play-game{
+  border-color: #dddddd;
+  padding-left:0px !important;
+  padding-right:0px !important;
+}
+.process-bar-in-play-game{
+  padding-left:0px !important;
+  padding-right:0px !important;
+}
+.btn-send-message-play-game:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+.input-message-play-game{
+  color:white;
+}
+input:focus{
+  color: white;
+}
+.my-row-play-screen{
+  margin-right: 0px !important;
+}
+.scrollbar-chatbox {
+  height: 30vh;
+  width: 100%;
+  overflow-y: scroll;
+  border: 1px solid black;
+}
+::-webkit-scrollbar {
+  display: none;
+  }
+.pattern-o{
+  color: blue;  
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  font-size: 22px; 
+  font-weight: bold;
+  text-align: center;
+}
+.pattern-x{
+  color: red;  
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  font-size: 22px; 
+  font-weight: bold;
+  text-align: center;
+}
+.radius{
+  border-radius: 10px;
+}
+.list-group-item{
+  margin-bottom: 0;
+  border: 0;
+  border-bottom: 1px solid;
+}
