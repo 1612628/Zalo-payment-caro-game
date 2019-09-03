@@ -190,10 +190,8 @@ class PlayGame extends Component {
             backdrop: `
               rgba(0,0,123,0.4)
               url("/images/nyan-cat.gif")
-              top center
+              center center
               no-repeat
-              z-index-99
-              
             `
           })
         }else{
