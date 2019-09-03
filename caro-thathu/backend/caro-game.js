@@ -71,14 +71,17 @@ class CaroGame {
         }
 
         let blockedHead=false;
-        let blockedTail=true;
+        let blockedTail=false;
         let count=0;
 
         //check horizontal
+        console.log('//check horizontal');
+        console.log('left ',left, ' right ',right, ' pattern ',pattern);
         for(let j=x;j>=left;--j){
             let current = this.boardData[y][j];
-            if(current.typePattern===pattern){
+            if(current.typePattern===pattern){                
                 ++count;
+                console.log(y,j,count)
             }
             else if(current.typePattern === ""){
                 break;
@@ -100,7 +103,7 @@ class CaroGame {
             }
         }
         
-        console.log('//check horizontal',count);
+        console.log('//check horizontal',count, blockedHead,blockedTail);
         if((count==5 && !(blockedHead && blockedTail))){
             return 0;
         }

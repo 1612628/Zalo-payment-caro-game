@@ -79,7 +79,7 @@ class PlayGame extends Component {
         backdrop: `
           rgba(0,0,123,0.4)
           url("/images/nyan-cat.gif")
-          center left
+          center center
           no-repeat
         `
       })
@@ -296,7 +296,7 @@ class PlayGame extends Component {
     this.props.UserReducer.user.socket.removeAllListeners('next_turn');
     this.props.UserReducer.user.socket.removeAllListeners('end_game_and_play_new_game');
     this.props.UserReducer.user.socket.removeAllListeners('opponent_get_out_of_game');
-    
+    this.props.UserReducer.user.socket.removeAllListeners('play_time_out');
     console.log(this.props.UserReducer.user.socket._callbacks)
   }
   

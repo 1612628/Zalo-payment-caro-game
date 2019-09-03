@@ -113,13 +113,13 @@ router.post('/logout',async (req,res)=>{
     }
 });
 
-router.get('/leaderboard',async (req,res)=>{
+router.get('/leaderboard',jwtUtil.checkRequestToken,async (req,res)=>{
     console.log('/leaderboard');
     let users = await UserController.getLeaderBoard();
     res.status(200).json(users)
 })
 
-router.get('/games',async (req,res)=>{
+router.get('/games',jwtUtil.checkRequestToken,async (req,res)=>{
     console.log('get /games')
     var waitingRoomGames=[];
     let roomGames = await RedisClient.keys('room_game:*')
@@ -151,7 +151,7 @@ router.get('/games',async (req,res)=>{
     
 })
 
-router.post('/games',async (req,res)=>{
+router.post('/games',jwtUtil.checkRequestToken,async (req,res)=>{
     console.log('/games create game');
     if(req.body){
         let hostId = req.body.host_id;
@@ -186,7 +186,7 @@ router.post('/games',async (req,res)=>{
     }
 })
 
-router.post('/games/join',async (req,res)=>{
+router.post('/games/join',jwtUtil.checkRequestToken,async (req,res)=>{
     console.log('/games/join');
     if(req.body){
         let userId = req.body.user_id;
