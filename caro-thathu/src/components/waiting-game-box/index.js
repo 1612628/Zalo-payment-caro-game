@@ -10,6 +10,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {joinInRoomGame} from '../../store/actions/roomGame';
 import {JoinGameRequest} from '../../apis/';
+import {resetWaitingGamesToDefault} from '../../store/actions/waitingGames';
 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -53,7 +54,9 @@ class WaitingGameBox extends Component{
                     golds:this.props.UserReducer.user.golds,
                     totalPlayedGame:this.props.UserReducer.user.totalPlayedGame
                   });
-                  
+
+
+                  this.props.resetWaitingGamesToDefault();
                   this.props.history.push("/playgame");
 
                 }
@@ -97,7 +100,8 @@ const mapStateToProps = (state) => {
   
 const mapDispatchToProps=(dispatch)=>{
   return bindActionCreators({
-    joinInRoomGame
+    joinInRoomGame,
+    resetWaitingGamesToDefault
   },dispatch);
 }
 

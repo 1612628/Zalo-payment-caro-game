@@ -22,3 +22,9 @@ export const updateWaitingGame=(waitingGames)=>{
     }
 }
 
+export const resetWaitingGamesToDefault=()=>{
+    return{
+        type:'RESET_WAITING_GAMES_TO_DEFAULT',
+        payload:{}
+    }
+}
