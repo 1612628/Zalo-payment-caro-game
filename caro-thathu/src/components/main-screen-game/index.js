@@ -73,6 +73,8 @@ class MainScreenGame extends Component {
     //   this.props.history.push('/');
     // }
 
+    // window.onbeforeunload=null;
+
   }
 
 
