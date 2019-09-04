@@ -310,6 +310,10 @@ class PlayGame extends Component {
         time: this.getTimeNow(),
         gameId: this.props.RoomGameReducer.roomGame.roomGameId.toString()
       });
+      this.setState({
+        message:'',
+        timeCount:this.state.time
+      })
     }
   }
 
@@ -396,14 +400,10 @@ class PlayGame extends Component {
     });
   }
 
-  handleMessage = (event) => {
-    console.log(event.target.value)
-    this.state.message = event.target.value
-  }
-  handleInput = (event) => {
-    this.setState({
-      [event.target.id]: event.target.value
-    })
+  handleMessageChange = (e) =>{
+    this.setState({message: e.target.value,
+    timeCount:this.state.timeCount
+  })
   }
 
 
@@ -488,7 +488,7 @@ class PlayGame extends Component {
                 {/* button  send  */}
                 <MDBRow style={{ backgroundColor: "#dddddd" }} className="pr-4 form-send-message-play-screen">
                   <MDBCol size="10" >
-                    <MDBInput onInput={this.handleMessage} label="Message Here"
+                    <MDBInput onChange={this.handleMessageChange} value = {this.state.message} label="Message Here"
                       className="text-dark input-message-play-game" />
                   </MDBCol>
                   <MDBCol size="2" className="d-flex align-items-center">

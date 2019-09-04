@@ -64,13 +64,14 @@ class MainScreenGame extends Component {
     if (waitingRoomGames) {
       this.props.updateWaitingGame(waitingRoomGames);
     }
-    window.onpopstate = (event) => {
-      event.preventDefault();
-      LogoutRequest(this.props.UserReducer.user.token, this.props.UserReducer.user.id)
-      this.props.changeAuth(false);
-      this.props.userLogOut();
-      this.props.history.push('/');
-    }
+    // window.onpopstate = (event) => {
+    //   event.preventDefault();
+    //   console.log('window.onpopstate in mainscreen')
+    //   LogoutRequest(this.props.UserReducer.user.token, this.props.UserReducer.user.id)
+    //   this.props.changeAuth(false);
+    //   this.props.userLogOut();
+    //   this.props.history.push('/');
+    // }
 
   }
 
@@ -112,6 +113,7 @@ class MainScreenGame extends Component {
   }
 
   handleBack = () => {
+    console.log('handleBack in mainscreen');
     LogoutRequest(this.props.UserReducer.user.token, this.props.UserReducer.user.id)
     this.props.changeAuth(false);
     this.props.userLogOut();

@@ -32,7 +32,7 @@ userSchema.pre('save',function(next){
         return next();
     }
 
-    this.password={}
+    this.password={};
     
     bcrypt.hash(user.password,10)
     .then((hash)=>{
@@ -44,13 +44,33 @@ userSchema.pre('save',function(next){
         return next(err);
     }) 
 })
+userSchema.pre('findOneAndUpdate',function(next){
+    console.log('findOneAndUpdate',this._update);
+    if(this._update.password){
+        bcrypt.hash(this._update.password,10)
+        .then((hash)=>{
+            console.log(hash);
+            this._update.password = hash;
+            next()
+        })
+        .catch(err=>{
+            return next(err);
+        }) 
+    }else{
+        next();
+    }
+   
+})
 userSchema.methods.comparePassword = async function(password) {
     return new Promise((resolve,reject)=>{
         bcrypt.compare(password, this.password, function(err, isMatch) {
-            if (err) return reject(err);
+            console.log('comparePassword',isMatch);
+            if (isMatch == false) return reject(err);
             resolve(isMatch);
         });
     })
 };
+
+
 
 module.exports = mongoose.model('User',userSchema);

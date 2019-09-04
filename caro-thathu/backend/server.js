@@ -227,7 +227,10 @@ io.on("connection", function (socket) {
                 clients.forEach((client) => {
                     const clientSocket = io.of('/').connected[client];
                     if (client !== socket.id) {
+                        clientSocket.leave('' + data.gameId);
+                        clientSocket.leave('chat' + data.gameId);
                         clientSocket.join(''+idGameCount);
+                        clientSocket.join('chat'+idGameCount);
                         clientSocket.emit('opponent_out_game',response);
                     }
                 })
