@@ -79,7 +79,7 @@ class PlayGame extends Component {
         backdrop: `
           rgba(0,0,123,0.4)
           url("/images/nyan-cat.gif")
-          center left
+          center center
           no-repeat
         `
       })
@@ -190,10 +190,8 @@ class PlayGame extends Component {
             backdrop: `
               rgba(0,0,123,0.4)
               url("/images/nyan-cat.gif")
-              top center
+              center center
               no-repeat
-              z-index-99
-              
             `
           })
         }else{
@@ -296,7 +294,7 @@ class PlayGame extends Component {
     this.props.UserReducer.user.socket.removeAllListeners('next_turn');
     this.props.UserReducer.user.socket.removeAllListeners('end_game_and_play_new_game');
     this.props.UserReducer.user.socket.removeAllListeners('opponent_get_out_of_game');
-    
+    this.props.UserReducer.user.socket.removeAllListeners('play_time_out');
     console.log(this.props.UserReducer.user.socket._callbacks)
   }
   
@@ -312,6 +310,10 @@ class PlayGame extends Component {
         time: this.getTimeNow(),
         gameId: this.props.RoomGameReducer.roomGame.roomGameId.toString()
       });
+      this.setState({
+        message:'',
+        timeCount:this.state.time
+      })
     }
   }
 
@@ -398,14 +400,10 @@ class PlayGame extends Component {
     });
   }
 
-  handleMessage = (event) => {
-    console.log(event.target.value)
-    this.state.message = event.target.value
-  }
-  handleInput = (event) => {
-    this.setState({
-      [event.target.id]: event.target.value
-    })
+  handleMessageChange = (e) =>{
+    this.setState({message: e.target.value,
+    timeCount:this.state.timeCount
+  })
   }
 
 
@@ -490,7 +488,7 @@ class PlayGame extends Component {
                 {/* button  send  */}
                 <MDBRow style={{ backgroundColor: "#dddddd" }} className="pr-4 form-send-message-play-screen">
                   <MDBCol size="10" >
-                    <MDBInput onInput={this.handleMessage} label="Message Here"
+                    <MDBInput onChange={this.handleMessageChange} value = {this.state.message} label="Message Here"
                       className="text-dark input-message-play-game" />
                   </MDBCol>
                   <MDBCol size="2" className="d-flex align-items-center">
