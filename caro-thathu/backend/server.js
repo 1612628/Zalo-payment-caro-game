@@ -889,7 +889,11 @@ io.on("connection", function (socket) {
                             }
                         })
                     })
-                    
+                    let waitingRoomGames = await getNewWaitingRoomList();
+                    socket.broadcast.emit('update_list_waiting_game', {
+                        data: waitingRoomGames,
+                        userId: data.userId
+                    })
                 }
             }
         }else{
@@ -913,17 +917,6 @@ io.on("connection", function (socket) {
                         data: waitingRoomGames,
                         userId: data.userId
                     })
-                    // io.sockets.in(''+data.gameId).clients((err,clients)=>{
-                    //     clients.forEach(async (client)=>{
-                    //         if(client != socket.id){
-                    //             const clientSocket = io.of('/').connected[client];
-                    //             let waitingRoomGames = await getNewWaitingRoomList();
-                    //             clientSocket.emit('update_list_waiting_game',{
-                    //                 data: waitingRoomGames,
-                    //             });
-                    //         }
-                    //     })
-                    // })
                 }
             }else{
                 console.log('opponent reject')
@@ -943,7 +936,11 @@ io.on("connection", function (socket) {
                             }
                         })
                     })
-                    
+                    let waitingRoomGames = await getNewWaitingRoomList();
+                    socket.broadcast.emit('update_list_waiting_game', {
+                        data: waitingRoomGames,
+                        userId: data.userId
+                    })
                 }
             }
         }
