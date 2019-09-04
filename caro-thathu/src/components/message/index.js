@@ -13,18 +13,20 @@ class Message extends React.Component {
 
     render() {
         return this.props.MessageReducer.messages.map((messageItem, index) => {
-            let classNameOfMessage = "message-body ";
+            let classNameOfMessage = "";
             if (this.props.MessageReducer.message == "undefined") {
                 return;
             }
 
             if (this.props.UserReducer.user.id === messageItem.userIdSend) {
-                classNameOfMessage += " message-other"
+                classNameOfMessage += "d-flex justify-content-end"
             }
-            console.log(messageItem.userIdSend);
-            console.log(this.props.UserReducer.user.id )
+            else{
+                classNameOfMessage += "d-flex justify-content-start"
+            }
             return (
-                <MDBCard key={index} className={classNameOfMessage}>
+                <div key={index} className={classNameOfMessage}>
+                <MDBCard  className="message-body">
                     <MDBCardBody>
                         <p className="mb-0">{messageItem.message}</p>
                         <small className="pull-right text-muted">
@@ -32,6 +34,7 @@ class Message extends React.Component {
                 </small>
                     </MDBCardBody>
                 </MDBCard>
+                </div>
 
             );
         })
