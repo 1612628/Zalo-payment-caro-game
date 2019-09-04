@@ -93,8 +93,13 @@ function getLeaderBoard(){
 }
 
 function updateUserPassword(userId,password){
-    console.log('updateUserPassword',userId,password);    
-    return mongoUserModel.findOneAndUpdate({_id:userId},{password:password})
+    console.log('updateUserPassword',userId,password);
+    let ObjectId = require('mongoose').Types.ObjectId;
+    
+    return mongoUserModel.findOneAndUpdate({_id:new ObjectId(userId)},{password:password},{upsert:true,new:true},function(err,doc){
+        console.log(doc);
+        console.log(err);
+    })
 }
 
 module.exports={

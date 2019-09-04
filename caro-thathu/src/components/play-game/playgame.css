@@ -25,9 +25,7 @@ body{
   font-weight: bold;
   text-align: center;
 }
-.font-pattern{
-  
-}
+
 .chat-body{
   border-radius:10px 10px 0px 0px;
   border: 0px !important;
@@ -91,14 +89,14 @@ input:focus{
   display: none;
   }
 .pattern-o{
-  color: blue;  
+  color: black;  
   font-family: "Comic Sans MS", cursive, sans-serif;
   font-size: 22px; 
   font-weight: bold;
   text-align: center;
 }
 .pattern-x{
-  color: red;  
+  color: black;  
   font-family: "Comic Sans MS", cursive, sans-serif;
   font-size: 22px; 
   font-weight: bold;
