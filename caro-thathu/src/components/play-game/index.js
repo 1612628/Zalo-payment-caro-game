@@ -166,6 +166,7 @@ class PlayGame extends Component {
       this.props.InitBoard(board);
       console.log('restartTime end_game_and_play_new_game')
       this.props.restartTime();
+      this.props.restartMessageList();
       this.props.updateGameIdToContinueGame(data[1].gameId);
       this.props.updateUserTotalPlayedGame(
         this.props.UserReducer.user.totalPlayedGame+1);
@@ -294,6 +295,7 @@ class PlayGame extends Component {
     this.props.UserReducer.user.socket.removeAllListeners('next_turn');
     this.props.UserReducer.user.socket.removeAllListeners('end_game_and_play_new_game');
     this.props.UserReducer.user.socket.removeAllListeners('opponent_get_out_of_game');
+    this.props.UserReducer.user.socket.removeAllListeners('opponent_out_game');
     this.props.UserReducer.user.socket.removeAllListeners('play_time_out');
     console.log(this.props.UserReducer.user.socket._callbacks)
   }
