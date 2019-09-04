@@ -30,24 +30,46 @@
     - [socket event(accept_to_play_new_game)](#socket-eventaccept_to_play_new_game)         
     - [socket event(get_out_of_game)](#socket-eventget_out_of_game)  
 
-- [Thathu caro](#thathu-caro)     
-    - [Features](#features)     
-    - [UseCase](#usecase)     
-    - [Game constraints](#game-constraints)         
-        - [Registry](#registry)         
-        - [Create game board/ betting golds](#create-game-board-betting-golds)         
-        - [Join game board](#join-game-board)         
-        - [Playing game](#playing-game)         
-        - [Chat when playing](#chat-when-playing)     
-    - [REST API](#rest-api)         
-        - [Register](#register)         
-        - [Logout](#logout)         
-        - [Login](#login)         
-        - [Forgot password](#forgot-password)        
-        - [Ranking](#ranking)         
-        - [Create game](#create-game)         
-        - [Get List Waiting game](#get-list-waiting-game)         
-        - [Join Waiting game](#join-waiting-game)  
+- [Thathu caro](#thathu-caro)
+  - [Features](#features)
+  - [UseCase](#usecase)
+  - [Game constraints](#game-constraints)
+    - [Registry](#registry)
+    - [Create game board/ betting golds](#create-game-board-betting-golds)
+    - [Join game board](#join-game-board)
+    - [Playing game](#playing-game)
+    - [Chat when playing](#chat-when-playing)
+  - [REST API](#rest-api)
+    - [Register](#register)
+    - [Logout](#logout)
+    - [Login](#login)
+    - [Forgot password](#forgot-password)
+    - [Ranking](#ranking)
+    - [Create game](#create-game)
+    - [Get List Waiting game](#get-list-waiting-game)
+    - [Join Waiting game](#join-waiting-game)
+  - [Socket](#socket)
+    - [socket event(opponent_out_game)](#socket-eventopponentoutgame)
+    - [socket event(message_come)](#socket-eventmessagecome)
+    - [socket event(ready_to_start_game)](#socket-eventreadytostartgame)
+    - [socket event(start_game)](#socket-eventstartgame)
+    - [socket event(next_turn)](#socket-eventnextturn)
+    - [socket event(end_game_and_play_new_game)](#socket-eventendgameandplaynewgame)
+    - [socket event(opponent_get_out_of_game)](#socket-eventopponentgetoutofgame)
+    - [socket event(chat)](#socket-eventchat)
+    - [socket event(play_time_out)](#socket-eventplaytimeout)
+    - [socket event(accept_to_play_new_game)](#socket-eventaccepttoplaynewgame)
+    - [socket event(get_out_of_game)](#socket-eventgetoutofgame)
+  - [Database design](#database-design)
+  - [Architecture](#architecture)
+  - [Global statements](#global-statements)
+  - [Play game workflow](#play-game-workflow)
+  - [Sequence diagram](#sequence-diagram)
+    - [Sign in sequence diagram](#sign-in-sequence-diagram)
+    - [Sign up sequence diagram](#sign-up-sequence-diagram)
+    - [Create room game sequence diagram](#create-room-game-sequence-diagram)
+    - [Join room game sequence diagram](#join-room-game-sequence-diagram)
+    - [Play game sequence diagram](#play-game-sequence-diagram)
 ## Features
 
 - Register
@@ -448,3 +470,41 @@ Request from client
         userId: 1
     })
 ```
+
+## Database design
+
+![database-design](./media/images/zalo-payment-caro-database-design.png)
+
+## Architecture
+
+![architecture](./media/images/zalo-payment-caro-architecture.png)
+
+## Global statements
+
+![global-statements](./media/images/zalo-payment-caro-global-state.png)
+
+## Play game workflow
+
+![play-game-workflow](./media/images/zalo-payment-caro-play-game-work-flow.png)
+
+## Sequence diagram
+
+### Sign in sequence diagram
+
+![sign-in-sequence-diagram](./media/images/zalo-payment-caro-sign-in-sequence-diagram.png)
+
+### Sign up sequence diagram
+
+![sign-up-sequence-diagram](./media/images/zalo-payment-caro-sign-up-sequence-diagram.png)
+
+### Create room game sequence diagram
+
+![create-room-game-sequence-diagram](./media/images/zalo-payment-caro-create-room-game-sequence-diagram.png)
+
+### Join room game sequence diagram
+
+![join-room-game-sequence-diagram](./media/images/zalo-payment-caro-join-room-game-sequence-diagram.png)
+
+### Play game sequence diagram
+
+![play-game-sequence-diagram](./media/images/zalo-payment-caro-play-game-sequence-diagram.png)
