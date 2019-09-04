@@ -45,16 +45,21 @@ userSchema.pre('save',function(next){
     }) 
 })
 userSchema.pre('findOneAndUpdate',function(next){
-    console.log('updateOne',this._update);
-    bcrypt.hash(this._update.password,10)
-    .then((hash)=>{
-        console.log(hash);
-        this._update.password = hash;
-        next()
-    })
-    .catch(err=>{
-        return next(err);
-    }) 
+    console.log('findOneAndUpdate',this._update);
+    if(this._update.password){
+        bcrypt.hash(this._update.password,10)
+        .then((hash)=>{
+            console.log(hash);
+            this._update.password = hash;
+            next()
+        })
+        .catch(err=>{
+            return next(err);
+        }) 
+    }else{
+        next();
+    }
+   
 })
 userSchema.methods.comparePassword = async function(password) {
     return new Promise((resolve,reject)=>{
